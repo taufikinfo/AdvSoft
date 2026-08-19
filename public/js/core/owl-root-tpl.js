@@ -149,6 +149,9 @@
             <t t-if="item.children and item.children.length">
                 <button type="button" class="ls-submenu-label ls-submenu-dropdown-toggle"
                         t-on-click="(ev) => this.toggleDropdown(item.id, ev)">
+                    <t t-if="item.icon and window.lucideIcon">
+                        <span class="ls-submenu-icon" t-out="window.lucideIcon(item.icon, 14)"/>
+                    </t>
                     <span t-esc="item.name"/>
                     <span class="ls-submenu-caret">▾</span>
                 </button>
@@ -156,6 +159,9 @@
                     <t t-foreach="item.children" t-as="child" t-key="child.id">
                         <div t-att-class="'ls-submenu-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
                              t-on-click="() => this.onMenuClick(child)">
+                            <t t-if="child.icon and window.lucideIcon">
+                                <span class="ls-submenu-dropdown-icon" t-out="window.lucideIcon(child.icon, 14)"/>
+                            </t>
                             <span t-esc="child.name"/>
                         </div>
                     </t>
@@ -164,6 +170,9 @@
             <t t-else="">
                 <button type="button" class="ls-submenu-label"
                         t-on-click="() => this.onMenuClick(item)">
+                    <t t-if="item.icon and window.lucideIcon">
+                        <span class="ls-submenu-icon" t-out="window.lucideIcon(item.icon, 14)"/>
+                    </t>
                     <span t-esc="item.name"/>
                 </button>
             </t>

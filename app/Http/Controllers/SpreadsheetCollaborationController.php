@@ -21,8 +21,8 @@ class SpreadsheetCollaborationController extends Controller
         $userId = $this->ctx->getUserId() ?: 1;
         $spreadsheetId = (int) $request->input('spreadsheet_id');
 
-        $collab = SpreadsheetCollaboration::where('spreadsheet_id', $spreadsheetId)
-            ->filter(fn($c) => $c->user_id == $userId)
+        $collab = SpreadsheetCollaboration::where('spreadsheet_id', '=', $spreadsheetId)
+            ->where('user_id', '=', $userId)
             ->first();
 
         if (!$collab) {
@@ -36,8 +36,9 @@ class SpreadsheetCollaborationController extends Controller
         $collab->last_active_at = date('Y-m-d H:i:s');
         $collab->save();
 
-        $allCollabs = SpreadsheetCollaboration::where('spreadsheet_id', $spreadsheetId)
-            ->filter(fn($c) => $c->user_id != $userId);
+        $allCollabs = SpreadsheetCollaboration::where('spreadsheet_id', '=', $spreadsheetId)
+            ->where('user_id', '!=', $userId)
+            ->get();
 
         $cursors = [];
         foreach ($allCollabs as $c) {
@@ -87,8 +88,9 @@ class SpreadsheetCollaborationController extends Controller
         $spreadsheetId = (int) $request->input('spreadsheet_id');
         $sinceRev = (int) $request->input('since_rev', 0);
 
-        $ops = SpreadsheetOperation::where('spreadsheet_id', $spreadsheetId)
-            ->filter(fn($op) => (int)$op->revision > $sinceRev);
+        $ops = SpreadsheetOperation::where('spreadsheet_id', '=', $spreadsheetId)
+            ->where('revision', '>', $sinceRev)
+            ->get();
 
         $result = [];
         foreach ($ops as $op) {

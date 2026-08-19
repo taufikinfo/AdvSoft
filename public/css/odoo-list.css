@@ -14,52 +14,7 @@ html, body {
     overflow: hidden;
 }
 
-/* ── Navbar ───────────────────────────────── */
-.ls-navbar {
-    height: var(--ls-navbar-h);
-    background: var(--ls-primary);
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    gap: 16px;
-    color: #fff;
-    z-index: 100;
-    position: relative;
-}
-.ls-navbar-brand {
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -.3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.ls-navbar-brand svg { width: 22px; height: 22px; }
-.ls-navbar-menu {
-    display: flex;
-    gap: 2px;
-    margin-left: 12px;
-}
-.ls-navbar-menu a {
-    color: rgba(255,255,255,.75);
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: var(--ls-radius);
-    font-weight: 500;
-    transition: all .15s;
-    font-size: 13px;
-}
-.ls-navbar-menu a:hover,
-.ls-navbar-menu a.active {
-    color: #fff;
-    background: rgba(255,255,255,.15);
-}
-.ls-navbar-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+/* (Navbar styles are managed in odoo-layout.css) */
 .ls-avatar {
     width: 30px; height: 30px;
     border-radius: 50%;

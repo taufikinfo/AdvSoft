@@ -132,9 +132,15 @@ class SecurityController extends Controller
         $groupId = $data['group_id'] ?: null;
         $perm    = $data['perm'];
 
-        $acl = IrModelAccess::where('model_id', $modelId)
-            ->filter(fn($a) => $groupId ? ($a->group_id == $groupId) : ($a->group_id === null || $a->group_id === 0))
-            ->first();
+        $query = IrModelAccess::where('model_id', '=', $modelId);
+        if ($groupId) {
+            $query->where('group_id', '=', $groupId);
+        } else {
+            $query->where(function ($q) {
+                $q->whereNull('group_id')->orWhere('group_id', '=', 0);
+            });
+        }
+        $acl = $query->first();
 
         if (!$acl) {
             $acl = new IrModelAccess();
@@ -191,7 +197,7 @@ class SecurityController extends Controller
 
         foreach ($models as $name => $def) {
             $desc = $def->_description ?: class_basename($def);
-            $module = $def->getModule() ?: 'larasoft';
+            $module = method_exists($def, 'getModule') ? $def->getModule() : ($def->_module ?? 'larasoft');
             $irModel = IrModel::where('model', $name)->first();
             if (!$irModel) {
                 $irModel = IrModel::create([

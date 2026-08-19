@@ -253,6 +253,11 @@ class QueryBuilder
         return $collection;
     }
 
+    public function filter(?callable $callback = null): Collection
+    {
+        return $this->get()->filter($callback);
+    }
+
     protected function eagerLoad(Collection $records): void
     {
         if ($records->isEmpty() || empty($this->withs)) return;

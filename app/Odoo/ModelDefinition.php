@@ -38,6 +38,7 @@ abstract class ModelDefinition
     // ══════════════════════════════════════════════════════
     public string $_name;                    // e.g. 'project.task'
     public string $_description = '';        // Human-readable name
+    public string $_module = '';             // Addon module name (e.g. 'account', 'project')
     public string $_table = '';              // DB table name (auto: _name → underscore)
     public string $_order = 'id desc';       // Default sort
     public string $_rec_name = 'name';       // Display name field
@@ -46,6 +47,26 @@ abstract class ModelDefinition
 
     // ── Eloquent model class ─────────────────────────────
     public string $modelClass;               // e.g. Task::class
+
+    public function getModule(): string
+    {
+        if (!empty($this->_module)) {
+            return $this->_module;
+        }
+
+        $class = static::class;
+        if (preg_match('/Addons\\\\([^\\\\]+)/i', $class, $m)) {
+            return strtolower($m[1]);
+        }
+        if (!empty($this->_name)) {
+            if (str_starts_with($this->_name, 'project.')) return 'project';
+            if (str_starts_with($this->_name, 'account.')) return 'account';
+            if (str_starts_with($this->_name, 'res.') || str_starts_with($this->_name, 'ir.')) return 'base';
+            if (str_starts_with($this->_name, 'showcase.')) return 'showcase';
+        }
+
+        return 'larasoft';
+    }
 
     // ── Field definitions ────────────────────────────────
     /** @var Field[] Keyed by field name */

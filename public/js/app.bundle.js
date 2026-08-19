@@ -1,6 +1,6 @@
 /**
  * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-19 06:54:11
+ * Generated: 2026-08-19 07:02:44
  */
 
 /* --- [FILE: js/core/owl-rpc.js] --- */
@@ -3190,16 +3190,18 @@ window.TEMPLATES.App = xml`
         </button>
         <t t-set="u" t-value="window.LarasoftUser || {}"/>
         <div class="ls-user-chip" t-if="u.uid" title="User Profile">
-            <a href="#" t-on-click.prevent="() => this.onProfileClick()" title="My Profile" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;flex:1;min-width:0;cursor:pointer;">
-                <div class="ls-avatar" style="width:28px;height:28px;display:grid;place-items:center;background:rgba(255,255,255,0.22);border-radius:50%;font-weight:600;font-size:12px;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.15);">
+            <a href="#" class="ls-user-chip-btn" t-on-click.prevent="() => this.onProfileClick()" title="My Profile">
+                <div class="ls-avatar">
                     <t t-esc="(u.name || u.login || '?').charAt(0).toUpperCase()"/>
                 </div>
-                <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
-                    <span style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;" t-esc="u.name || u.login"/>
-                    <span style="font-size:10px;opacity:0.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;" t-esc="u.company || 'My Company'"/>
+                <div class="ls-user-chip-info">
+                    <span class="ls-user-chip-name" t-esc="u.name || u.login"/>
+                    <span class="ls-user-chip-company" t-esc="u.company || 'My Company'"/>
                 </div>
             </a>
-            <a href="/logout" title="Logout" style="margin-left:4px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);text-decoration:none;color:inherit;flex-shrink:0;transition:background 0.2s;" t-out="window.lucideIcon('log-out', 14)"/>
+            <a href="/logout" class="ls-user-chip-logout" title="Logout">
+                <t t-out="window.lucideIcon('log-out', 13)"/>
+            </a>
         </div>
     </div>
 </nav>
@@ -3213,6 +3215,9 @@ window.TEMPLATES.App = xml`
             <t t-if="item.children and item.children.length">
                 <button type="button" class="ls-submenu-label ls-submenu-dropdown-toggle"
                         t-on-click="(ev) => this.toggleDropdown(item.id, ev)">
+                    <t t-if="item.icon and window.lucideIcon">
+                        <span class="ls-submenu-icon" t-out="window.lucideIcon(item.icon, 14)"/>
+                    </t>
                     <span t-esc="item.name"/>
                     <span class="ls-submenu-caret">▾</span>
                 </button>
@@ -3220,6 +3225,9 @@ window.TEMPLATES.App = xml`
                     <t t-foreach="item.children" t-as="child" t-key="child.id">
                         <div t-att-class="'ls-submenu-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
                              t-on-click="() => this.onMenuClick(child)">
+                            <t t-if="child.icon and window.lucideIcon">
+                                <span class="ls-submenu-dropdown-icon" t-out="window.lucideIcon(child.icon, 14)"/>
+                            </t>
                             <span t-esc="child.name"/>
                         </div>
                     </t>
@@ -3228,6 +3236,9 @@ window.TEMPLATES.App = xml`
             <t t-else="">
                 <button type="button" class="ls-submenu-label"
                         t-on-click="() => this.onMenuClick(item)">
+                    <t t-if="item.icon and window.lucideIcon">
+                        <span class="ls-submenu-icon" t-out="window.lucideIcon(item.icon, 14)"/>
+                    </t>
                     <span t-esc="item.name"/>
                 </button>
             </t>

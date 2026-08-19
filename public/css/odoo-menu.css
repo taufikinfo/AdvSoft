@@ -354,11 +354,11 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 0 16px;
+    padding: 0 18px;
     background: #ffffff;
     border-bottom: 1px solid var(--ls-border, #dee2e6);
-    height: 38px;
-    font-size: 13px;
+    height: var(--ls-submenu-height, 42px);
+    font-size: 13.5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     z-index: 900;
     flex-shrink: 0;
@@ -373,13 +373,13 @@
 .ls-submenu-label {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 5px 12px;
+    gap: 5px;
+    padding: 6px 14px;
     color: #475569;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 13.5px;
     font-family: var(--ls-font, inherit);
-    border-radius: 6px;
+    border-radius: 7px;
     background: transparent;
     border: none;
     transition: all 0.15s ease;
@@ -398,6 +398,34 @@
     font-weight: 600;
     background: rgba(113, 75, 103, 0.1);
 }
+.ls-submenu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+.ls-submenu-label:hover .ls-submenu-icon,
+.ls-submenu-item.active .ls-submenu-icon {
+    opacity: 1;
+}
+
+.ls-submenu-dropdown-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    opacity: 0.75;
+    flex-shrink: 0;
+    color: currentColor;
+}
+.ls-submenu-dropdown-item:hover .ls-submenu-dropdown-icon,
+.ls-submenu-dropdown-item.active .ls-submenu-dropdown-icon {
+    opacity: 1;
+    color: #714B67;
+}
+
 .ls-submenu-caret {
     font-size: 10px;
     opacity: 0.6;
