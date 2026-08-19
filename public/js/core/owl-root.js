@@ -992,4 +992,28 @@
             console.error("[CRITICAL] Gagal me-mount Larasoft WebClient:", e);
             document.getElementById('app').innerHTML = `
                 <div style="padding: 20px; color: red; font-family: sans-serif;">
-      
+                    <h3>Critical System Error</h3>
+                    <p>WebClient gagal dimuat. Periksa konsol browser untuk detail error.</p>
+                </div>
+            `;
+        }
+
+        // ── Expose Standard Adianti JavaScript API ──
+        window.Adianti = window.Adianti || {};
+        window.Adianti.loadPage = (className, method = '', params = {}) => {
+            let hash = `#class=${className}`;
+            if (method) hash += `&method=${method}`;
+            if (params && typeof params === 'object') {
+                const q = new URLSearchParams(params).toString();
+                if (q) hash += `&${q}`;
+            }
+            window.location.hash = hash;
+        };
+        window.Adianti.openPage = window.Adianti.loadPage;
+        window.Adianti.currentClass = () => {
+            const raw = window.location.hash.slice(1) || window.location.search.slice(1);
+            const p = new URLSearchParams(raw);
+            return p.get('class') || '';
+        };
+    });
+})();

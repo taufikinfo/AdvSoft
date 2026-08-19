@@ -265,113 +265,106 @@
     color: #64748b;
 }
 
-/* ── NavBar Enhancements ─────────────────────────── */
-.ls-nav-app {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: 6px;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-}
-.ls-nav-app:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-}
-.ls-nav-app.active {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.18);
-    font-weight: 600;
-}
-
-/* ── Sub Menu Bar (Level 2-3) ────────────────────── */
-.ls-submenu-bar {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 0 16px;
-    background: #fff;
-    border-bottom: 1px solid var(--ls-border, #e5e7eb);
-    height: 38px;
-    font-size: 13px;
-}
-.ls-submenu-item {
+/* ── NavBar Enhancements (Odoo Enterprise Single Bar) ─ */
+.ls-nav-item {
     position: relative;
-}
-.ls-submenu-label {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 8px 12px;
-    color: var(--ls-text-muted, #6b7280);
+}
+.ls-nav-link {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
     font-weight: 500;
-    border-radius: 5px;
-    transition: all 0.12s ease;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
     user-select: none;
 }
-.ls-submenu-label:hover {
-    color: var(--ls-text, #1f2937);
-    background: var(--ls-bg-hover, #f3f4f6);
+.ls-nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.14);
 }
-.ls-submenu-item.active > .ls-submenu-label,
-.ls-submenu-label:active {
-    color: var(--ls-primary, #7C3AED);
+.ls-nav-item.active > .ls-nav-link,
+.ls-nav-link.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.22);
     font-weight: 600;
 }
-.ls-submenu-label svg {
-    width: 14px;
-    height: 14px;
-    opacity: 0.7;
-}
-.ls-submenu-caret {
+.ls-nav-caret {
     font-size: 10px;
-    opacity: 0.5;
+    opacity: 0.7;
     margin-left: 2px;
+    transition: transform 0.15s ease;
+}
+.ls-nav-item.open .ls-nav-caret {
+    transform: rotate(180deg);
 }
 
-/* Dropdown (Level 3) */
-.ls-submenu-dropdown {
+/* Dropdowns in Top Navbar */
+.ls-nav-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 6px);
     left: 0;
-    min-width: 180px;
-    background: #fff;
-    border: 1px solid var(--ls-border, #e5e7eb);
+    min-width: 200px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    z-index: 200;
-    padding: 4px;
-    animation: ls-dropdown-in 0.15s ease;
+    box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 500;
+    padding: 6px;
+    animation: ls-nav-dropdown-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes ls-dropdown-in {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes ls-nav-dropdown-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.ls-submenu-dropdown-item {
+.ls-nav-dropdown-item {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
     font-size: 13px;
-    color: var(--ls-text, #374151);
+    font-weight: 500;
+    color: #334155;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.1s ease;
+    transition: all 0.12s ease;
 }
-.ls-submenu-dropdown-item:hover {
-    background: var(--ls-bg-hover, #f3f4f6);
-}
-.ls-submenu-dropdown-item.active {
-    color: var(--ls-primary, #7C3AED);
+.ls-nav-dropdown-item:hover {
+    background: rgba(113, 75, 103, 0.08);
+    color: #714B67;
     font-weight: 600;
-    background: rgba(124, 58, 237, 0.06);
 }
-.ls-submenu-dropdown-item svg {
-    width: 14px;
-    height: 14px;
-    opacity: 0.6;
+.ls-nav-dropdown-item.active {
+    background: rgba(113, 75, 103, 0.12);
+    color: #714B67;
+    font-weight: 600;
+}
+
+/* Dark mode overrides for navbar dropdowns */
+html[data-theme="dark"] .ls-nav-dropdown {
+    background: #1e1628;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+html[data-theme="dark"] .ls-nav-dropdown-item {
+    color: #cbd5e1;
+}
+html[data-theme="dark"] .ls-nav-dropdown-item:hover {
+    background: rgba(168, 85, 247, 0.15);
+    color: #f1f5f9;
+}
+html[data-theme="dark"] .ls-nav-dropdown-item.active {
+    background: rgba(168, 85, 247, 0.22);
+    color: #ffffff;
 }
 
 /* ── Action Manager ──────────────────────────────── */
