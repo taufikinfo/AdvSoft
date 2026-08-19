@@ -1,0 +1,391 @@
+/* ══════════════════════════════════════════════════════════
+   Larasoft Menu System CSS — Odoo-style navigation
+   ══════════════════════════════════════════════════════════ */
+
+/* ── AppSwitcher (Home screen) ────────────────────── */
+.ls-app-switcher {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 60px;
+    min-height: calc(100vh - var(--ls-navbar-height, 46px));
+    background: radial-gradient(at 15% 15%, rgba(238, 218, 255, 0.8) 0px, transparent 50%),
+                radial-gradient(at 85% 20%, rgba(220, 245, 255, 0.8) 0px, transparent 50%),
+                radial-gradient(at 50% 85%, rgba(255, 225, 238, 0.7) 0px, transparent 50%),
+                linear-gradient(135deg, #f8f6fc 0%, #f1edf8 100%);
+    background-color: #f8f6fc;
+    box-sizing: border-box;
+    transition: background 0.3s ease;
+}
+
+/* Search bar on App Switcher */
+.ls-app-search-wrap {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto 36px;
+    display: flex;
+    justify-content: center;
+    animation: lsAppEntrance 0.3s ease-out;
+}
+.ls-app-search-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px -2px rgba(113, 75, 103, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    border-radius: 9999px;
+    padding: 10px 18px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ls-app-search-box:focus-within {
+    background: #ffffff;
+    border-color: rgba(147, 51, 234, 0.5);
+    box-shadow: 0 10px 30px -4px rgba(147, 51, 234, 0.2), 0 0 0 3px rgba(147, 51, 234, 0.12);
+    transform: translateY(-2px);
+}
+.ls-app-search-icon {
+    color: #8b5cf6;
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+}
+.ls-app-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1e293b;
+    padding: 2px 0;
+}
+.ls-app-search-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+.ls-app-search-kbd {
+    background: rgba(0, 0, 0, 0.05);
+    color: #64748b;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.ls-app-search-clear {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    transition: all 0.15s;
+}
+.ls-app-search-clear:hover {
+    color: #1e293b;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/* App Grid */
+.ls-app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 120px));
+    gap: 36px 28px;
+    justify-content: center;
+    max-width: 900px;
+    width: 100%;
+}
+.ls-app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: transparent;
+    animation: lsAppEntrance 0.4s ease-out backwards;
+}
+.ls-app-card:hover {
+    transform: translateY(-8px) scale(1.06);
+}
+.ls-app-card:active {
+    transform: translateY(-2px) scale(0.96);
+}
+.ls-app-card-icon {
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ls-app-card-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.25s ease;
+}
+.ls-app-card:hover .ls-app-card-icon svg {
+    transform: scale(1.1);
+}
+.ls-app-icon-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 22px 22px 0 0;
+    pointer-events: none;
+}
+.ls-app-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    transition: color 0.2s ease;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+.ls-app-card:hover .ls-app-card-name {
+    color: #0f172a;
+}
+
+@keyframes lsAppEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Deep Menu Search Results */
+.ls-app-menu-results {
+    width: 100%;
+    max-width: 640px;
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: lsAppEntrance 0.25s ease-out;
+}
+.ls-app-menu-results-header {
+    padding: 12px 18px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.02);
+}
+.ls-app-menu-results-list {
+    max-height: 340px;
+    overflow-y: auto;
+}
+.ls-app-menu-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 18px;
+    gap: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+.ls-app-menu-result-item:last-child {
+    border-bottom: none;
+}
+.ls-app-menu-result-item:hover {
+    background: rgba(147, 51, 234, 0.08);
+}
+.ls-app-menu-result-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(147, 51, 234, 0.1);
+    color: #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ls-app-menu-result-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+.ls-app-menu-result-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+.ls-app-menu-result-path {
+    font-size: 12px;
+    color: #64748b;
+}
+.ls-app-menu-result-arrow {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* Empty search state */
+.ls-app-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+.ls-app-empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+.ls-app-empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 4px;
+}
+.ls-app-empty-sub {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* ── NavBar Enhancements ─────────────────────────── */
+.ls-nav-app {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+.ls-nav-app:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+.ls-nav-app.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.18);
+    font-weight: 600;
+}
+
+/* ── Sub Menu Bar (Level 2-3) ────────────────────── */
+.ls-submenu-bar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--ls-border, #e5e7eb);
+    height: 38px;
+    font-size: 13px;
+}
+.ls-submenu-item {
+    position: relative;
+}
+.ls-submenu-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    color: var(--ls-text-muted, #6b7280);
+    font-weight: 500;
+    border-radius: 5px;
+    transition: all 0.12s ease;
+    user-select: none;
+}
+.ls-submenu-label:hover {
+    color: var(--ls-text, #1f2937);
+    background: var(--ls-bg-hover, #f3f4f6);
+}
+.ls-submenu-item.active > .ls-submenu-label,
+.ls-submenu-label:active {
+    color: var(--ls-primary, #7C3AED);
+    font-weight: 600;
+}
+.ls-submenu-label svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+}
+.ls-submenu-caret {
+    font-size: 10px;
+    opacity: 0.5;
+    margin-left: 2px;
+}
+
+/* Dropdown (Level 3) */
+.ls-submenu-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid var(--ls-border, #e5e7eb);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    z-index: 200;
+    padding: 4px;
+    animation: ls-dropdown-in 0.15s ease;
+}
+@keyframes ls-dropdown-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.ls-submenu-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--ls-text, #374151);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+}
+.ls-submenu-dropdown-item:hover {
+    background: var(--ls-bg-hover, #f3f4f6);
+}
+.ls-submenu-dropdown-item.active {
+    color: var(--ls-primary, #7C3AED);
+    font-weight: 600;
+    background: rgba(124, 58, 237, 0.06);
+}
+.ls-submenu-dropdown-item svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+}
+
+/* ── Action Manager ──────────────────────────────── */
+.ls-action-manager {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* ── WebClient layout ────────────────────────────── */
+.ls-webclient {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Inter', -apple-system, sans-serif;
+}

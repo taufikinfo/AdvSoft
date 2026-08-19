@@ -1,0 +1,9 @@
+{
+    "name": "Showcase",
+    "version": "1.0.0",
+    "category": "Hidden",
+    "depends": ["base"],
+    "data": [],
+    "installable": true,
+    "auto_install": false
+}

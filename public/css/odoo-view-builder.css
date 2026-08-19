@@ -1,0 +1,958 @@
+/* ══════════════════════════════════════════════════════════════
+   View Builder — Odoo Studio-style view configuration UI
+   ══════════════════════════════════════════════════════════════ */
+
+.ls-view-builder {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 92px);
+    background: #f8f9fc;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Tab Bar ──────────────────────────────────────────── */
+.ls-vb-tabs {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0 24px;
+    flex-shrink: 0;
+}
+.ls-vb-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.ls-vb-tab:hover {
+    color: #4f46e5;
+    background: #f5f3ff;
+}
+.ls-vb-tab.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+    font-weight: 600;
+}
+.ls-vb-tab svg { opacity: 0.7; }
+.ls-vb-tab.active svg { opacity: 1; }
+
+/* ── Model Selector (top bar) ─────────────────────────── */
+.ls-vb-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+.ls-vb-toolbar label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+.ls-vb-toolbar select {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff;
+    min-width: 260px;
+}
+.ls-vb-toolbar select:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+.ls-vb-toolbar-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* ── Builder Layout (3 columns) ──────────────────────── */
+.ls-vb-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Left Panel: Field Palette */
+.ls-vb-palette {
+    width: 240px;
+    border-right: 1px solid #e5e7eb;
+    background: #fff;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.ls-vb-palette-section {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+.ls-vb-palette-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+    margin-bottom: 10px;
+}
+.ls-vb-palette-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    cursor: grab;
+    transition: all 0.15s;
+    background: #fafbfc;
+    user-select: none;
+}
+.ls-vb-palette-item:hover {
+    background: #f5f3ff;
+    border-color: #c7d2fe;
+    color: #4f46e5;
+}
+.ls-vb-palette-item:active {
+    cursor: grabbing;
+    transform: scale(0.97);
+}
+.ls-vb-palette-item svg { opacity: 0.5; flex-shrink: 0; }
+.ls-vb-palette-item:hover svg { opacity: 1; }
+.ls-vb-palette-item .ls-vb-fi-type {
+    font-size: 10px;
+    color: #9ca3af;
+    margin-left: auto;
+    background: #f3f4f6;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* ── Center: Preview + XML ───────────────────────────── */
+.ls-vb-center {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+/* Action bar above preview */
+.ls-vb-action-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+/* Preview Panel */
+.ls-vb-preview {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.ls-vb-preview-header {
+    padding: 10px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* List preview table */
+.ls-vb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.ls-vb-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #6b7280;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+.ls-vb-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+}
+.ls-vb-table tr:hover td {
+    background: #f5f3ff;
+}
+
+/* Drag handle in table */
+.ls-vb-table .ls-vb-drag-col {
+    width: 28px;
+    text-align: center;
+    color: #d1d5db;
+    cursor: grab;
+}
+.ls-vb-table tr:hover .ls-vb-drag-col { color: #9ca3af; }
+
+/* Column config row (selected) */
+.ls-vb-table tr.selected td {
+    background: #ede9fe;
+}
+
+/* Sample data styling */
+.ls-vb-sample-m2o { color: #4f46e5; }
+.ls-vb-sample-monetary { font-variant-numeric: tabular-nums; }
+.ls-vb-sample-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #e0e7ff;
+    color: #4338ca;
+}
+.ls-vb-sample-tags {
+    display: flex;
+    gap: 4px;
+}
+.ls-vb-sample-tag {
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    background: #dbeafe;
+    color: #1e40af;
+}
+.ls-vb-sample-check {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1.5px solid #6b7280;
+    display: inline-block;
+}
+.ls-vb-sample-check.checked {
+    background: #4f46e5;
+    border-color: #4f46e5;
+}
+
+/* XML Code Block */
+.ls-vb-xml {
+    background: #1e1e2e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.ls-vb-xml-header {
+    padding: 8px 16px;
+    background: #2d2d44;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #a5b4fc;
+    font-weight: 500;
+}
+.ls-vb-xml pre {
+    margin: 0;
+    padding: 16px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+.ls-vb-xml .xml-tag { color: #7dd3fc; }
+.ls-vb-xml .xml-attr { color: #c4b5fd; }
+.ls-vb-xml .xml-value { color: #86efac; }
+
+/* ── Right Panel: Properties ─────────────────────────── */
+.ls-vb-props {
+    width: 280px;
+    border-left: 1px solid #e5e7eb;
+    background: #fff;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.ls-vb-props-section {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+.ls-vb-props-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+.ls-vb-prop {
+    margin-bottom: 10px;
+}
+.ls-vb-prop label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+.ls-vb-prop input,
+.ls-vb-prop select,
+.ls-vb-prop textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12.5px;
+    background: #fff;
+    box-sizing: border-box;
+}
+.ls-vb-prop input:focus,
+.ls-vb-prop select:focus,
+.ls-vb-prop textarea:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+.ls-vb-prop textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+.ls-vb-prop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ls-vb-prop-row label {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+/* Attribute Cards (reference) */
+.ls-vb-attr-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+}
+.ls-vb-attr-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fafbfc;
+}
+.ls-vb-attr-card h5 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #7c3aed;
+    margin: 0 0 4px;
+}
+.ls-vb-attr-card .ls-vb-attr-type {
+    display: inline-block;
+    padding: 1px 6px;
+    background: #f3f4f6;
+    border-radius: 3px;
+    font-size: 10px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+.ls-vb-attr-card p {
+    font-size: 11.5px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Form Builder Specific ───────────────────────────── */
+.ls-vb-form-preview {
+    padding: 20px;
+}
+.ls-vb-form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    background: #fafbfc;
+    min-height: 60px;
+}
+.ls-vb-form-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.ls-vb-form-drop-hint {
+    font-size: 11px;
+    color: #a5b4fc;
+    text-align: center;
+    padding: 8px;
+    margin-top: auto;
+    border: 1px dashed transparent;
+}
+.ls-vb-form-col.drag-over .ls-vb-form-drop-hint {
+    border-color: #6366f1;
+    border-radius: 6px;
+}
+.ls-vb-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.ls-vb-form-field:hover {
+    border-color: #c7d2fe;
+    background: #f5f3ff;
+}
+.ls-vb-form-field.selected {
+    border-color: #6366f1;
+    background: #ede9fe;
+}
+/* .ls-vb-form-field-label styles are at the bottom of this file */
+.ls-vb-form-field-value {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 13px;
+    background: #fff;
+    color: #374151;
+}
+.ls-vb-form-tabs {
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.ls-vb-form-tab-bar {
+    display: flex;
+    background: #f3f4f6;
+    border-bottom: 1px solid #d1d5db;
+}
+.ls-vb-form-tab-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    color: #6b7280;
+}
+.ls-vb-form-tab-btn.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+    background: #fff;
+}
+.ls-vb-form-tab-content {
+    padding: 16px;
+    min-height: 60px;
+}
+
+/* ── Kanban Builder Specific ──────────────────────────── */
+.ls-vb-kanban-preview {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    overflow-x: auto;
+}
+.ls-vb-kanban-col {
+    min-width: 240px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+.ls-vb-kanban-col-header {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ls-vb-kanban-col-count {
+    background: #e5e7eb;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+.ls-vb-kanban-cards {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ls-vb-kanban-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.ls-vb-kanban-card:hover {
+    border-color: #c7d2fe;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.ls-vb-kanban-card-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+.ls-vb-kanban-card-field {
+    font-size: 11.5px;
+    color: #6b7280;
+    margin-bottom: 3px;
+}
+
+/* ── Calendar Builder Specific ────────────────────────── */
+.ls-vb-calendar-preview {
+    padding: 20px;
+}
+.ls-vb-mini-cal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e5e7eb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.ls-vb-mini-cal-head {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f9fafb;
+}
+.ls-vb-mini-cal-day {
+    padding: 6px 4px;
+    text-align: center;
+    font-size: 12px;
+    color: #374151;
+    background: #fff;
+    min-height: 50px;
+}
+.ls-vb-mini-cal-day.today {
+    background: #ede9fe;
+    font-weight: 700;
+    color: #4f46e5;
+}
+.ls-vb-mini-cal-day.has-event::after {
+    content: '';
+    display: block;
+    width: calc(100% - 8px);
+    height: 4px;
+    background: #6366f1;
+    border-radius: 2px;
+    margin: 2px auto 0;
+}
+.ls-vb-mini-cal-day.other-month {
+    color: #d1d5db;
+    background: #fafbfc;
+}
+
+/* ── Pivot Builder Specific ───────────────────────────── */
+.ls-vb-pivot-preview {
+    padding: 20px;
+}
+.ls-vb-pivot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+}
+.ls-vb-pivot-table th, .ls-vb-pivot-table td {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+}
+.ls-vb-pivot-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+    color: #374151;
+    font-size: 11.5px;
+}
+.ls-vb-pivot-table td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: #374151;
+}
+.ls-vb-pivot-table td.label { text-align: left; font-weight: 500; }
+.ls-vb-pivot-table tr.total td {
+    background: #f5f3ff;
+    font-weight: 600;
+}
+
+.ls-vb-spreadsheet-preview {
+    padding: 20px;
+    overflow-x: auto;
+}
+.ls-vb-spreadsheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+.ls-vb-spreadsheet-table th, .ls-vb-spreadsheet-table td {
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
+}
+.ls-vb-spreadsheet-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+    color: #374151;
+    font-size: 11.5px;
+    position: sticky;
+    top: 0;
+}
+.ls-vb-sp-rownum {
+    width: 36px;
+    text-align: center;
+    background: #f9fafb;
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 500;
+}
+.ls-vb-sp-cell {
+    min-width: 80px;
+    color: #6b7280;
+}
+.ls-vb-sp-total td {
+    background: #f5f3ff;
+    font-weight: 600;
+    color: #4c1d95;
+}
+
+/* Drop zone styling is now in .ls-vb-field-drop-zone and .ls-vb-field-drop-tail */
+.ls-vb-drop-zone {
+    border: 2px dashed #c7d2fe;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    color: #a5b4fc;
+    font-size: 12px;
+    background: #faf5ff;
+    transition: all 0.2s;
+}
+.ls-vb-drop-zone.drag-over {
+    border-color: #6366f1;
+    background: #ede9fe;
+    color: #4f46e5;
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.ls-vb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #374151;
+}
+.ls-vb-btn:hover { background: #f3f4f6; }
+.ls-vb-btn-primary {
+    background: #4f46e5;
+    color: #fff;
+    border-color: #4338ca;
+}
+.ls-vb-btn-primary:hover { background: #4338ca; }
+.ls-vb-btn-success {
+    background: #059669;
+    color: #fff;
+    border-color: #047857;
+}
+.ls-vb-btn-success:hover { background: #047857; }
+.ls-vb-btn-danger {
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+.ls-vb-btn-danger:hover {
+    background: #fef2f2;
+}
+.ls-vb-btn-sm { padding: 4px 10px; font-size: 11.5px; }
+.ls-vb-btn-ghost {
+    background: none;
+    border: none;
+    color: #6b7280;
+    padding: 6px 10px;
+}
+.ls-vb-btn-ghost:hover { color: #4f46e5; background: #f5f3ff; }
+
+/* ── Field list in palette (when model is loaded) ─────── */
+.ls-vb-field-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* ── Toggle Switch ────────────────────────────────────── */
+.ls-vb-toggle {
+    position: relative;
+    display: inline-flex;
+    width: 36px;
+    height: 20px;
+    flex: 0 0 36px !important;
+    box-sizing: border-box;
+}
+.ls-vb-toggle input { display: none; }
+.ls-vb-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ls-vb-toggle-slider::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.ls-vb-toggle input:checked + .ls-vb-toggle-slider {
+    background: #4f46e5;
+}
+.ls-vb-toggle input:checked + .ls-vb-toggle-slider::before {
+    transform: translate(16px, -50%);
+}
+
+/* ── Loading / Empty State ────────────────────────────── */
+.ls-vb-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+}
+.ls-vb-empty svg { opacity: 0.3; margin-bottom: 16px; }
+.ls-vb-empty p {
+    font-size: 14px;
+    margin: 0 0 12px;
+}
+
+/* ── Toast notification ───────────────────────────────── */
+.ls-vb-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: #1e1e2e;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: ls-vb-toast-in 0.3s ease;
+}
+.ls-vb-toast.success { background: #047857; }
+.ls-vb-toast.error { background: #b91c1c; }
+
+@keyframes ls-vb-toast-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Selected field highlight in table ───────────────── */
+.ls-vb-col-selected {
+    outline: 2px solid #6366f1;
+    outline-offset: -2px;
+    background: #ede9fe !important;
+}
+
+/* ── Field Search ────────────────────────────────────── */
+.ls-vb-field-search {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 8px; margin-bottom: 8px;
+    border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb;
+}
+.ls-vb-field-search svg { opacity: 0.4; flex-shrink: 0; }
+.ls-vb-field-search-input {
+    border: none; background: transparent; outline: none;
+    font-size: 12px; width: 100%; color: #374151;
+}
+.ls-vb-field-count {
+    font-size: 10px; color: #9ca3af; text-align: right; margin-top: 6px;
+}
+
+/* ── Improved Drop Zones ─────────────────────────────── */
+.ls-vb-field-drop-zone {
+    height: 4px; margin: -2px 0; position: relative; z-index: 5;
+    border-radius: 2px; transition: all 0.2s ease;
+}
+.ls-vb-field-drop-zone.drag-over {
+    height: 8px; margin: 2px 0;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+.ls-vb-field-drop-tail {
+    min-height: 28px; margin-top: 4px; border: 2px dashed #e5e7eb;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; color: #c7d2fe; font-size: 11px;
+    transition: all 0.2s ease; cursor: default;
+}
+.ls-vb-field-drop-tail.drag-over {
+    border-color: #6366f1; background: #ede9fe; color: #4f46e5;
+}
+
+/* ── Drag State ──────────────────────────────────────── */
+.ls-vb-dragging { opacity: 0.4 !important; }
+.ls-vb-form-field[draggable] { cursor: grab; }
+.ls-vb-form-field[draggable]:active { cursor: grabbing; }
+
+/* ── Group Toolbar ───────────────────────────────────── */
+.ls-vb-form-group-wrapper { position: relative; margin-bottom: 16px; }
+.ls-vb-form-group-toolbar {
+    position: absolute; top: -10px; right: 10px; z-index: 10;
+    background: #fff; border: 1px solid #d1d5db; border-radius: 6px;
+    padding: 2px 4px; display: flex; align-items: center; gap: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.ls-vb-group-label-input {
+    border: 1px solid #e5e7eb; border-radius: 4px;
+    padding: 2px 6px; font-size: 11px; width: 80px;
+    background: #f9fafb; outline: none;
+}
+.ls-vb-group-label-input:focus { border-color: #6366f1; }
+.ls-vb-col-count-select {
+    border: 1px solid #e5e7eb; border-radius: 4px;
+    padding: 2px 4px; font-size: 10px; background: #f9fafb;
+    cursor: pointer; outline: none;
+}
+.ls-vb-toolbar-icon { padding: 2px; cursor: pointer; }
+
+/* ── Form Field Label with Icon ──────────────────────── */
+.ls-vb-form-field-label {
+    display: flex; align-items: center; gap: 4px;
+}
+.ls-vb-form-field-label svg { opacity: 0.4; flex-shrink: 0; }
+
+/* ── Form Col ────────────────────────────────────────── */
+.ls-vb-form-col { min-height: 60px; }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .ls-vb-palette { width: 200px; }
+    .ls-vb-props { width: 240px; }
+}
+
+/* ── Dark Mode ───────────────────────────────────────── */
+.dark .ls-view-builder { background: #1a1a2e; }
+.dark .ls-vb-tabs { background: #1e1e32; border-color: #2d2d44; }
+.dark .ls-vb-tab { color: #9ca3af; }
+.dark .ls-vb-tab:hover { color: #a5b4fc; background: rgba(99,102,241,0.1); }
+.dark .ls-vb-tab.active { color: #a5b4fc; border-bottom-color: #6366f1; }
+.dark .ls-vb-toolbar { background: #1e1e32; border-color: #2d2d44; }
+.dark .ls-vb-toolbar label { color: #d1d5db; }
+.dark .ls-vb-toolbar select { background: #2d2d44; border-color: #3d3d54; color: #e2e8f0; }
+.dark .ls-vb-palette { background: #1e1e32; border-color: #2d2d44; }
+.dark .ls-vb-palette-section { border-color: #2d2d44; }
+.dark .ls-vb-palette-title { color: #6b7280; }
+.dark .ls-vb-palette-item { background: #252540; border-color: #3d3d54; color: #d1d5db; }
+.dark .ls-vb-palette-item:hover { background: rgba(99,102,241,0.15); border-color: #6366f1; color: #a5b4fc; }
+.dark .ls-vb-center { background: transparent; }
+.dark .ls-vb-preview { background: #1e1e32; border-color: #2d2d44; }
+.dark .ls-vb-preview-header { background: #252540; border-color: #2d2d44; color: #9ca3af; }
+.dark .ls-vb-form-group { border-color: #3d3d54; background: #252540; }
+.dark .ls-vb-form-field:hover { border-color: #4f46e5; background: rgba(99,102,241,0.1); }
+.dark .ls-vb-form-field.selected { border-color: #6366f1; background: rgba(99,102,241,0.2); }
+.dark .ls-vb-form-field-label { color: #9ca3af; }
+.dark .ls-vb-form-field-value { background: #2d2d44; border-color: #3d3d54; color: #d1d5db; }
+.dark .ls-vb-props { background: #1e1e32; border-color: #2d2d44; }
+.dark .ls-vb-props-section { border-color: #2d2d44; }
+.dark .ls-vb-prop label { color: #9ca3af; }
+.dark .ls-vb-prop input, .dark .ls-vb-prop select { background: #2d2d44; border-color: #3d3d54; color: #e2e8f0; }
+.dark .ls-vb-btn { background: #252540; border-color: #3d3d54; color: #d1d5db; }
+.dark .ls-vb-btn:hover { background: #2d2d44; }
+.dark .ls-vb-form-group-toolbar { background: #252540; border-color: #3d3d54; }
+.dark .ls-vb-group-label-input { background: #2d2d44; border-color: #3d3d54; color: #e2e8f0; }
+.dark .ls-vb-col-count-select { background: #2d2d44; border-color: #3d3d54; color: #e2e8f0; }
+.dark .ls-vb-field-drop-tail { border-color: #3d3d54; color: #4f46e5; }
+.dark .ls-vb-field-drop-tail.drag-over { border-color: #6366f1; background: rgba(99,102,241,0.15); }
+.dark .ls-vb-field-search { background: #252540; border-color: #3d3d54; }
+.dark .ls-vb-field-search-input { color: #e2e8f0; }
+.dark .ls-vb-table th { background: #252540; color: #9ca3af; border-color: #2d2d44; }
+.dark .ls-vb-table td { color: #d1d5db; border-color: #2d2d44; }
+.dark .ls-vb-table tr:hover td { background: rgba(99,102,241,0.1); }
+.dark .ls-vb-form-tab-bar { background: #252540; border-color: #3d3d54; }
+.dark .ls-vb-form-tab-btn { color: #9ca3af; }
+.dark .ls-vb-form-tab-btn.active { color: #a5b4fc; background: #1e1e32; border-bottom-color: #6366f1; }
+.dark .ls-vb-empty { color: #6b7280; }
+
+/* ── Export Code Modal ───────────────────────────────── */
+.ls-vb-modal-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+}
+.ls-vb-modal {
+    background: #fff; border-radius: 12px; width: 680px; max-width: 90vw;
+    max-height: 80vh; display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.ls-vb-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #e5e7eb;
+    font-weight: 600; font-size: 14px;
+}
+.ls-vb-modal-body {
+    flex: 1; overflow: auto; padding: 16px 20px;
+}
+.ls-vb-modal-footer {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 12px 20px; border-top: 1px solid #e5e7eb;
+}
+.ls-vb-code-block {
+    background: #1e1e2e; color: #cdd6f4; border-radius: 8px;
+    padding: 16px; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px; line-height: 1.6; overflow-x: auto;
+    white-space: pre; tab-size: 4;
+}
+
+/* Dark mode modal */
+.dark .ls-vb-modal { background: #1e1e32; }
+.dark .ls-vb-modal-header { border-color: #2d2d44; color: #e2e8f0; }
+.dark .ls-vb-modal-footer { border-color: #2d2d44; }
+.dark .ls-vb-code-block { background: #11111b; color: #cdd6f4; }

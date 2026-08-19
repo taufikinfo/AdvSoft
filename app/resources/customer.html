@@ -1,0 +1,55 @@
+<!--[main]-->
+<style>
+.field_label {
+    text-align: right;
+    padding-right: 20px;
+}
+</style>
+<div class="card panel">
+	<div class="card-header panel-heading">
+		<h3 class="panel-title">Customer data</h3>
+	</div>
+	<div class="card-body panel-body">
+        <table style="width: 100%">
+            <tr>
+                <td class="field_label" width="50%"><b>Name</b></td>
+                <td width="50%"><span class="formfield">{$name}</span></td>
+            </tr>
+            <tr>
+                <td class="field_label"><b>Address</b></td>
+                <td><span class="formfield">{$address}</span></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <a generator="adianti" href="index.php?class=CustomerFormView&method=onEdit&id={$code}">Click here to edit the customer</a>
+                </td>
+            </tr>
+            <!--[contacts]-->
+            <tr>
+                <td class="sectiontitle" colspan=2>
+                    <div class="card panel">
+                    	<div class="card-header panel-heading">
+                    		<h5 class="panel-title">Contacts</h5>
+                    	</div>
+                    	<div class="card-body panel-body">
+                            <table style="width: 100%">
+                                <thead>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                </thead>
+                                <!--[contacts-detail]-->
+                                <tr>
+                                    <td>{$type}</td>
+                                    <td><i>{$value}</i></td>
+                                </tr>
+                                <!--[/contacts-detail]-->
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <!--[/contacts]-->
+		</table>
+	</div>
+</div>
+<!--[/main]-->

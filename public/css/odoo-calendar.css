@@ -1,0 +1,615 @@
+/* ══════════════════════════════════════════════════════════════════
+   Calendar View Styles — Odoo-style calendar
+   Features: month/week(day) views, time grid, drag-drop, tooltips,
+   selection, sidebar legend, quick create modal
+   ══════════════════════════════════════════════════════════════════ */
+
+.ls-calendar-view {
+    padding: 0 16px 16px;
+    height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+}
+
+.ls-calendar-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 12px;
+}
+
+/* ── Sidebar Legend ──────────────────────────────── */
+.ls-calendar-sidebar {
+    min-width: 140px;
+    max-width: 160px;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    align-self: flex-start;
+}
+
+.ls-calendar-legend-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.ls-calendar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.ls-calendar-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ls-calendar-legend-label {
+    font-size: 12px;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Toolbar ────────────────────────────────────── */
+.ls-calendar-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ls-calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ls-calendar-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-left: 8px;
+}
+
+.ls-calendar-modes {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.ls-calendar-modes .ls-btn.active {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+/* ── Month Grid ─────────────────────────────────── */
+.ls-calendar-month {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.ls-calendar-weekday {
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ls-calendar-cell {
+    min-height: 90px;
+    padding: 4px;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    transition: background 0.15s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.ls-calendar-cell:hover {
+    background: #f8fafc;
+}
+
+.ls-calendar-cell.other-month {
+    background: #fafafa;
+}
+
+.ls-calendar-cell.other-month .ls-calendar-day-num {
+    color: #cbd5e1;
+}
+
+.ls-calendar-cell.today {
+    background: #eef2ff;
+}
+
+.ls-calendar-cell.today .ls-calendar-day-num {
+    background: #6366f1;
+    color: #fff;
+}
+
+.ls-calendar-day-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 2px;
+}
+
+.ls-calendar-events {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.ls-calendar-event {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ls-calendar-event:hover {
+    filter: brightness(0.95);
+    transform: scale(1.02);
+}
+
+.ls-calendar-event.dragging {
+    opacity: 0.5;
+}
+
+.ls-cal-ev-multiday {
+    font-weight: 600;
+}
+
+.ls-calendar-more {
+    font-size: 10px;
+    color: #6366f1;
+    padding: 1px 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* ── Week/Day Time Grid ─────────────────────────── */
+.ls-calendar-week-timegrid,
+.ls-calendar-day-timegrid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ls-cal-timegrid-header {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.ls-cal-timegrid-header-cell {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    border-left: 1px solid #f1f5f9;
+}
+
+.ls-cal-timegrid-header-cell.today {
+    background: #eef2ff;
+}
+
+.ls-cal-tg-dayname {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ls-cal-tg-daynum {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.ls-cal-tg-daynum.today {
+    background: #6366f1;
+    color: #fff;
+}
+
+.ls-cal-timegrid-gutter {
+    width: 60px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.ls-cal-allday-label {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ls-cal-timegrid-allday {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    min-height: 32px;
+}
+
+.ls-cal-timegrid-allday-cell {
+    flex: 1;
+    padding: 2px 4px;
+    border-left: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ls-cal-ev-allday {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.ls-cal-timegrid-scroll {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+.ls-cal-timegrid-body {
+    position: relative;
+    min-height: 1440px; /* 24 hours * 60px */
+}
+
+.ls-cal-timegrid-row {
+    display: flex;
+    height: 60px;
+}
+
+.ls-cal-time-label {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+    padding-top: 2px;
+    position: relative;
+    top: -6px;
+}
+
+.ls-cal-timegrid-cell {
+    flex: 1;
+    border-left: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+    min-height: 60px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.ls-cal-timegrid-cell:hover {
+    background: #f8fafc;
+}
+
+.ls-cal-timegrid-cell.today {
+    background: #fafafe;
+}
+
+.ls-cal-timegrid-cell.current-hour {
+    background: #eef2ff;
+}
+
+.ls-cal-dayview-cell {
+    min-height: 60px;
+}
+
+.ls-cal-dayview-body {
+    min-height: 1440px;
+}
+
+/* ── Time Grid Events ───────────────────────────── */
+.ls-cal-timegrid-event {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+    transition: filter 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ls-cal-timegrid-event:hover {
+    filter: brightness(0.9);
+    z-index: 2;
+}
+
+.ls-cal-timegrid-event.dragging {
+    opacity: 0.5;
+}
+
+.ls-cal-tg-ev-time {
+    font-size: 10px;
+    opacity: 0.85;
+    display: block;
+}
+
+.ls-cal-tg-ev-title {
+    font-weight: 600;
+    font-size: 12px;
+    display: block;
+}
+
+.ls-cal-tg-ev-detail {
+    font-size: 10px;
+    opacity: 0.75;
+    display: block;
+}
+
+/* ── Current Time Indicator ─────────────────────── */
+.ls-cal-timegrid-now {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #ef4444;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.ls-cal-now-dot {
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
+.ls-cal-now-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #ef4444;
+}
+
+/* ── Day View Header ────────────────────────────── */
+.ls-cal-dayview-header {
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.ls-cal-dayview-allday {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 8px;
+}
+
+.ls-cal-dayview-allday-events {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+/* ── Tooltip ─────────────────────────────────────── */
+.ls-calendar-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: #1e293b;
+    color: #f1f5f9;
+    border-radius: 10px;
+    padding: 12px;
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    pointer-events: auto;
+    animation: ls-cal-tooltip-in 0.15s ease-out;
+}
+
+@keyframes ls-cal-tooltip-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ls-cal-tooltip-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.ls-cal-tooltip-time {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+.ls-cal-tooltip-field {
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.ls-cal-tooltip-label {
+    color: #94a3b8;
+}
+
+/* ── Quick Create Modal ─────────────────────────── */
+.ls-calendar-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: ls-cal-fade-in 0.15s ease-out;
+}
+
+@keyframes ls-cal-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ls-calendar-modal {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    width: 420px;
+    max-width: 90vw;
+    animation: ls-cal-modal-in 0.2s ease-out;
+}
+
+@keyframes ls-cal-modal-in {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ls-cal-modal-header {
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ls-cal-modal-body {
+    padding: 16px 20px;
+}
+
+.ls-cal-modal-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.ls-cal-form-group {
+    margin-bottom: 12px;
+}
+
+.ls-cal-form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.ls-cal-form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.ls-cal-form-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.ls-cal-form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.ls-cal-form-row .ls-cal-form-group {
+    flex: 1;
+}
+
+.ls-cal-form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ── Dark Mode ──────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+    .ls-calendar-view { background: #1e1e2e; }
+    .ls-calendar-month { border-color: #3a3a50; }
+    .ls-calendar-weekday { background: #252536; color: #94a3b8; border-bottom-color: #3a3a50; }
+    .ls-calendar-cell { background: #2d2d42; border-color: #3a3a50; }
+    .ls-calendar-cell:hover { background: #33334a; }
+    .ls-calendar-cell.other-month { background: #252536; }
+    .ls-calendar-cell.today { background: #2a2a4a; }
+    .ls-calendar-day-num { color: #e2e8f0; }
+    .ls-calendar-title { color: #f1f5f9; }
+    .ls-calendar-week-timegrid,
+    .ls-calendar-day-timegrid { border-color: #3a3a50; }
+    .ls-cal-timegrid-header { background: #252536; border-bottom-color: #3a3a50; }
+    .ls-cal-timegrid-header-cell { border-left-color: #3a3a50; }
+    .ls-cal-tg-dayname { color: #94a3b8; }
+    .ls-cal-tg-daynum { color: #e2e8f0; }
+    .ls-cal-timegrid-cell { border-color: #3a3a50; }
+    .ls-cal-timegrid-cell:hover { background: #33334a; }
+    .ls-calendar-sidebar { background: #252536; border-color: #3a3a50; }
+    .ls-calendar-tooltip { background: #0f172a; }
+    .ls-calendar-modal { background: #2d2d42; }
+    .ls-calendar-modal-header { color: #f1f5f9; border-bottom-color: #3a3a50; }
+    .ls-calendar-modal-footer { border-top-color: #3a3a50; }
+    .ls-cal-form-input { background: #1e1e2e; border-color: #3a3a50; color: #e2e8f0; }
+    .ls-cal-form-group label { color: #e2e8f0; }
+}

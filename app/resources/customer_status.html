@@ -1,0 +1,125 @@
+<!--[main]-->
+<style>
+.field_label {
+    text-align: right;
+    padding-right: 20px;
+    font-weight: bold;
+    width: 50%;
+}
+</style>
+
+<div class="card panel">
+	<div class="card-header panel-heading">
+		<h3 class="panel-title">Customer data</h3>
+	</div>
+	<div class="card-body panel-body">
+        <table style="width: 100%">
+            <tr>
+                <td class="field_label">ID</td>
+                <td>{$id}</td>
+            </tr>
+            <tr>
+                <td class="field_label">Name</td>
+                <td>{$name}</td>
+            </tr>
+            <tr>
+                <td class="field_label">Phone</td>
+                <td>{$phone}</td>
+            </tr>
+            <tr>
+                <td class="field_label">Address</td>
+                <td>{$address}</td>
+            </tr>
+            <tr>
+                <td class="field_label" style="width: 50%">Email</td>
+                <td>{$email}</td>
+            </tr>
+            <tr>
+                <td class="field_label" style="width: 50%">Category</td>
+                <td>{$category_name}</td>
+            </tr>
+            <tr>
+                <td class="field_label" style="width: 50%">City</td>
+                <td>{$city_name}</td>
+            </tr>
+        </table>
+        <div class="card panel">
+        	<div class="card-header panel-heading">
+        		<h3 class="panel-title">Contacts</h3>
+        	</div>
+        	<div class="card-body panel-body">
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center" colspan="2">Action</th>
+                            <th style="text-align:center">Name</th>
+                            <th style="text-align:center">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--[contact-details]-->
+                        <tr>
+                            <td style="text-align:center" width="25">
+                                <a generator="adianti" href="index.php?class=CustomerStatusView&method=delete&key={$contact_id}&static=1">
+                                    <span class="far fa-trash-alt red"></span>
+                                </a>
+                            </td>
+                            <td style="text-align:center" width="25">
+                                <a generator="adianti" href="index.php?class=ContactFormWindow&method=onEdit&key={$contact_id}">
+                                    <span class="fa fa-edit blue"></span>
+                                </a>
+                            </td>
+                            <td style="text-align:center">{$type}</td>
+                            <td style="text-align:center">{$value}</td>
+                        </tr>
+                        <!--[/contact-details]-->
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <a generator="adianti" href="index.php?class=ContactFormWindow&method=onLoad&customer_id={$id}" class="btn btn-success"> <span class="fa fa-plus-square"></span> Add </a>
+            </div>
+        </div>
+        <div class="card panel">
+        	<div class="card-header panel-heading">
+        		<h3 class="panel-title">Sales</h3>
+        	</div>
+        	<div class="card-body panel-body">
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">Date</th>
+                            <th style="text-align:left">Product</th>
+                            <th style="text-align:right">Sale Price</th>
+                            <th style="text-align:right">Amount</th>
+                            <th style="text-align:right">Discount</th>
+                            <th style="text-align:right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--[sale-details]-->
+                        <tr>
+                            <td style="text-align:center">{$date}</td>
+                            <td style="text-align:left">{$product_id} - {$product_description}</td>
+                            <td style="text-align:right">{$sale_price}</td>
+                            <td style="text-align:right">{$amount}</td>
+                            <td style="text-align:right">{$discount}</td>
+                            <td style="text-align:right">{$total}</td>
+                        </tr>
+                        <!--[/sale-details]-->
+                        <!--[sale-totals]-->
+                        <tr style="background:var(--bs-secondary-bg)">
+                            <td style="text-align:right" colspan="5"><b> Total: </b></td>
+                            <td style="text-align:right"><b> {$total} </b></td>
+                        </tr>
+                        <!--[/sale-totals]-->
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <a generator="adianti" href="index.php?class=SaleForm&method=onLoad&customer_id={$id}&customer_name={$name}" class="btn btn-success"> <span class="fa fa-plus-square"></span> Add </a>
+            </div>
+        </div>
+	</div>
+</div>
+<!--[/main]-->

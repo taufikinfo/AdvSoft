@@ -1,0 +1,9 @@
+{
+    "name": "Spreadsheet",
+    "version": "1.0.0",
+    "category": "Productivity",
+    "depends": ["base"],
+    "data": [],
+    "installable": true,
+    "auto_install": false
+}

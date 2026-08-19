@@ -1,0 +1,732 @@
+/* ══════════════════════════════════════════════════════════
+   Odoo Field Widgets CSS
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Monetary ─────────────────────────────────────── */
+.ls-monetary-widget { display:flex; align-items:center; gap:4px; }
+.ls-currency-symbol { font-weight:600; color:var(--ls-text-muted,#6b7280); font-size:14px; }
+.ls-monetary-input { text-align:right; }
+
+/* ── Percentage ───────────────────────────────────── */
+.ls-percentage-widget, .ls-progressbar-widget { display:flex; align-items:center; gap:8px; }
+.ls-pct-sign { font-size:12px; color:var(--ls-text-muted,#6b7280); }
+
+/* ── Float Time ───────────────────────────────────── */
+.ls-float-time-widget { display:flex; align-items:center; gap:8px; }
+.ls-time-display { font-size:12px; color:var(--ls-text-muted,#6b7280); font-family:monospace; background:#f3f4f6; padding:2px 8px; border-radius:4px; }
+
+/* ── Handle (drag) ────────────────────────────────── */
+.ls-handle-widget { cursor:grab; font-size:16px; color:#d1d5db; user-select:none; }
+.ls-handle-widget:hover { color:#6b7280; }
+
+/* ── Boolean Toggle ───────────────────────────────── */
+.ls-toggle-widget { position:relative; display:inline-flex; width:40px; height:22px; cursor:pointer; flex: 0 0 40px; box-sizing: border-box; }
+.ls-toggle-widget input { opacity:0; width:0; height:0; position:absolute; }
+.ls-toggle-slider { position:absolute; top:0; left:0; right:0; bottom:0; background:#d1d5db; border-radius:22px; transition:all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.ls-toggle-slider::before { content:''; position:absolute; height:16px; width:16px; left:3px; top:50%; transform:translateY(-50%); background:#fff; border-radius:50%; transition:all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.ls-toggle-widget input:checked + .ls-toggle-slider { background:var(--ls-primary,#7c3aed); }
+.ls-toggle-widget input:checked + .ls-toggle-slider::before { transform:translate(18px, -50%); }
+
+/* ── Boolean Favorite ─────────────────────────────── */
+.ls-favorite-widget { cursor:pointer; font-size:20px; color:#d1d5db; transition:0.15s; user-select:none; }
+.ls-favorite-widget.active { color:#f59e0b; }
+.ls-favorite-widget:hover { transform:scale(1.2); }
+
+/* ── Priority Stars ───────────────────────────────── */
+.ls-priority-widget { display:flex; gap:2px; }
+.ls-priority-star { cursor:pointer; font-size:18px; color:#d1d5db; transition:0.1s; user-select:none; }
+.ls-priority-star.filled { color:#f59e0b; }
+.ls-priority-star:hover { transform:scale(1.15); }
+
+/* ── Radio ────────────────────────────────────────── */
+.ls-radio-widget { display:flex; flex-wrap:wrap; gap:12px; }
+.ls-radio-item { display:flex; align-items:center; gap:5px; font-size:13px; color:var(--ls-text,#374151); cursor:pointer; }
+.ls-radio-item input { accent-color:var(--ls-primary,#7c3aed); }
+
+/* ── Badge ────────────────────────────────────────── */
+.ls-badge-widget { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; white-space:nowrap; }
+
+/* ── State Selection ──────────────────────────────── */
+.ls-state-sel-widget { font-size:13px; }
+
+/* ── Remaining Days ───────────────────────────────── */
+.ls-remaining-days-widget { display:flex; align-items:center; gap:8px; }
+.ls-remaining-days { font-size:12px; font-weight:600; padding:2px 8px; border-radius:10px; white-space:nowrap; }
+.ls-rd-overdue { color:#ef4444; background:#fef2f2; }
+.ls-rd-soon { color:#f59e0b; background:#fffbeb; }
+.ls-rd-ok { color:#10b981; background:#ecfdf5; }
+.ls-rd-none { color:#9ca3af; }
+
+/* ── Clipboard ────────────────────────────────────── */
+.ls-clipboard-widget, .ls-copy-clipboard { display:inline-flex; align-items:center; gap:4px; }
+.ls-copy-clipboard { font-family: monospace; font-size: 13px; color: #4b5563; background: #f9fafb; padding: 2px 6px; border-radius: 4px; border: 1px solid #e5e7eb; }
+.ls-copy-btn { background:none; border:1px solid #e5e7eb; border-radius:4px; padding:4px 8px; cursor:pointer; font-size:14px; transition: 0.15s; }
+.ls-copy-btn:hover { background:#f3f4f6; color: var(--ls-primary, #7c3aed); border-color: #d1d5db; }
+
+/* ── Many2one Widget ──────────────────────────────── */
+.ls-m2o-widget { position: relative; display: flex; align-items: center; width: 100%; }
+.ls-m2o-widget .ls-m2o-autocomplete { padding-right: 64px; width: 100%; text-overflow: ellipsis; }
+.ls-m2o-external-link, .ls-m2o-dropdown-trigger, .ls-m2o-clear {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: #9ca3af;
+    font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 4px; padding: 0; transition: 0.15s;
+}
+.ls-m2o-external-link:hover, .ls-m2o-dropdown-trigger:hover, .ls-m2o-clear:hover { color: var(--ls-primary, #7c3aed); background: #f3f4f6; }
+.ls-m2o-dropdown-trigger { right: 6px; }
+.ls-m2o-external-link { right: 28px; }
+.ls-m2o-clear { right: 50px; }
+
+/* ── Many2one Avatar ──────────────────────────────── */
+.ls-m2o-avatar-widget { display:flex; align-items:center; gap:8px; }
+.ls-m2o-avatar-widget .ls-m2o-widget { flex: 1; }
+.ls-m2o-avatar { width:28px; height:28px; border-radius:50%; background:var(--ls-primary,#7c3aed); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; }
+
+/* ── Many2many Checkboxes ─────────────────────────── */
+.ls-m2m-checkboxes-widget { display:flex; flex-wrap:wrap; gap:8px 16px; }
+.ls-checkbox-item { display:flex; align-items:center; gap:5px; font-size:13px; cursor:pointer; }
+.ls-checkbox-item input { accent-color:var(--ls-primary,#7c3aed); }
+
+/* ── HTML Widget ──────────────────────────────────── */
+.ls-html-widget { min-height:120px; border:1px solid var(--ls-border,#e5e7eb); border-radius:8px; padding:12px; font-size:14px; line-height:1.6; outline:none; }
+.ls-html-widget:focus { border-color:var(--ls-primary,#7c3aed); box-shadow:0 0 0 3px rgba(124,58,237,0.08); }
+
+/* ── Binary / Image ───────────────────────────────── */
+.ls-binary-widget { display:flex; align-items:center; gap:8px; max-width:100%; overflow:hidden; }
+.ls-binary-widget input[type="file"] { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--ls-text-muted,#6b7280); cursor:pointer; }
+.ls-binary-widget input[type="file"]::file-selector-button { border:1px solid var(--ls-border,#d1d5db); background:#fff; padding:3px 10px; border-radius:6px; color:var(--ls-text,#374151); cursor:pointer; font-size:12px; font-weight:600; margin-right:8px; transition:all 0.15s; }
+.ls-binary-widget input[type="file"]::file-selector-button:hover { background:var(--ls-bg-hover,#f3f4f6); }
+.ls-file-indicator { font-size:12px; color:var(--ls-text-muted); flex-shrink:0; background:#f3f4f6; padding:2px 8px; border-radius:12px; border:1px solid #e5e7eb; display:flex; align-items:center; gap:4px; font-weight:500; }
+.ls-image-widget { display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; }
+.ls-image-container { position:relative; overflow:hidden; border-radius:8px; border:1px solid #e5e7eb; background:#f9fafb; display:flex; align-items:center; justify-content:center; }
+.ls-image-preview { width:100%; height:100%; object-fit:cover; }
+.ls-image-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:28px; color:#d1d5db; }
+.ls-image-container:hover .ls-image-actions { opacity:1; visibility:visible; }
+.ls-image-actions { position:absolute; bottom:0; left:0; width:100%; height:24px; display:flex; justify-content:center; align-items:center; gap:10px; background:rgba(0,0,0,0.6); opacity:0; visibility:hidden; transition:all 0.15s; backdrop-filter:blur(2px); }
+.ls-image-action-btn { background:transparent; border:none; color:white; font-size:12px; cursor:pointer; padding:0 4px; display:flex; align-items:center; justify-content:center; transition:color 0.1s; }
+.ls-image-action-btn:hover { color:var(--ls-primary, #714b67); }
+
+/* ── Color Picker ─────────────────────────────────── */
+.ls-color-picker { width:40px; height:32px; padding:2px; border:1px solid #e5e7eb; border-radius:6px; cursor:pointer; }
+.ls-color-dot { width:18px; height:18px; border-radius:50%; display:inline-block; border:1px solid rgba(0,0,0,0.1); }
+
+/* ── Signature ────────────────────────────────────── */
+.ls-signature-widget { border:1px dashed #d1d5db; border-radius:8px; padding:8px; min-height:80px; cursor:pointer; }
+.ls-signature-pad { color:#9ca3af; text-align:center; padding:20px; }
+.ls-signature-img { max-height:80px; }
+
+/* ── Link fields ──────────────────────────────────── */
+.ls-field-link { color:var(--ls-primary,#7c3aed); text-decoration:none; }
+.ls-field-link:hover { text-decoration:underline; }
+
+/* ── Textarea ─────────────────────────────────────── */
+.ls-field-textarea { width:100%; border:1px solid var(--ls-border,#e5e7eb); border-radius:8px; padding:10px 12px; font-size:14px; font-family:inherit; resize:vertical; outline:none; }
+.ls-field-textarea:focus { border-color:var(--ls-primary,#7c3aed); box-shadow:0 0 0 3px rgba(124,58,237,0.08); }
+
+/* ── Checkbox standalone ──────────────────────────── */
+.ls-field-checkbox { width:18px; height:18px; accent-color:var(--ls-primary,#7c3aed); cursor:pointer; }
+
+/* ── Generic Form Field ───────────────────────────── */
+.ls-form-field { margin-bottom:0; }
+.ls-form-field .ls-field-help { font-size:11px; color:#9ca3af; margin-top:2px; }
+
+/* ── Dynamic Form Group ───────────────────────────── */
+.ls-dyn-form-group { display:grid; grid-template-columns:minmax(340px, 1fr) minmax(340px, 1fr); gap:0 40px; margin-bottom:16px; }
+.ls-dyn-form-col { display:flex; flex-direction:column; }
+.ls-dyn-form-row { display:grid; grid-template-columns:140px 1fr; min-height:36px; align-items:center; padding:4px 0; border-bottom:1px solid #f3f4f6; }
+.ls-dyn-form-row:last-child { border-bottom:none; }
+.ls-dyn-form-label { font-size:13px; font-weight:600; color:var(--ls-text-muted,#4b5563); }
+.ls-dyn-form-value { font-size:14px; width:100%; display:flex; align-items:center; }
+.ls-dyn-form-value .ls-field-input, .ls-dyn-form-value .ls-field-select { width:100%; box-sizing:border-box; }
+
+/* ── New Field Widgets ────────────────────────────── */
+.ls-char-emojis-widget { display:flex; gap:4px; }
+.ls-emoji-btn { background:none; border:1px solid #e5e7eb; border-radius:4px; padding:4px 8px; cursor:pointer; font-size:14px; }
+.ls-emoji-btn:hover { background:#f3f4f6; }
+
+.ls-boolean-btn { border:1px solid #e5e7eb; background:#f9fafb; color:#374151; padding:4px 12px; border-radius:4px; cursor:pointer; font-size:13px; font-weight:500; }
+.ls-boolean-btn.active { background:var(--ls-primary,#7c3aed); color:#fff; border-color:var(--ls-primary,#7c3aed); }
+
+.ls-daterange-widget { display:flex; align-items:center; gap:8px; }
+.ls-daterange-sep { color:#9ca3af; font-size:14px; }
+
+.ls-m2o-btn { background:#f3f4f6; border:1px solid #e5e7eb; padding:4px 12px; border-radius:4px; font-size:13px; cursor:pointer; }
+.ls-m2o-btn:hover { background:#e5e7eb; }
+
+.ls-o2m-placeholder, .ls-pdf-placeholder, .ls-image-placeholder { padding:20px; text-align:center; color:#9ca3af; background:#f9fafb; border:1px dashed #d1d5db; border-radius:8px; font-size:13px; }
+
+.ls-domain-widget { width:100%; }
+.ls-code-font { font-family:monospace; }
+.ls-ace-widget { resize:vertical; }
+.ls-image-url-widget { display:flex; flex-direction:column; align-items:flex-start; }
+
+/* ── Badges Widget ────────────────────────────────── */
+.ls-badges-widget { display:flex; flex-wrap:wrap; gap:6px; }
+.ls-badges-item { display:inline-flex; align-items:center; padding:4px 14px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; border:1px solid #e5e7eb; background:#f9fafb; color:#4b5563; transition:all 0.15s ease; user-select:none; }
+.ls-badges-item:hover { background:#ede9fe; border-color:#c4b5fd; color:#7c3aed; }
+.ls-badges-item.active { background:var(--ls-primary,#7c3aed); color:#fff; border-color:var(--ls-primary,#7c3aed); box-shadow:0 2px 8px rgba(124,58,237,0.25); }
+
+/* ── Percentage Pie ───────────────────────────────── */
+.ls-percentage-pie-widget { display:inline-flex; align-items:center; }
+
+/* ── Tab Field Wrapper ────────────────────────────── */
+.ls-tab-field-wrapper { padding:4px 0; }
+.ls-tab-field-wrapper .ls-field-textarea,
+.ls-tab-field-wrapper .ls-ace-widget { min-height:150px; width:100%; box-sizing:border-box; }
+.ls-tab-field-wrapper .ls-html-widget { min-height:150px; width:100%; box-sizing:border-box; }
+
+/* ── Boolean Button improvements ──────────────────── */
+.ls-boolean-btn { transition:all 0.15s ease; }
+.ls-boolean-btn:hover { background:#ede9fe; border-color:#c4b5fd; }
+
+/* ── Reference Widget ────────────────────────────── */
+.ls-reference-widget { display:flex; align-items:center; gap:0; width:100%; }
+.ls-reference-widget .ls-field-select { border-radius:8px 0 0 8px; border-right:none; }
+.ls-reference-widget .ls-field-input { border-radius:0 8px 8px 0; }
+.ls-ref-display { font-size:12px; background:#f0fdf4; color:#166534; padding:2px 8px; border-radius:10px; border:1px solid #bbf7d0; font-family:monospace; }
+
+/* ── Related Widget ──────────────────────────────── */
+.ls-related-widget { display:flex; align-items:center; gap:6px; }
+.ls-related-value { color:var(--ls-text,#374151); font-size:14px; }
+.ls-related-path { font-size:14px; opacity:0.5; cursor:help; }
+
+/* ── Computed Widget ─────────────────────────────── */
+.ls-computed-widget { display:flex; align-items:center; gap:6px; }
+.ls-computed-value { color:var(--ls-text,#374151); font-size:14px; }
+.ls-computed-badge { font-size:12px; background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:8px; font-weight:500; cursor:help; }
+
+/* ════════════════════════════════════════════════════
+   New Widget Styles — Full Odoo Architecture
+   ════════════════════════════════════════════════════ */
+
+/* ── Color Index (Odoo 0-11 palette) ─────────────── */
+.ls-color-index-widget { display:flex; flex-wrap:wrap; gap:6px; padding:4px 0; }
+.ls-color-index-widget .ls-color-dot, .ls-color-swatch { width:22px; height:22px; border-radius:50%; cursor:pointer; transition:all 0.15s; border:2px solid transparent; }
+.ls-color-index-widget .ls-color-dot:hover, .ls-color-swatch:hover { transform:scale(1.2); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.ls-color-index-widget .ls-color-dot.active, .ls-color-swatch.selected { border-color:#1e293b; box-shadow:0 0 0 2px #fff, 0 0 0 4px #1e293b; }
+
+/* ── Signature Canvas ────────────────────────────── */
+.ls-signature-widget { border:1px dashed #d1d5db; border-radius:8px; padding:8px; min-height:80px; }
+.ls-signature-pad { position:relative; text-align:center; }
+.ls-sig-canvas { border:1px solid #e5e7eb; border-radius:4px; cursor:crosshair; background:#fafafa; max-width:100%; height:auto; touch-action:none; }
+.ls-sig-hint { display:block; font-size:12px; color:#9ca3af; margin-top:4px; }
+.ls-sig-actions { display:flex; gap:6px; margin-top:6px; }
+.ls-signature-img { max-height:80px; border-radius:4px; }
+
+/* ── JSON Widget ─────────────────────────────────── */
+.ls-json-widget textarea { font-family:'JetBrains Mono',monospace; font-size:12px; background:#1e1e1e; color:#d4d4d4; border-radius:8px; padding:12px; border:none; width:100%; }
+
+/* ── Countdown Widget ────────────────────────────── */
+.ls-countdown-widget { display:flex; align-items:center; gap:8px; }
+.ls-countdown { font-size:12px; font-weight:600; padding:2px 8px; border-radius:10px; white-space:nowrap; }
+
+/* ── Section & Note ──────────────────────────────── */
+.ls-section-widget { padding:8px 0; border-bottom:2px solid var(--ls-primary,#7c3aed); margin:8px 0; font-size:14px; color:var(--ls-primary); }
+.ls-note-widget { background:#fffbeb; border-color:#fde68a; font-style:italic; }
+
+/* ── Stat Info ────────────────────────────────────── */
+.ls-stat-info-widget { text-align:center; }
+.ls-stat-info-value { display:block; font-size:22px; font-weight:700; color:var(--ls-primary); }
+.ls-stat-info-label { display:block; font-size:11px; color:var(--ls-text-muted); text-transform:uppercase; letter-spacing:.5px; }
+
+/* ── Activity Widget ─────────────────────────────── */
+.ls-activity-widget { display:flex; align-items:center; gap:4px; }
+.ls-activity-icon { font-size:16px; }
+.ls-activity-count { font-size:13px; font-weight:600; color:var(--ls-primary); }
+
+/* ── Monetary Full ───────────────────────────────── */
+.ls-monetary-full { position:relative; }
+.ls-currency-field-hint { font-size:12px; opacity:0.5; cursor:help; }
+
+/* ── Barcode Scanner ─────────────────────────────── */
+.ls-m2o-barcode-widget { display:flex; align-items:center; gap:4px; }
+.ls-m2o-barcode-widget .ls-field-select { flex:1; }
+.ls-btn-icon { background:none; border:1px solid #e5e7eb; border-radius:6px; padding:4px 8px; cursor:pointer; font-size:14px; }
+.ls-btn-icon:hover { background:#f3f4f6; }
+
+/* ── Domain Builder ──────────────────────────────── */
+.ls-domain-builder { display:flex; align-items:center; gap:4px; width:100%; }
+.ls-domain-builder .ls-field-input { flex:1; }
+.ls-domain-hint { font-size:14px; cursor:pointer; }
+
+/* ── Float Factor ────────────────────────────────── */
+.ls-float-factor-widget { display:flex; align-items:center; gap:8px; }
+.ls-factor-display { font-size:12px; color:#6b7280; }
+
+/* ── Float Toggle ────────────────────────────────── */
+.ls-float-toggle { min-width:40px; text-align:center; font-weight:600; font-variant-numeric:tabular-nums; }
+
+/* ── Label Selection ─────────────────────────────── */
+.ls-label-selection { font-size:14px; color:var(--ls-text); font-weight:500; }
+
+/* ── Status With Color ───────────────────────────── */
+.ls-status-with-color { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; }
+.ls-status-with-color span:first-child { box-shadow: 0 0 0 1px rgba(0,0,0,0.05); }
+
+/* ── Inline Tree Widget Overrides ────────────────── */
+.ls-it-m2o-btn { background: #f3f4f6; border: 1px solid #e5e7eb; padding: 2px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.1s; }
+.ls-it-m2o-btn:hover { background: #e5e7eb; }
+.ls-it-m2m-widget { display: flex; flex-wrap: wrap; gap: 4px; }
+.ls-m2m-input { border: none; background: transparent; outline: none; font-size: 12px; width: 60px; min-width: 40px; flex: 1; }
+.ls-it-fav-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 4px; transition: transform 0.15s; }
+.ls-it-fav-btn:hover { transform: scale(1.2); }
+.ls-it-textarea { min-height: 28px; resize: vertical; line-height: 1.4; padding-top: 4px; padding-bottom: 4px; }
+
+/* ══════════════════════════════════════════════════════════
+   Phase 1 — Gap Analysis Quick-Win Improvements
+   Fixes: CSS1 (labels), CSS2 (borders), CSS6 (progress),
+          CSS9 (dark vars), CSS10 (micro-animations)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── CSS9: Theme-aware Widget Color Variables ─────── */
+:root, [data-theme="light"] {
+    --ls-widget-success: #10b981;
+    --ls-widget-warning: #f59e0b;
+    --ls-widget-info: #3b82f6;
+    --ls-widget-danger: #ef4444;
+    --ls-widget-muted: #6b7280;
+    --ls-widget-purple: #7c3aed;
+}
+[data-theme="dark"] {
+    --ls-widget-success: #34d399;
+    --ls-widget-warning: #fbbf24;
+    --ls-widget-info: #60a5fa;
+    --ls-widget-danger: #f87171;
+    --ls-widget-muted: #9ca3af;
+    --ls-widget-purple: #a78bfa;
+}
+
+/* ── CSS2: Fix Invisible Input Borders ────────────── */
+.ls-field-input {
+    border: 1px solid var(--ls-border-light, #e9ecef) !important;
+    border-radius: var(--ls-input-radius, 4px);
+    padding: 5px 10px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ls-field-input:hover {
+    border-color: var(--ls-border, #dee2e6) !important;
+}
+.ls-field-input:focus {
+    border-color: var(--ls-primary, #714b67) !important;
+    box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.1) !important;
+    outline: none;
+}
+.ls-field-select {
+    border: 1px solid var(--ls-border-light, #e9ecef) !important;
+    border-radius: var(--ls-input-radius, 4px);
+    padding: 5px 10px;
+    transition: border-color 0.15s ease;
+}
+.ls-field-select:hover {
+    border-color: var(--ls-border, #dee2e6) !important;
+}
+.ls-field-select:focus {
+    border-color: var(--ls-primary, #714b67) !important;
+    box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.1);
+    outline: none;
+}
+
+/* ── CSS1: Wider Form Labels ─────────────────────── */
+.ls-form-label,
+.ls-dyn-form-label {
+    width: 180px;
+    min-width: 140px;
+}
+.ls-dyn-form-row {
+    grid-template-columns: minmax(140px, 200px) 1fr;
+}
+
+/* ── CSS6: Better Progress Bar ───────────────────── */
+.ls-progress-track {
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.ls-progress-fill {
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 5px;
+}
+
+/* ── CSS10: Micro-Animations ─────────────────────── */
+
+/* Tag appear */
+@keyframes lsTagFadeIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+.ls-m2m-tag { animation: lsTagFadeIn 0.15s ease; }
+
+/* Star hover glow */
+.ls-priority-star:hover {
+    filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.45));
+    transform: scale(1.2);
+}
+
+/* Favorite hover glow + bounce on activate */
+.ls-favorite-widget:hover {
+    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.45));
+}
+@keyframes lsFavBounce {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    70%  { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+.ls-favorite-widget.active {
+    animation: lsFavBounce 0.35s ease;
+}
+
+/* Badge pulse on state change */
+@keyframes lsBadgePulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+.ls-badge-widget {
+    font-size: 11px;
+    padding: 3px 12px;
+    letter-spacing: 0.2px;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* Toggle — green for active (Odoo convention) */
+.ls-toggle-widget input:checked + .ls-toggle-slider {
+    background: var(--ls-widget-success, #10b981);
+}
+.ls-toggle-slider {
+    transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ls-toggle-slider::before {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Image placeholder hover */
+.ls-image-placeholder {
+    transition: border-color 0.15s, color 0.15s;
+}
+.ls-image-placeholder:hover {
+    border-color: var(--ls-primary, #714b67);
+    color: var(--ls-primary, #714b67);
+    cursor: pointer;
+}
+
+/* Signature canvas hover feedback */
+.ls-sig-canvas {
+    transition: border-color 0.15s;
+}
+.ls-sig-canvas:hover {
+    border-color: var(--ls-primary, #714b67);
+}
+
+/* Checkbox accent color consistency */
+.ls-field-checkbox,
+.ls-checkbox-item input,
+.ls-radio-item input {
+    accent-color: var(--ls-primary, #714b67);
+}
+
+/* Textarea focus ring */
+.ls-field-textarea:focus {
+    border-color: var(--ls-primary, #714b67);
+    box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.1);
+}
+
+/* Remaining days badge — use CSS variables */
+.ls-rd-overdue { color: var(--ls-widget-danger); background: color-mix(in srgb, var(--ls-widget-danger) 8%, transparent); }
+.ls-rd-soon { color: var(--ls-widget-warning); background: color-mix(in srgb, var(--ls-widget-warning) 8%, transparent); }
+.ls-rd-ok { color: var(--ls-widget-success); background: color-mix(in srgb, var(--ls-widget-success) 8%, transparent); }
+
+/* Color dot active ring — better visibility */
+.ls-color-index-widget .ls-color-dot.active {
+    box-shadow: 0 0 0 2px var(--ls-bg, #fff), 0 0 0 4px var(--ls-text, #212529);
+}
+
+/* ── Many2many Tags Badge ────────────────────────── */
+.ls-m2m-widget .ls-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    line-height: 1.5;
+    margin: 2px 4px 2px 0;
+}
+
+.ls-m2m-tag-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 2px;
+    font-size: 10px;
+    line-height: 1;
+    opacity: 0.6;
+    color: inherit;
+}
+.ls-m2m-tag-remove:hover { opacity: 1; }
+
+/* Odoo-style color palette for tags (color index 0–11) */
+.ls-m2m-widget .ls-badge-primary,
+.ls-m2m-widget .ls-badge-color-0  { background: #e7e9ed; color: #41434c; border: 1px solid #d1d5db; }
+.ls-m2m-widget .ls-badge-color-1  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.ls-m2m-widget .ls-badge-color-2  { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.ls-m2m-widget .ls-badge-color-3  { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.ls-m2m-widget .ls-badge-color-4  { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.ls-m2m-widget .ls-badge-color-5  { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+.ls-m2m-widget .ls-badge-color-6  { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+.ls-m2m-widget .ls-badge-color-7  { background: #ccfbf1; color: #134e4a; border: 1px solid #5eead4; }
+.ls-m2m-widget .ls-badge-color-8  { background: #e0e7ff; color: #3730a3; border: 1px solid #a5b4fc; }
+.ls-m2m-widget .ls-badge-color-9  { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+.ls-m2m-widget .ls-badge-color-10 { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+.ls-m2m-widget .ls-badge-color-11 { background: #ecfdf5; color: #064e3b; border: 1px solid #6ee7b7; }
+
+/* ══════════════════════════════════════════════════════
+   NEW WIDGET STYLES — Fase 2 additions
+   ══════════════════════════════════════════════════════ */
+
+/* ── Percentage Pie ──────────────────────────────── */
+.ls-pct-pie-widget {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ls-pct-pie-widget svg {
+    display: block;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
+}
+
+/* ── Char Badge ──────────────────────────────────── */
+.ls-char-badge {
+    transition: all var(--ls-transition-fast);
+    cursor: default;
+}
+.ls-char-badge:hover {
+    filter: brightness(0.95);
+}
+
+/* ── Char Image ──────────────────────────────────── */
+.ls-char-image-widget {
+    position: relative;
+    display: inline-block;
+}
+.ls-char-image-widget img {
+    border: 1px solid var(--ls-border-light);
+    transition: all var(--ls-transition);
+}
+.ls-char-image-widget img:hover {
+    box-shadow: var(--ls-shadow);
+}
+
+/* ── ACE Code Editor ─────────────────────────────── */
+.ls-ace-editor {
+    transition: border-color var(--ls-transition), box-shadow var(--ls-transition);
+}
+.ls-ace-editor:focus-within {
+    border-color: var(--ls-input-focus) !important;
+    box-shadow: var(--ls-focus-ring-input);
+}
+.ls-ace-textarea {
+    transition: background var(--ls-transition);
+}
+.ls-ace-textarea:focus {
+    background: #1a1a2e !important;
+}
+
+/* ── Date Picker (Custom) ────────────────────────── */
+.ls-datepicker-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: var(--ls-z-dropdown, 1000);
+    min-width: 280px;
+    background: var(--ls-bg);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    box-shadow: var(--ls-shadow-lg);
+    padding: var(--ls-space-3);
+    margin-top: var(--ls-space-1);
+    animation: lsFadeIn 0.15s ease;
+}
+@keyframes lsFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ls-datepicker-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--ls-space-2);
+    font-weight: 600;
+    font-size: var(--ls-font-size-sm);
+    color: var(--ls-text);
+}
+.ls-datepicker-nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--ls-radius-sm);
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 14px;
+    color: var(--ls-text-muted);
+    transition: all var(--ls-transition-fast);
+}
+.ls-datepicker-nav-btn:hover {
+    background: var(--ls-bg-hover);
+    color: var(--ls-text);
+    border-color: var(--ls-border);
+}
+.ls-datepicker-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: var(--ls-font-size-xs);
+    font-weight: 600;
+    color: var(--ls-text-muted);
+    margin-bottom: var(--ls-space-1);
+    padding: var(--ls-space-1) 0;
+}
+.ls-datepicker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+}
+.ls-datepicker-day {
+    padding: var(--ls-space-1) 0;
+    font-size: var(--ls-font-size-sm);
+    border-radius: var(--ls-radius-sm);
+    cursor: pointer;
+    color: var(--ls-text);
+    transition: all var(--ls-transition-fast);
+    border: none;
+    background: none;
+    font-family: var(--ls-font);
+}
+.ls-datepicker-day:hover {
+    background: var(--ls-bg-hover);
+}
+.ls-datepicker-day.today {
+    font-weight: 700;
+    color: var(--ls-primary);
+    background: rgba(113,75,103,0.06);
+}
+.ls-datepicker-day.selected {
+    background: var(--ls-primary);
+    color: #fff;
+    font-weight: 700;
+}
+.ls-datepicker-day.other-month {
+    color: var(--ls-text-muted);
+    opacity: 0.4;
+    cursor: default;
+}
+.ls-datepicker-day.other-month:hover {
+    background: none;
+}
+.ls-datepicker-time {
+    display: flex;
+    gap: var(--ls-space-2);
+    align-items: center;
+    margin-top: var(--ls-space-3);
+    padding-top: var(--ls-space-3);
+    border-top: 1px solid var(--ls-border-light);
+    font-size: var(--ls-font-size-sm);
+}
+.ls-datepicker-time input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid var(--ls-input-border);
+    border-radius: var(--ls-radius-sm);
+    padding: 4px;
+    font-size: var(--ls-font-size-sm);
+    font-family: var(--ls-font-mono);
+}
+.ls-datepicker-time input:focus {
+    outline: none;
+    border-color: var(--ls-input-focus);
+    box-shadow: var(--ls-focus-ring-input);
+}
+
+/* ── Inline Date Widget Trigger ──────────────────── */
+.ls-date-widget,
+.ls-datetime-widget {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ls-space-2);
+}
+.ls-date-widget input,
+.ls-datetime-widget input {
+    cursor: pointer;
+}
+.ls-date-widget input:focus,
+.ls-datetime-widget input:focus {
+    cursor: text;
+}
+.ls-date-trigger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ls-text-muted);
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: var(--ls-radius-sm);
+    transition: all var(--ls-transition-fast);
+}
+.ls-date-trigger-btn:hover {
+    color: var(--ls-primary);
+    background: var(--ls-bg-hover);
+}
+
+/* ── New Widget: Handle (drag) in list ──────────── */
+.ls-handle-list-cell {
+    cursor: grab;
+    color: var(--ls-text-muted);
+    font-size: 16px;
+    user-select: none;
+    padding: 0 4px;
+}
+.ls-handle-list-cell:hover {
+    color: var(--ls-text);
+}
+
+/* ── Focus ring for all interactive elements ────── */
+.ls-field-input:focus,
+.ls-field-select:focus,
+.ls-field-textarea:focus,
+.ls-btn:focus-visible,
+.ls-statusbar-item:focus-visible,
+.ls-tab-header:focus-visible {
+    outline: none;
+    box-shadow: var(--ls-focus-ring);
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none;
+    border-color: var(--ls-input-focus) !important;
+}
+
+/* ── Improved empty state ───────────────────────── */
+.ls-empty-dash {
+    color: var(--ls-text-muted);
+    opacity: 0.5;
+    user-select: none;
+}
+
+/* ── Improved checkbox and radio styling ────────── */
+.ls-checkbox-item,
+.ls-radio-item {
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--ls-transition-fast);
+}
+.ls-checkbox-item:hover,
+.ls-radio-item:hover {
+    color: var(--ls-primary);
+}
+

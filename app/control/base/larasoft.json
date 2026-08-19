@@ -1,0 +1,12 @@
+{
+    "name": "Base",
+    "version": "1.0.0",
+    "category": "Hidden",
+    "depends": [],
+    "data": [
+        "data/base_data.xml",
+        "data/qweb_templates.xml"
+    ],
+    "installable": true,
+    "auto_install": true
+}

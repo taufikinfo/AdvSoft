@@ -1,0 +1,971 @@
+/* ============================================================
+   Larasoft — Odoo-style Form View CSS
+   ============================================================ */
+
+/* ── Status Bar ───────────────────────────── */
+.ls-statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px 0;
+    gap: 0;
+}
+.ls-statusbar-item {
+    padding: 5px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--ls-border);
+    background: var(--ls-bg);
+    color: var(--ls-text-muted);
+    transition: all .2s;
+    position: relative;
+    margin-left: -1px;
+    font-family: var(--ls-font);
+}
+.ls-statusbar-item:first-child { border-radius: var(--ls-radius) 0 0 var(--ls-radius); }
+.ls-statusbar-item:last-child { border-radius: 0 var(--ls-radius) var(--ls-radius) 0; }
+.ls-statusbar-item:hover { background: var(--ls-hover); color: var(--ls-text); z-index: 1; }
+.ls-statusbar-item.active {
+    background: var(--ls-primary);
+    color: #fff;
+    border-color: var(--ls-primary);
+    z-index: 2;
+}
+.ls-statusbar-item.done {
+    background: var(--ls-success);
+    color: #fff;
+    border-color: var(--ls-success);
+}
+
+/* ── Form Container ───────────────────────── */
+.ls-form-view {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--ls-bg);
+    display: flex;
+    flex-direction: column;
+}
+.ls-form-sheet {
+    max-width: 1100px;
+    margin: 16px auto;
+    background: var(--ls-bg);
+    border: none;
+    border-radius: 8px;
+    padding: 28px 36px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    width: calc(100% - 32px);
+    box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+    .ls-form-view {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .ls-form-sheet {
+        flex: 1 1 65%;
+        margin: 16px 8px 16px 16px;
+        max-width: 1000px;
+        width: auto;
+    }
+    .oe_chatter {
+        flex: 1 1 35%;
+        max-width: 450px;
+        min-width: 320px;
+        margin: 16px 16px 16px 8px !important;
+        border-top: none !important;
+        padding: 0 !important;
+    }
+}
+
+/* ── Form Title ───────────────────────────── */
+.ls-form-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.ls-form-title-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ls-text);
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--ls-font);
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color .15s;
+}
+.ls-form-title-text:focus { border-bottom-color: var(--ls-primary); }
+.ls-form-title-text::placeholder { color: var(--ls-text-light); }
+.ls-priority-stars {
+    display: flex;
+    gap: 2px;
+}
+.ls-stage-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── Form Group (2-column layout) ─────────── */
+.ls-form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ls-space-0) var(--ls-space-10);
+    margin-bottom: var(--ls-space-5);
+}
+.ls-form-col {
+    min-width: 0;
+}
+
+/* Colspan support — fields spanning full width via ls-colspan on ls-form-row */
+.ls-form-row.ls-colspan-2,
+.ls-form-row.ls-colspan-3,
+.ls-form-row.ls-colspan-4 {
+    grid-column: 1 / -1;
+}
+
+/* Form group title — Odoo-style horizontal rule with text */
+.ls-form-group-title {
+    grid-column: 1 / -1;
+    font-size: var(--ls-font-size-md);
+    font-weight: 700;
+    color: var(--ls-text);
+    padding-bottom: var(--ls-space-2);
+    margin-bottom: var(--ls-space-3);
+    border-bottom: 2px solid var(--ls-primary);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    font-size: var(--ls-font-size-sm);
+    opacity: 0.85;
+}
+
+/* oe_title container — title + priority inline (Odoo signature) */
+.oe_title {
+    display: flex;
+    align-items: center;
+    gap: var(--ls-space-4);
+    margin-bottom: var(--ls-space-5);
+}
+.oe_title h1 {
+    flex: 1;
+    font-size: var(--ls-font-size-2xl);
+    font-weight: 700;
+    color: var(--ls-text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.3;
+}
+.oe_title input.ls-form-title-text {
+    font-size: var(--ls-font-size-2xl);
+    font-weight: 700;
+}
+
+.ls-form-row {
+    display: flex;
+    align-items: center;
+    padding: var(--ls-space-2) 0;
+    border-bottom: 1px solid var(--ls-border-light);
+    min-height: 36px;
+    min-width: 0;
+}
+.ls-form-label {
+    width: 180px;
+    min-width: 140px;
+    font-weight: 600;
+    font-size: var(--ls-font-size);
+    color: var(--ls-text-muted);
+    flex-shrink: 0;
+}
+.ls-form-value {
+    flex: 1;
+    font-size: var(--ls-font-size);
+    min-width: 0;
+}
+
+/* ── Form Field Inputs ────────────────────── */
+.ls-field-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: var(--ls-radius);
+    font-size: 13px;
+    font-family: var(--ls-font);
+    background: transparent;
+    color: var(--ls-text);
+    transition: all .15s;
+    outline: none;
+}
+.ls-field-input:hover { border-color: var(--ls-border); }
+.ls-field-input:focus {
+    border-color: var(--ls-primary);
+    background: var(--ls-bg);
+    box-shadow: 0 0 0 2px rgba(113,75,103,.1);
+}
+.ls-field-select {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: var(--ls-radius);
+    font-size: 13px;
+    font-family: var(--ls-font);
+    background: transparent;
+    color: var(--ls-text);
+    cursor: pointer;
+    outline: none;
+    transition: all .15s;
+    appearance: none;
+}
+.ls-field-select:hover { border-color: var(--ls-border); }
+.ls-field-select:focus { border-color: var(--ls-primary); }
+
+/* ── Many2many Tags Widget ────────────────── */
+.ls-m2m-widget {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    min-height: 28px;
+}
+.ls-m2m-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+    animation: facetIn .15s ease;
+}
+.ls-m2m-tag-remove {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,.1);
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    padding: 0;
+    transition: background .15s;
+    font-family: var(--ls-font);
+}
+.ls-m2m-tag-remove:hover { background: rgba(0,0,0,.25); }
+.ls-m2m-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border: 1px dashed var(--ls-border);
+    border-radius: 12px;
+    font-size: 11px;
+    color: var(--ls-text-muted);
+    cursor: pointer;
+    background: transparent;
+    font-family: var(--ls-font);
+    transition: all .15s;
+}
+.ls-m2m-add-btn:hover { border-color: var(--ls-primary); color: var(--ls-primary); }
+.ls-m2m-dropdown {
+    position: absolute;
+    background: var(--ls-bg);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius);
+    box-shadow: var(--ls-shadow-lg);
+    z-index: 50;
+    min-width: 180px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+.ls-m2m-dropdown-item {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background .1s;
+}
+.ls-m2m-dropdown-item:hover { background: var(--ls-hover); }
+
+/* ── Tabs ─────────────────────────────────── */
+.ls-tabs {
+    margin-top: 20px;
+}
+.ls-tab-headers {
+    display: flex;
+    border-bottom: 2px solid var(--ls-border-light);
+    gap: 0;
+}
+.ls-tab-header {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ls-text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all .15s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: var(--ls-font);
+}
+.ls-tab-header:hover { color: var(--ls-text); }
+.ls-tab-header.active {
+    color: var(--ls-primary);
+    border-bottom-color: var(--ls-primary);
+    font-weight: 600;
+}
+.ls-tab-content {
+    padding: 12px 0 0 0;
+}
+.ls-tab-content > .ls-inline-tree {
+    margin: 0;
+}
+
+
+/* ── M2O Autocomplete Dropdown ────────────── */
+.ls-m2o-dropdown {
+    background: var(--ls-bg);
+    border: 1px solid var(--ls-border, #e5e7eb);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.06);
+    z-index: 9999;
+    max-height: 280px;
+    overflow-y: auto;
+    animation: m2oFadeIn .12s ease;
+}
+@keyframes m2oFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.ls-m2o-dd-item {
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ls-text, #111827);
+    transition: background .1s;
+    border-bottom: 1px solid var(--ls-border-light, #f3f4f6);
+}
+.ls-m2o-dd-item:last-of-type { border-bottom: none; }
+.ls-m2o-dd-item:hover, .ls-m2o-dd-item.highlighted {
+    background: var(--ls-hover, #faf5f9);
+    color: var(--ls-primary, #714b67);
+}
+.ls-m2o-dd-search-more {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ls-primary, #714b67);
+    border-top: 1px solid var(--ls-border, #e5e7eb);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .1s;
+}
+.ls-m2o-dd-search-more:hover {
+    background: var(--ls-hover, #faf5f9);
+}
+
+/* ── M2O Search Dialog (Overlay) ──────────── */
+.ls-m2o-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: m2oOverlayIn .15s ease;
+}
+@keyframes m2oOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ── M2O Search Dialog ────────────────────── */
+.ls-m2o-dialog {
+    background: var(--ls-bg);
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.2);
+    width: 90vw;
+    max-width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    animation: m2oDialogIn .2s ease;
+    overflow: hidden;
+}
+@keyframes m2oDialogIn {
+    from { opacity: 0; transform: scale(.96) translateY(-8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.ls-m2o-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ls-border, #e5e7eb);
+}
+.ls-m2o-dialog-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ls-text, #111827);
+}
+.ls-m2o-dialog-close {
+    width: 28px; height: 28px;
+    border: none;
+    background: none;
+    color: var(--ls-text-muted, #6b7280);
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all .15s;
+}
+.ls-m2o-dialog-close:hover {
+    background: var(--ls-hover, #f3f4f6);
+    color: var(--ls-text, #111827);
+}
+
+/* ── Search bar ──────────────────────────── */
+.ls-m2o-dialog-search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    gap: 16px;
+    border-bottom: 1px solid var(--ls-border-light, #f3f4f6);
+}
+.ls-m2o-dialog-search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--ls-border, #e5e7eb);
+    border-radius: 6px;
+    padding: 5px 10px;
+    flex: 1;
+    max-width: 340px;
+    transition: border-color .15s;
+}
+.ls-m2o-dialog-search-box:focus-within {
+    border-color: var(--ls-primary, #714b67);
+    box-shadow: 0 0 0 2px rgba(113,75,103,.08);
+}
+.ls-m2o-search-icon {
+    font-size: 14px;
+    color: var(--ls-text-muted, #9ca3af);
+}
+.ls-m2o-dialog-search-input {
+    border: none;
+    outline: none;
+    font-size: 13px;
+    font-family: var(--ls-font, 'Inter', sans-serif);
+    color: var(--ls-text, #111827);
+    background: transparent;
+    flex: 1;
+    min-width: 0;
+}
+.ls-m2o-dialog-search-input::placeholder {
+    color: var(--ls-text-light, #9ca3af);
+}
+.ls-m2o-dialog-pager {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.ls-m2o-pager-info {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ls-primary, #714b67);
+}
+.ls-m2o-pager-prev, .ls-m2o-pager-next {
+    width: 26px; height: 26px;
+    border: 1px solid var(--ls-border, #e5e7eb);
+    background: var(--ls-bg);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--ls-text-muted, #6b7280);
+    transition: all .15s;
+}
+.ls-m2o-pager-prev:hover:not(:disabled), .ls-m2o-pager-next:hover:not(:disabled) {
+    background: var(--ls-hover, #f3f4f6);
+    color: var(--ls-text, #111827);
+    border-color: var(--ls-primary, #714b67);
+}
+.ls-m2o-pager-prev:disabled, .ls-m2o-pager-next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Table ────────────────────────────────── */
+.ls-m2o-dialog-table-wrap {
+    flex: 1;
+    overflow: auto;
+    min-height: 200px;
+}
+.ls-m2o-dialog-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.ls-m2o-dialog-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ls-text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    border-bottom: 2px solid var(--ls-border, #e5e7eb);
+    background: var(--ls-bg, #f8f9fa);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.ls-m2o-dialog-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--ls-border-light, #f3f4f6);
+    font-size: 13px;
+    color: var(--ls-text, #111827);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.ls-m2o-dialog-row {
+    cursor: pointer;
+    transition: background .1s;
+}
+.ls-m2o-dialog-row:hover td {
+    background: var(--ls-hover, #faf5f9);
+}
+.ls-m2o-dialog-row:active td {
+    background: rgba(113,75,103,.1);
+}
+
+/* ── Footer ──────────────────────────────── */
+.ls-m2o-dialog-footer {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--ls-border, #e5e7eb);
+}
+.ls-m2o-dialog-btn-close {
+    padding: 6px 18px;
+    border: none;
+    background: var(--ls-primary, #714b67);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--ls-font, 'Inter', sans-serif);
+    cursor: pointer;
+    transition: all .15s;
+}
+.ls-m2o-dialog-btn-close:hover {
+    background: var(--ls-primary-dark, #5a3c54);
+}
+
+/* ── M2O Create Dialog ────────────────────── */
+.ls-m2o-create-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    overflow-y: auto;
+}
+.ls-create-row {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    border-bottom: 1px solid var(--ls-border-light, #f3f4f6);
+    padding-bottom: 6px;
+}
+.ls-create-label {
+    width: 140px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ls-text-muted, #6b7280);
+    flex-shrink: 0;
+}
+.ls-create-value {
+    flex: 1;
+    min-width: 0;
+}
+.ls-create-field {
+    width: 100%;
+}
+
+/* ── Description Tab ──────────────────────── */
+.ls-description-area {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px 12px;
+    border: 1px solid var(--ls-border-light);
+    border-radius: var(--ls-radius);
+    font-size: 13px;
+    font-family: var(--ls-font);
+    color: var(--ls-text);
+    resize: vertical;
+    outline: none;
+    transition: border-color .15s;
+}
+.ls-description-area:focus { border-color: var(--ls-primary); }
+
+/* ── Form Buttons Bar ─────────────────────── */
+.ls-form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Toasts ───────────────────────────────── */
+.ls-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.ls-toast {
+    background: #fff;
+    border-left: 4px solid var(--ls-primary);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 12px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--ls-text);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.ls-toast.visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* ── Form Header & Action Buttons ─────────── */
+.ls-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--ls-border);
+    margin: -24px -32px 24px -32px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+.ls-header-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.ls-header-buttons .ls-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* Statusbar specific layout within header */
+.ls-form-header .ls-statusbar {
+    display: flex;
+    align-items: center;
+}
+.ls-form-header .ls-statusbar-item {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ls-text-light);
+    background: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%);
+    background: #e9ecef;
+    margin-right: -10px;
+    z-index: 1;
+}
+.ls-form-header .ls-statusbar-item:first-child {
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+    padding-left: 16px;
+}
+.ls-form-header .ls-statusbar-item:hover {
+    background: #dee2e6;
+}
+.ls-form-header .ls-statusbar-item.active {
+    background: var(--ls-primary);
+    color: #fff;
+    z-index: 2;
+}
+
+/* ── Smart Buttons (oe_button_box) ────────── */
+.oe_button_box {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+.oe_stat_button {
+    background: transparent;
+    border: 1px solid var(--ls-border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    min-width: 140px;
+    height: 44px;
+    cursor: pointer;
+    transition: background 0.15s;
+    color: var(--ls-text);
+}
+.oe_stat_button:hover {
+    background: rgba(0,0,0,0.02);
+}
+.oe_stat_button_icon {
+    width: 44px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--ls-primary);
+    border-right: 1px solid var(--ls-border-light);
+}
+.oe_stat_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 10px;
+    flex: 1;
+    text-align: left;
+}
+.oe_stat_value {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+.oe_stat_text {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ls-text-light);
+    line-height: 1;
+}
+
+/* ── Onchange Toast Notification ──────────── */
+.ls-onchange-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: #f1f5f9;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--ls-font, 'Inter', sans-serif);
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    z-index: 10001;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all .3s ease;
+    max-width: 400px;
+    line-height: 1.5;
+    border-left: 3px solid var(--ls-primary, #714b67);
+}
+.ls-onchange-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.ls-onchange-icon {
+    margin-right: 4px;
+}
+.ls-onchange-toast strong {
+    color: #c4b5fd;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS — Mobile-first progressive
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Tablet Landscape (≤ 1024px) ──────────────────────── */
+@media (max-width: 1024px) {
+    .ls-form-sheet {
+        max-width: 100%;
+        margin: var(--ls-space-3);
+        padding: var(--ls-space-5) var(--ls-space-6);
+    }
+    .ls-form-label {
+        width: 150px;
+        min-width: 120px;
+    }
+    .ls-form-group {
+        gap: 0 var(--ls-space-6);
+    }
+}
+
+/* ── Tablet Portrait (≤ 900px) ────────────────────────── */
+@media (max-width: 900px) {
+    .ls-form-sheet {
+        margin: var(--ls-space-2);
+        padding: var(--ls-space-4);
+    }
+    .ls-form-label {
+        width: 130px;
+        min-width: 100px;
+        font-size: var(--ls-font-size-sm);
+    }
+    .ls-form-group {
+        gap: 0 var(--ls-space-4);
+    }
+}
+
+/* ── Mobile (≤ 768px) — Stack single column ──────────── */
+@media (max-width: 768px) {
+    .ls-form-sheet {
+        margin: var(--ls-space-2);
+        padding: var(--ls-space-4);
+        box-shadow: var(--ls-shadow-sm);
+        border-radius: var(--ls-radius);
+    }
+    .ls-form-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--ls-space-3);
+        padding: var(--ls-space-3);
+    }
+    .ls-header-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* Stack form groups to single column */
+    .ls-form-group {
+        grid-template-columns: 1fr !important;
+        gap: var(--ls-space-1) 0 !important;
+        margin-bottom: var(--ls-space-4);
+    }
+    .ls-form-col {
+        grid-column: 1 / -1 !important;
+    }
+    .ls-form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--ls-space-1);
+        margin-bottom: var(--ls-space-3);
+        padding: var(--ls-space-1) 0;
+        min-height: auto;
+        border-bottom-style: dashed;
+    }
+    .ls-form-label {
+        width: 100%;
+        min-width: 0;
+        text-align: left;
+        margin-bottom: 0;
+        font-size: var(--ls-font-size-sm);
+    }
+    
+    /* Statusbar horizontal scroll with gradient indicators */
+    .ls-statusbar {
+        overflow-x: auto;
+        padding-bottom: var(--ls-space-1);
+        justify-content: flex-start;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
+        mask-image: linear-gradient(to right, black 92%, transparent 100%);
+    }
+    .ls-statusbar::-webkit-scrollbar { display: none; }
+    
+    .oe_button_box {
+        flex-wrap: wrap;
+        gap: var(--ls-space-1);
+    }
+    .oe_stat_button {
+        flex: 1 1 calc(50% - 1px);
+        min-width: 120px;
+    }
+    
+    .ls-tabs {
+        margin-top: var(--ls-space-4);
+    }
+    .ls-tab-headers {
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+        mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    }
+    .ls-tab-headers::-webkit-scrollbar { display: none; }
+    .ls-tab-header {
+        padding: var(--ls-space-2) var(--ls-space-3);
+        font-size: var(--ls-font-size-sm);
+    }
+    
+    /* oe_title stacks on mobile */
+    .oe_title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--ls-space-2);
+    }
+    .oe_title h1 {
+        font-size: var(--ls-font-size-xl);
+    }
+}
+
+/* ── Small Mobile (≤ 480px) ──────────────────────────── */
+@media (max-width: 480px) {
+    .ls-form-sheet {
+        margin: 0;
+        padding: var(--ls-space-3);
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        width: 100%;
+    }
+    .ls-form-row {
+        padding: var(--ls-space-1) 0;
+        margin-bottom: var(--ls-space-2);
+    }
+    .ls-statusbar-item {
+        padding: var(--ls-space-1) var(--ls-space-3);
+        font-size: var(--ls-font-size-xs);
+    }
+    .ls-tab-header {
+        padding: var(--ls-space-1) var(--ls-space-2);
+        font-size: var(--ls-font-size-sm);
+    }
+    .oe_title h1 {
+        font-size: var(--ls-font-size-lg);
+    }
+    .ls-form-title-text {
+        font-size: var(--ls-font-size-lg) !important;
+    }
+}
+

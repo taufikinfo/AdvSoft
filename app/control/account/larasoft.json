@@ -1,0 +1,11 @@
+{
+    "name": "Accounting",
+    "version": "1.0.0",
+    "category": "Accounting",
+    "depends": ["base"],
+    "data": [
+        "data/account_data.xml"
+    ],
+    "installable": true,
+    "auto_install": false
+}

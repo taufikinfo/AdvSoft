@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  System Parameters (ir.config_parameter)       -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <data noupdate="1">
+        <record model="ir.config_parameter" id="config_web_base_url">
+            <field name="key">web.base.url</field>
+            <field name="value">http://localhost:8000</field>
+        </record>
+
+        <record model="ir.config_parameter" id="config_report_url">
+            <field name="key">report.url</field>
+            <field name="value">http://localhost:8000</field>
+        </record>
+
+        <record model="ir.config_parameter" id="config_app_name">
+            <field name="key">app.name</field>
+            <field name="value">Larasoft</field>
+        </record>
+
+        <record model="ir.config_parameter" id="config_company_currency">
+            <field name="key">company.currency</field>
+            <field name="value">IDR</field>
+        </record>
+    </data>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Default Sequences (ir.sequence)               -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <data noupdate="1">
+        <record model="ir.sequence" id="seq_default">
+            <field name="name">Default Sequence</field>
+            <field name="code">default</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+        </record>
+    </data>
+</odoo>

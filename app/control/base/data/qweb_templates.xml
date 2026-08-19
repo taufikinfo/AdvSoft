@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  QWeb Report Templates                                    -->
+    <!--  These templates are stored in ir_ui_views (type='qweb')  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Layout: HTML Container                        -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.ui.view" id="view_qweb_html_container">
+        <field name="name">web.html_container</field>
+        <field name="key">web.html_container</field>
+        <field name="type">qweb</field>
+        <field name="priority">1</field>
+        <field name="arch"><![CDATA[
+<template t-name="web.html_container">
+    <html>
+    <head>
+        <meta charset="utf-8"/>
+        <title t-out="title or 'Report'"/>
+        <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px; color: #333; margin: 0; padding: 20px; }
+            .report-header { border-bottom: 2px solid #875A7B; padding-bottom: 15px; margin-bottom: 25px; }
+            .company-name { font-size: 24px; font-weight: bold; color: #875A7B; }
+            .report-title { font-size: 16px; margin-top: 8px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+            .report-date { font-size: 11px; color: #999; margin-top: 5px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            th { background-color: #875A7B; color: white; padding: 10px 8px; text-align: left; font-weight: 600; }
+            td { padding: 8px; border-bottom: 1px solid #e0e0e0; }
+            tr:nth-child(even) { background-color: #f8f9fa; }
+            .report-footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid #ddd; padding: 10px 20px; text-align: center; font-size: 10px; color: #999; }
+            .text-right { text-align: right; }
+            .text-center { text-align: center; }
+            .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+            .badge-info { background: #17a2b8; color: white; }
+            .badge-success { background: #28a745; color: white; }
+            .badge-warning { background: #ffc107; color: #333; }
+            .badge-danger { background: #dc3545; color: white; }
+        </style>
+    </head>
+    <body>
+        <t t-out="0"/>
+        <div class="report-footer">
+            <t t-out="company.name or 'Larasoft ERP'"/>
+            &#8212;
+            Generated on <t t-out="date('Y-m-d H:i')"/>
+        </div>
+    </body>
+    </html>
+</template>
+        ]]></field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Layout: External Layout (Company Header)      -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.ui.view" id="view_qweb_external_layout">
+        <field name="name">web.external_layout</field>
+        <field name="key">web.external_layout</field>
+        <field name="type">qweb</field>
+        <field name="priority">2</field>
+        <field name="arch"><![CDATA[
+<template t-name="web.external_layout">
+    <div class="report-header">
+        <div class="company-name" t-if="company">
+            <t t-out="company.name"/>
+        </div>
+        <div class="report-title" t-if="title">
+            <t t-out="title"/>
+        </div>
+        <div class="report-date">
+            Date: <t t-out="date('Y-m-d')"/>
+            &#160;&#160;|&#160;&#160;
+            Printed by: <t t-out="user.name ?? 'System'"/>
+        </div>
+    </div>
+    <t t-out="0"/>
+</template>
+        ]]></field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Task Report Template                         -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.ui.view" id="view_qweb_task_report">
+        <field name="name">project.task.report_document</field>
+        <field name="key">project.task.report_document</field>
+        <field name="type">qweb</field>
+        <field name="priority">16</field>
+        <field name="arch"><![CDATA[
+<template t-name="project.task.report_document">
+    <t t-call="web.html_container">
+        <t t-call="web.external_layout"/>
+
+        <div class="container">
+            <t t-foreach="records" t-as="doc">
+                <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                    <h2 style="color: #875A7B; border-bottom: 1px solid #875A7B; padding-bottom: 5px;">
+                        Task: <t t-out="doc.name"/>
+                    </h2>
+
+                    <table>
+                        <tr>
+                            <th style="width: 30%;">Project</th>
+                            <td>
+                                <t t-if="doc.project" t-out="doc.project.name"/>
+                                <t t-if="!doc.project">-</t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Assigned To</th>
+                            <td>
+                                <t t-if="doc.user" t-out="doc.user.name"/>
+                                <t t-if="!doc.user">Unassigned</t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Stage</th>
+                            <td>
+                                <t t-if="doc.stage" t-out="doc.stage.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Priority</th>
+                            <td>
+                                <t t-if="doc.priority == '1'"><span class="badge badge-info">Normal</span></t>
+                                <t t-if="doc.priority == '2'"><span class="badge badge-warning">Important</span></t>
+                                <t t-if="doc.priority == '3'"><span class="badge badge-danger">Urgent</span></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Date Start</th>
+                            <td>
+                                <t t-if="doc.date_start" t-out="doc.date_start"/>
+                                <t t-if="!doc.date_start">-</t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Deadline</th>
+                            <td>
+                                <t t-if="doc.date_deadline" t-out="doc.date_deadline"/>
+                                <t t-if="!doc.date_deadline">-</t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>
+                                <t t-if="doc.description" t-out="doc.description"/>
+                                <t t-if="!doc.description">-</t>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Timesheet Lines (One2many) -->
+                    <t t-if="doc.timesheets and doc.timesheets.length > 0">
+                        <h3 style="margin-top: 20px; color: #875A7B;">Timesheets</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Employee</th>
+                                    <th>Description</th>
+                                    <th class="text-right">Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.timesheets" t-as="ts">
+                                    <tr>
+                                        <td><t t-out="ts.date"/></td>
+                                        <td><t t-out="ts.employee_name ?? '-'"/></td>
+                                        <td><t t-out="ts.description ?? '-'"/></td>
+                                        <td class="text-right"><t t-out="ts.unit_amount"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+        ]]></field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Generic Model Report (Fallback)              -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.ui.view" id="view_qweb_generic_report">
+        <field name="name">web.generic_report</field>
+        <field name="key">web.generic_report</field>
+        <field name="type">qweb</field>
+        <field name="priority">32</field>
+        <field name="arch"><![CDATA[
+<template t-name="web.generic_report">
+    <t t-call="web.html_container">
+        <t t-call="web.external_layout"/>
+
+        <div class="container">
+            <t t-foreach="records" t-as="doc">
+                <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                    <h2 style="color: #875A7B; border-bottom: 1px solid #875A7B; padding-bottom: 5px;">
+                        <t t-out="def.nameGet(doc)"/>
+                    </h2>
+
+                    <table>
+                        <t t-foreach="field_list" t-as="fentry">
+                            <t t-if="!fentry.invisible">
+                                <tr>
+                                    <th style="width: 30%;"><t t-out="fentry.string"/></th>
+                                    <td>
+                                        <t t-if="doc[fentry.name] != null" t-out="doc[fentry.name]"/>
+                                        <t t-if="doc[fentry.name] == null">-</t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </table>
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+        ]]></field>
+    </record>
+</odoo>

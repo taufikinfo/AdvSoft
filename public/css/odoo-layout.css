@@ -1,0 +1,859 @@
+/* ══════════════════════════════════════════════════════════════════
+   Larasoft Enterprise Layout System — Odoo-style Presentation Layer
+   Themes: Light / Dark / Custom brand
+   Responsive: Desktop / Tablet / Mobile breakpoints
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Design Tokens (Light Theme — default) ──────────── */
+:root,
+[data-theme="light"] {
+    /* Brand */
+    --ls-primary: #714B67;
+    --ls-primary-light: #8b6681;
+    --ls-primary-dark: #5a3c53;
+    --ls-primary-contrast: #fff;
+
+    /* Accent */
+    --ls-accent: #017e84;
+    --ls-accent-light: #02969d;
+    --ls-accent-dark: #016b70;
+
+    /* Surfaces */
+    --ls-bg: #ffffff;
+    --ls-bg-soft: #f8f9fa;
+    --ls-bg-muted: #f3f4f6;
+    --ls-bg-hover: #eef0f3;
+    --ls-bg-active: #e8eaed;
+    --ls-bg-view: #ffffff;
+
+    /* Text */
+    --ls-text: #212529;
+    --ls-text-secondary: #495057;
+    --ls-text-muted: #6c757d;
+    --ls-text-inverse: #ffffff;
+
+    /* Borders */
+    --ls-border: #dee2e6;
+    --ls-border-light: #e9ecef;
+    --ls-border-strong: #ced4da;
+
+    /* Shadows */
+    --ls-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --ls-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --ls-shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+
+    /* Navbar */
+    --ls-navbar-bg: #714B67;
+    --ls-navbar-text: rgba(255,255,255,0.85);
+    --ls-navbar-text-active: #fff;
+    --ls-navbar-height: 46px;
+
+    /* Submenu */
+    --ls-submenu-bg: #ffffff;
+    --ls-submenu-height: 38px;
+    --ls-submenu-border: var(--ls-border);
+
+    /* Sidebar (Enterprise) */
+    --ls-sidebar-width: 240px;
+    --ls-sidebar-collapsed-width: 52px;
+    --ls-sidebar-bg: #f8f9fa;
+    --ls-sidebar-border: var(--ls-border);
+    --ls-sidebar-text: var(--ls-text-secondary);
+    --ls-sidebar-active-bg: rgba(113,75,103,0.08);
+    --ls-sidebar-active-text: var(--ls-primary);
+
+    /* Control Panel */
+    --ls-cp-height: 48px;
+    --ls-cp-bg: var(--ls-bg);
+    --ls-cp-border: var(--ls-border);
+
+    /* Form */
+    --ls-form-bg: #ffffff;
+    --ls-input-bg: #ffffff;
+    --ls-input-border: #ced4da;
+    --ls-input-focus: var(--ls-primary);
+    --ls-input-radius: 4px;
+
+    /* Status Colors */
+    --ls-success: #28a745;
+    --ls-warning: #ffc107;
+    --ls-danger: #dc3545;
+    --ls-danger-light: #f8d7da;
+    --ls-danger-dark: #bd2130;
+    --ls-info: #17a2b8;
+    --ls-info-light: #d1ecf1;
+    --ls-info-dark: #117a8b;
+    --ls-success-light: #d4edda;
+    --ls-success-dark: #1e7e34;
+    --ls-warning-light: #fff3cd;
+    --ls-warning-dark: #d39e00;
+
+    /* Transition */
+    --ls-transition-fast: 0.1s ease;
+    --ls-transition: 0.2s ease;
+    --ls-transition-slow: 0.3s ease;
+    --ls-transition-slower: 0.5s ease;
+
+    /* ══ Spacing Scale (4px base, like Odoo) ══ */
+    --ls-space-0: 0;
+    --ls-space-1: 4px;
+    --ls-space-2: 8px;
+    --ls-space-3: 12px;
+    --ls-space-4: 16px;
+    --ls-space-5: 20px;
+    --ls-space-6: 24px;
+    --ls-space-8: 32px;
+    --ls-space-10: 40px;
+    --ls-space-12: 48px;
+    --ls-space-16: 64px;
+
+    /* ══ Focus Ring System ══ */
+    --ls-focus-ring-width: 3px;
+    --ls-focus-ring-color: rgba(113, 75, 103, 0.25);
+    --ls-focus-ring-offset: 1px;
+    --ls-focus-ring: 0 0 0 var(--ls-focus-ring-width) var(--ls-focus-ring-color);
+    --ls-focus-ring-input: 0 0 0 3px rgba(113, 75, 103, 0.15);
+
+    /* ══ Border Radius Scale ══ */
+    --ls-radius-none: 0;
+    --ls-radius-sm: 4px;
+    --ls-radius: 6px;
+    --ls-radius-md: 8px;
+    --ls-radius-lg: 10px;
+    --ls-radius-xl: 14px;
+    --ls-radius-2xl: 20px;
+    --ls-radius-full: 9999px;
+
+    /* ══ Font Size Scale ══ */
+    --ls-font-size-xs: 10px;
+    --ls-font-size-sm: 11px;
+    --ls-font-size: 13px;
+    --ls-font-size-md: 14px;
+    --ls-font-size-lg: 16px;
+    --ls-font-size-xl: 20px;
+    --ls-font-size-2xl: 24px;
+    --ls-font-size-3xl: 30px;
+
+    /* ══ Z-Index Scale ══ */
+    --ls-z-dropdown: 1000;
+    --ls-z-sticky: 1020;
+    --ls-z-fixed: 1030;
+    --ls-z-modal-backdrop: 1040;
+    --ls-z-modal: 1050;
+    --ls-z-popover: 1060;
+    --ls-z-tooltip: 1070;
+    --ls-z-toast: 1080;
+
+    /* ══ Widget-specific Tokens ══ */
+    --ls-widget-success: #10b981;
+    --ls-widget-warning: #f59e0b;
+    --ls-widget-danger: #ef4444;
+    --ls-widget-info: #3b82f6;
+    --ls-widget-height: 32px;
+    --ls-widget-gap: 8px;
+
+    /* Radius */
+    --ls-radius-sm: 4px;
+    --ls-radius: 6px;
+    --ls-radius-lg: 10px;
+    --ls-radius-xl: 14px;
+
+    /* Font */
+    --ls-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --ls-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --ls-font-size: 13px;
+}
+
+/* ── Dark Theme ─────────────────────────────────────── */
+[data-theme="dark"] {
+    --ls-primary: #9d7b91;
+    --ls-primary-light: #b294a6;
+    --ls-primary-dark: #7a5e6f;
+    --ls-primary-contrast: #fff;
+
+    --ls-accent: #26c6cd;
+    --ls-accent-light: #4dd0d6;
+    --ls-accent-dark: #1ba8ae;
+
+    --ls-bg: #1a1a2e;
+    --ls-bg-soft: #16213e;
+    --ls-bg-muted: #1f2544;
+    --ls-bg-hover: #252b4d;
+    --ls-bg-active: #2d3357;
+    --ls-bg-view: #1e1e3a;
+
+    --ls-text: #e4e6f0;
+    --ls-text-secondary: #b8bdd0;
+    --ls-text-muted: #8a90a6;
+    --ls-text-inverse: #1a1a2e;
+
+    --ls-border: #2d3357;
+    --ls-border-light: #252b4d;
+    --ls-border-strong: #3d4470;
+
+    --ls-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --ls-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    --ls-shadow-lg: 0 8px 30px rgba(0,0,0,0.45);
+
+    --ls-navbar-bg: #16213e;
+    --ls-navbar-text: rgba(228,230,240,0.75);
+    --ls-navbar-text-active: #e4e6f0;
+
+    --ls-submenu-bg: #1a1a2e;
+    --ls-submenu-border: var(--ls-border);
+
+    --ls-sidebar-bg: #16213e;
+    --ls-sidebar-border: var(--ls-border);
+    --ls-sidebar-text: var(--ls-text-muted);
+    --ls-sidebar-active-bg: rgba(157,123,145,0.12);
+    --ls-sidebar-active-text: var(--ls-primary);
+
+    --ls-cp-bg: var(--ls-bg);
+    --ls-cp-border: var(--ls-border);
+
+    --ls-form-bg: var(--ls-bg-view);
+    --ls-input-bg: #252b4d;
+    --ls-input-border: #3d4470;
+    --ls-input-focus: var(--ls-accent);
+
+    /* Dark status colors */
+    --ls-success: #2ecc71;
+    --ls-success-light: #1a3a2a;
+    --ls-success-dark: #27ae60;
+    --ls-warning: #f1c40f;
+    --ls-warning-light: #3d3a1a;
+    --ls-warning-dark: #d4ac0d;
+    --ls-danger: #e74c3c;
+    --ls-danger-light: #3d1a1a;
+    --ls-danger-dark: #c0392b;
+    --ls-info: #3498db;
+    --ls-info-light: #1a2a3d;
+    --ls-info-dark: #2980b9;
+
+    /* Dark focus ring */
+    --ls-focus-ring-color: rgba(157, 123, 145, 0.35);
+    --ls-focus-ring-input: 0 0 0 3px rgba(157, 123, 145, 0.2);
+
+    /* Dark widget tokens */
+    --ls-widget-success: #2ecc71;
+    --ls-widget-warning: #f1c40f;
+    --ls-widget-danger: #e74c3c;
+    --ls-widget-info: #3498db;
+}
+
+/* ── Automatic System Preference ────────────────────── */
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+        --ls-primary: #9d7b91;
+        --ls-bg: #1a1a2e;
+        --ls-bg-soft: #16213e;
+        --ls-bg-muted: #1f2544;
+        --ls-bg-hover: #252b4d;
+        --ls-bg-active: #2d3357;
+        --ls-bg-view: #1e1e3a;
+        --ls-text: #e4e6f0;
+        --ls-text-secondary: #b8bdd0;
+        --ls-text-muted: #8a90a6;
+        --ls-border: #2d3357;
+        --ls-border-light: #252b4d;
+        --ls-navbar-bg: #16213e;
+        --ls-navbar-text: rgba(228,230,240,0.75);
+        --ls-navbar-text-active: #e4e6f0;
+        --ls-submenu-bg: #1a1a2e;
+        --ls-sidebar-bg: #16213e;
+        --ls-form-bg: #1e1e3a;
+        --ls-input-bg: #252b4d;
+        --ls-input-border: #3d4470;
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   ENTERPRISE LAYOUT
+   ══════════════════════════════════════════════════════ */
+
+/* ── Base WebClient ─────────────────────────────────── */
+body {
+    margin: 0;
+    font-family: var(--ls-font);
+    font-size: var(--ls-font-size);
+    color: var(--ls-text);
+    background: var(--ls-bg);
+    -webkit-font-smoothing: antialiased;
+    transition: background var(--ls-transition), color var(--ls-transition);
+}
+
+.ls-webclient {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* ── Navbar ─────────────────────────────────────────── */
+.ls-navbar {
+    display: flex;
+    align-items: center;
+    height: var(--ls-navbar-height, 46px);
+    background: var(--ls-navbar-bg, #714B67);
+    color: var(--ls-navbar-text, #fff);
+    padding: 0 16px;
+    gap: 6px;
+    z-index: 100;
+    flex-shrink: 0;
+    transition: all var(--ls-transition, 0.2s ease);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Waffle 9-dots button (Odoo Enterprise signature) */
+.ls-waffle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+.ls-waffle-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.08);
+}
+.ls-waffle-btn:active {
+    transform: scale(0.95);
+}
+.ls-navbar-home .ls-waffle-btn {
+    display: none;
+}
+
+.ls-navbar-home,
+.ls-navbar-transparent {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !important;
+    color: #1e293b !important;
+}
+
+.ls-navbar-home .ls-navbar-brand,
+.ls-navbar-home .ls-theme-toggle,
+.ls-navbar-home .ls-user-chip,
+.ls-navbar-transparent .ls-navbar-brand,
+.ls-navbar-transparent .ls-theme-toggle,
+.ls-navbar-transparent .ls-user-chip {
+    color: #1e293b !important;
+}
+.ls-navbar-home .ls-user-chip,
+.ls-navbar-transparent .ls-user-chip {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+.ls-navbar-home .ls-user-chip a,
+.ls-navbar-transparent .ls-user-chip a {
+    color: #1e293b !important;
+}
+.ls-navbar-home .ls-avatar,
+.ls-navbar-transparent .ls-avatar {
+    background: rgba(113, 75, 103, 0.15) !important;
+    color: #714B67 !important;
+}
+.ls-navbar-home .ls-navbar-menu,
+.ls-navbar-transparent .ls-navbar-menu {
+    display: none;
+}
+
+.ls-navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    color: inherit;
+    padding-right: 8px;
+    margin-right: 6px;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+}
+.ls-brand-logo {
+    display: flex;
+    align-items: center;
+}
+.ls-brand-name {
+    font-weight: 700;
+}
+
+.ls-navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.ls-navbar-menu::-webkit-scrollbar { display: none; }
+
+.ls-navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Theme toggle button */
+.ls-theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: var(--ls-navbar-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.ls-theme-toggle:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* Mobile hamburger */
+.ls-hamburger {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    color: var(--ls-navbar-text);
+    cursor: pointer;
+    border-radius: 6px;
+    place-items: center;
+}
+.ls-hamburger:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── Main Container (sidebar + content) ─────────────── */
+.ls-main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── Content Area ───────────────────────────────────── */
+.ls-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: auto;
+    background: var(--ls-bg-soft);
+    transition: background var(--ls-transition);
+}
+
+/* ── Control Panel ──────────────────────────────────── */
+.ls-control-panel {
+    padding: 0 16px;
+    background: var(--ls-cp-bg);
+    border-bottom: 1px solid var(--ls-cp-border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: background var(--ls-transition), border var(--ls-transition);
+}
+
+/* ── Mobile Bottom Tab Bar ──────────────────────────── */
+.ls-mobile-tabs {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--ls-bg);
+    border-top: 1px solid var(--ls-border);
+    z-index: 90;
+    padding: 0 4px env(safe-area-inset-bottom, 0);
+}
+.ls-mobile-tabs-inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+.ls-mobile-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 12px;
+    border: none;
+    background: none;
+    color: var(--ls-text-muted);
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.ls-mobile-tab.active {
+    color: var(--ls-primary);
+}
+.ls-mobile-tab svg { width: 22px; height: 22px; }
+
+/* ── Mobile Overlay Menu ────────────────────────────── */
+.ls-mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: ls-fade-in 0.2s ease;
+}
+.ls-mobile-menu-overlay.open { display: block; }
+
+@keyframes ls-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ls-mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 85vw);
+    background: var(--ls-bg);
+    box-shadow: var(--ls-shadow-lg);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    animation: ls-slide-right 0.25s ease;
+    overflow-y: auto;
+}
+@keyframes ls-slide-right {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.ls-mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--ls-border);
+}
+.ls-mobile-menu-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ls-text);
+}
+
+.ls-mobile-menu-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--ls-bg-hover);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--ls-text-muted);
+}
+
+.ls-mobile-menu-apps {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.ls-mobile-menu-app {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--ls-text);
+    font-weight: 500;
+    font-size: 14px;
+    transition: background 0.12s;
+}
+.ls-mobile-menu-app:hover,
+.ls-mobile-menu-app.active {
+    background: var(--ls-sidebar-active-bg);
+    color: var(--ls-sidebar-active-text);
+}
+.ls-mobile-menu-app-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+/* ── Settings Panel (Theme/Layout) ──────────────────── */
+.ls-settings-panel {
+    display: none;
+    position: fixed;
+    top: var(--ls-navbar-height);
+    right: 0;
+    width: min(320px, 90vw);
+    bottom: 0;
+    background: var(--ls-bg);
+    border-left: 1px solid var(--ls-border);
+    box-shadow: var(--ls-shadow-lg);
+    z-index: 200;
+    flex-direction: column;
+    animation: ls-slide-left 0.2s ease;
+    overflow-y: auto;
+}
+.ls-settings-panel.open { display: flex; }
+
+@keyframes ls-slide-left {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.ls-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ls-border);
+}
+.ls-settings-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.ls-settings-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ls-border-light);
+}
+.ls-settings-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ls-text-muted);
+    margin-bottom: 12px;
+}
+
+/* Theme cards */
+.ls-theme-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.ls-theme-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border: 2px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--ls-bg);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ls-text-secondary);
+}
+.ls-theme-card:hover {
+    border-color: var(--ls-border-strong);
+}
+.ls-theme-card.active {
+    border-color: var(--ls-primary);
+    background: rgba(113,75,103,0.04);
+    color: var(--ls-primary);
+}
+.ls-theme-card-preview {
+    width: 48px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--ls-border);
+    overflow: hidden;
+}
+.ls-theme-card-preview.light { background: linear-gradient(135deg, #fff 60%, #f3f4f6 100%); }
+.ls-theme-card-preview.dark { background: linear-gradient(135deg, #1a1a2e 60%, #16213e 100%); }
+.ls-theme-card-preview.auto { background: linear-gradient(135deg, #fff 50%, #1a1a2e 50%); }
+
+/* Brand color picker */
+.ls-brand-colors {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ls-brand-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--ls-shadow-sm);
+}
+.ls-brand-swatch:hover { transform: scale(1.15); }
+.ls-brand-swatch.active {
+    border-color: var(--ls-text);
+    box-shadow: 0 0 0 2px var(--ls-bg), 0 0 0 4px var(--ls-text);
+}
+
+/* Layout mode cards */
+.ls-layout-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.ls-layout-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    border: 2px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ls-text-secondary);
+}
+.ls-layout-card:hover { border-color: var(--ls-border-strong); }
+.ls-layout-card.active {
+    border-color: var(--ls-primary);
+    color: var(--ls-primary);
+}
+
+/* Density */
+.ls-density-options {
+    display: flex;
+    gap: 6px;
+}
+.ls-density-btn {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid var(--ls-border);
+    border-radius: var(--ls-radius);
+    background: var(--ls-bg);
+    color: var(--ls-text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+}
+.ls-density-btn:hover { border-color: var(--ls-border-strong); }
+.ls-density-btn.active {
+    border-color: var(--ls-primary);
+    color: var(--ls-primary);
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ══════════════════════════════════════════════════════ */
+
+/* ── Tablet (≤ 1024px) ──────────────────────────────── */
+@media (max-width: 1024px) {
+    .ls-navbar-menu { gap: 0; }
+    .ls-nav-app { padding: 6px 10px; font-size: 12px; }
+}
+
+/* ── Mobile (≤ 768px) ───────────────────────────────── */
+@media (max-width: 768px) {
+    .ls-hamburger { display: grid; }
+    .ls-navbar-menu { display: none; }
+    .ls-navbar-right .ls-user-chip > a > div:last-child { display: none; }
+
+    .ls-submenu-bar { overflow-x: auto; scrollbar-width: none; }
+    .ls-submenu-bar::-webkit-scrollbar { display: none; }
+
+    .ls-mobile-tabs { display: block; }
+    .ls-content { padding-bottom: 56px; }
+
+    .ls-app-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    .ls-app-card { padding: 12px 4px; }
+    .ls-app-card-icon { width: 52px; height: 52px; border-radius: 14px; }
+    .ls-app-card-name { font-size: 11px; }
+
+    .ls-control-panel { padding: 0 12px; height: 44px; }
+}
+
+/* ── Small Mobile (≤ 480px) ─────────────────────────── */
+@media (max-width: 480px) {
+    .ls-app-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .ls-app-switcher { padding: 30px 12px 20px; }
+    .ls-app-switcher-header h2 { font-size: 22px; margin-bottom: 24px; }
+}
+
+/* ── Desktop density overrides ──────────────────────── */
+[data-density="compact"] {
+    --ls-navbar-height: 40px;
+    --ls-submenu-height: 34px;
+    --ls-cp-height: 40px;
+    --ls-font-size: 12px;
+}
+/* Compact Mode UI Overrides */
+[data-density="compact"] .ls-list-table th,
+[data-density="compact"] .ls-list-table td {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+}
+[data-density="compact"] .ls-btn {
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+}
+[data-density="compact"] .ls-form-row input,
+[data-density="compact"] .ls-form-row select,
+[data-density="compact"] .ls-input {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+}
+[data-density="compact"] .ls-cp-top,
+[data-density="compact"] .ls-cp-bottom {
+    min-height: 32px !important;
+}
+
+[data-density="comfortable"] {
+    --ls-navbar-height: 50px;
+    --ls-submenu-height: 42px;
+    --ls-cp-height: 52px;
+    --ls-font-size: 14px;
+}
+/* Comfortable Mode UI Overrides */
+[data-density="comfortable"] .ls-list-table th,
+[data-density="comfortable"] .ls-list-table td {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+}
+[data-density="comfortable"] .ls-btn {
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+}
+[data-density="comfortable"] .ls-form-row input,
+[data-density="comfortable"] .ls-form-row select,
+[data-density="comfortable"] .ls-input {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+}
+[data-density="comfortable"] .ls-cp-top,
+[data-density="comfortable"] .ls-cp-bottom {
+    min-height: 48px !important;
+}

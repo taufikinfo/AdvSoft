@@ -1,0 +1,1564 @@
+/* ══════════════════════════════════════════════════════════════
+   INLINE TREE WIDGET — Odoo-style <list> editable
+   Full parity: editable top/bottom, multi-edit, attrs, onchange,
+   drag-drop, decoration, optional columns, bulk, picker, etc.
+
+   v17.1 — fix pass:
+     - sticky header/column now functional
+     - cells clearly clickable (cursor + hover)
+     - M2O input inside cell shows visible affordance
+     - delete button always visible (subtle)
+     - dirty/saved/error shown via status dot + row tint (not border)
+     - M2M tags respect cell width (allow wrap)
+     - styles for fav-btn, m2o-btn, reference-widget, m2m-input added
+     - progress widget track/bar via class
+     - row-button variants (danger/success)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── CSS variables (override-friendly) ─────────── */
+.ls-inline-tree {
+    --it-border: #e5e7eb;
+    --it-border-light: #f3f4f6;
+    --it-text: #111827;
+    --it-text-muted: #6b7280;
+    --it-text-light: #9ca3af;
+    --it-primary: #714b67;
+    --it-primary-light: rgba(113, 75, 103, .12);
+    --it-primary-bg: rgba(113, 75, 103, .06);
+    --it-hover: #faf5f9;
+    --it-danger: #ef4444;
+    --it-success: #10b981;
+    --it-warning: #f59e0b;
+    --it-info: #3b82f6;
+
+    margin: 0 -4px;
+    font-family: var(--ls-font, 'Inter', sans-serif);
+    color: var(--it-text);
+    font-size: 13px;
+    position: relative;
+}
+
+/* ── Header strip ───────────────────────────── */
+.ls-it-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ls-it-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--it-text-muted);
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.ls-it-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 13px;
+    background: var(--it-primary);
+    border-radius: 2px;
+}
+.ls-it-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--it-primary-bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--it-primary);
+    border: 1px solid var(--it-primary-light);
+}
+.ls-it-bulk-bar button {
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 11px;
+    color: inherit;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background .15s;
+}
+.ls-it-bulk-bar button:hover {
+    background: var(--it-primary-light);
+}
+.ls-it-bulk-bar button.ls-it-bulk-danger {
+    color: var(--it-danger);
+    border-color: rgba(239, 68, 68, .4);
+}
+.ls-it-bulk-bar button.ls-it-bulk-danger:hover {
+    background: rgba(239, 68, 68, .1);
+}
+.ls-it-optional-toggle {
+    position: relative;
+}
+.ls-it-optional-popover {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #fff;
+    border: 1px solid var(--it-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .06);
+    padding: 6px;
+    min-width: 200px;
+    z-index: 50;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.ls-it-optional-popover label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    color: var(--it-text);
+}
+.ls-it-optional-popover label:hover {
+    background: var(--it-primary-bg);
+}
+.ls-it-optional-popover input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--it-primary);
+    cursor: pointer;
+}
+
+/* ── Table wrapper (must allow sticky) ─────── */
+.ls-it-table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 60vh;
+    border: 1px solid var(--it-border);
+    border-radius: 6px;
+    background: #fff;
+    position: relative;
+}
+
+/* ── Table core ─────────────────────────────── */
+.ls-it-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    table-layout: auto;
+    background: #fff;
+}
+
+/* ── Header row ─────────────────────────────── */
+.ls-it-thead {
+    background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+.ls-it-thead tr {
+    box-shadow: inset 0 -2px 0 var(--it-border);
+}
+.ls-it-th {
+    text-align: left;
+    padding: 9px 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--it-text-muted);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    background: inherit;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    vertical-align: middle;
+}
+.ls-it-th[data-type="float"],
+.ls-it-th[data-type="integer"],
+.ls-it-th[data-type="monetary"] {
+    text-align: right;
+}
+.ls-it-th-resize {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 1;
+}
+.ls-it-th-resize:hover {
+    background: var(--it-primary);
+    opacity: .6;
+}
+.ls-it-th-check,
+.ls-it-th-handle {
+    padding: 9px 8px;
+    text-align: center;
+    width: 36px;
+    background: inherit;
+}
+.ls-it-th-handle {
+    width: 30px;
+}
+.ls-it-th-actions {
+    padding: 9px 6px;
+    text-align: center;
+    width: 42px;
+    background: inherit;
+}
+.ls-it-th-status {
+    width: 10px;
+    padding: 9px 2px;
+    background: inherit;
+}
+.ls-it-th-rowbtn {
+    padding: 9px 6px;
+    text-align: center;
+    background: inherit;
+    font-weight: 600;
+}
+
+/* ── Body rows ──────────────────────────────── */
+.ls-it-row {
+    transition: background .1s ease;
+    animation: itRowFadeIn .2s ease;
+}
+.ls-it-row:hover {
+    background: var(--it-hover);
+}
+.ls-it-row:nth-child(even):not(:hover):not(.selected):not(.editing) {
+    background: rgba(0, 0, 0, .012);
+}
+.ls-it-row.selected {
+    background: var(--it-primary-bg);
+}
+.ls-it-row.selected:hover {
+    background: var(--it-primary-light);
+}
+.ls-it-row.editing {
+    background: var(--it-primary-bg);
+    box-shadow: inset 3px 0 0 var(--it-primary);
+}
+.ls-it-row.dragging,
+.ls-it-row.ls-it-dragging {
+    opacity: 0.4;
+}
+
+/* Decoration classes */
+.ls-it-row.ls-it-bold { font-weight: 700; }
+.ls-it-row.ls-it-italic { font-style: italic; }
+.ls-it-row.ls-it-danger { background: rgba(239, 68, 68, .06); }
+.ls-it-row.ls-it-danger:hover { background: rgba(239, 68, 68, .1); }
+.ls-it-row.ls-it-warning { background: rgba(245, 158, 11, .06); }
+.ls-it-row.ls-it-warning:hover { background: rgba(245, 158, 11, .1); }
+.ls-it-row.ls-it-success { background: rgba(16, 185, 129, .06); }
+.ls-it-row.ls-it-success:hover { background: rgba(16, 185, 129, .1); }
+.ls-it-row.ls-it-row-info { background: rgba(59, 130, 246, .06); }
+.ls-it-row.ls-it-row-info:hover { background: rgba(59, 130, 246, .1); }
+.ls-it-row.ls-it-primary { background: var(--it-primary-bg); }
+.ls-it-row.ls-it-primary:hover { background: var(--it-primary-light); }
+.ls-it-row.ls-it-muted { opacity: .55; }
+.ls-it-row.ls-it-today .ls-it-td[data-type="date"] { font-weight: 700; color: var(--it-info); }
+.ls-it-row.ls-it-date { color: var(--it-text-muted); }
+
+/* Dirty / Saved / Error — keep a small dot in the status column, plus subtle row tint */
+.ls-it-row.ls-it-dirty {
+    background: rgba(245, 158, 11, .05);
+}
+.ls-it-row.ls-it-dirty:hover {
+    background: rgba(245, 158, 11, .1);
+}
+.ls-it-row.ls-it-error {
+    background: rgba(239, 68, 68, .08);
+}
+.ls-it-row.ls-it-error:hover {
+    background: rgba(239, 68, 68, .12);
+}
+.ls-it-row.ls-it-saved {
+    /* saved is transient; CSS gives a brief flash via dot color only */
+}
+
+/* Status dot in the status column (shows dirty/saved/error) */
+.ls-it-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 1);
+    transition: background .2s;
+}
+.ls-it-status-dot.dirty { background: var(--it-warning); }
+.ls-it-status-dot.saved { background: var(--it-success); }
+.ls-it-status-dot.error { background: var(--it-danger); }
+
+/* ── Cells ──────────────────────────────────── */
+.ls-it-td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--it-border-light);
+    vertical-align: middle;
+    color: var(--it-text);
+    cursor: text;
+    transition: background .1s, box-shadow .1s;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+}
+.ls-it-td.ls-it-readonly {
+    cursor: default;
+    background: rgba(0, 0, 0, .02);
+    color: var(--it-text-muted);
+}
+/* Required asterisk */
+.ls-it-td.ls-it-required {
+    /* Container for asterisk positioning */
+}
+.ls-it-td.ls-it-required::after {
+    /* Removed text asterisk as it breaks flex/100% width. Use border/color indicator instead. */
+}
+.ls-it-td.ls-it-required.ls-it-readonly {
+    /* For readonly, we could add it back, or just rely on form view */
+}
+/* Odoo-style required indicator for list view */
+.ls-it-td.ls-it-required {
+    /* No visual clutter in list view, or just a bold column header */
+}
+/* Editable cell affordance — slight tint when row is in edit mode */
+.ls-it-row.editing .ls-it-td {
+    background: rgba(255, 255, 255, .4);
+}
+.ls-it-row.editing .ls-it-td:hover {
+    background: rgba(255, 255, 255, .7);
+}
+.ls-it-td.ls-it-num,
+.ls-it-td[data-type="float"],
+.ls-it-td[data-type="integer"],
+.ls-it-td[data-type="monetary"] {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.ls-it-td-check {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--it-border-light);
+    text-align: center;
+    width: 36px;
+    cursor: default;
+}
+.ls-it-td-handle {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--it-border-light);
+    text-align: center;
+    width: 30px;
+    cursor: grab;
+}
+.ls-it-td-handle:active {
+    cursor: grabbing;
+}
+.ls-it-td-actions {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--it-border-light);
+    text-align: center;
+    width: 42px;
+    cursor: default;
+}
+.ls-it-td-status {
+    padding: 7px 2px;
+    border-bottom: 1px solid var(--it-border-light);
+    width: 10px;
+    text-align: center;
+    cursor: default;
+}
+.ls-it-td-rowbtn {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--it-border-light);
+    text-align: center;
+    cursor: default;
+}
+
+/* Row action buttons (in tabDef.buttons) */
+.ls-it-row-btn {
+    border: 1px solid var(--it-border);
+    background: #fff;
+    color: #374151;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    line-height: 1.4;
+}
+.ls-it-row-btn:hover {
+    background: var(--it-hover);
+    border-color: var(--it-primary);
+    color: var(--it-primary);
+}
+.ls-it-row-btn.ls-it-row-btn-danger {
+    color: var(--it-danger);
+    border-color: rgba(239, 68, 68, .4);
+}
+.ls-it-row-btn.ls-it-row-btn-danger:hover {
+    background: #fef2f2;
+    border-color: var(--it-danger);
+}
+.ls-it-row-btn.ls-it-row-btn-success {
+    color: var(--it-success);
+    border-color: rgba(16, 185, 129, .4);
+}
+.ls-it-row-btn.ls-it-row-btn-success:hover {
+    background: rgba(16, 185, 129, .08);
+    border-color: var(--it-success);
+}
+
+/* ── Sticky first column (works because both axes are auto) ─ */
+.ls-it-table.ls-it-sticky-first .ls-it-td:nth-child(1),
+.ls-it-table.ls-it-sticky-first .ls-it-th:nth-child(1) {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 1;
+    box-shadow: 1px 0 0 var(--it-border);
+}
+.ls-it-table.ls-it-sticky-first .ls-it-thead .ls-it-th:nth-child(1) {
+    z-index: 4;
+    background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+}
+.ls-it-table.ls-it-sticky-first .ls-it-row:hover .ls-it-td:nth-child(1) {
+    background: var(--it-hover);
+}
+.ls-it-table.ls-it-sticky-first .ls-it-row.editing .ls-it-td:nth-child(1) {
+    background: var(--it-primary-bg);
+}
+.ls-it-table.ls-it-sticky-first .ls-it-row.selected .ls-it-td:nth-child(1) {
+    background: var(--it-primary-bg);
+}
+
+/* ── Inline Editing Inputs ─────────────────── */
+.ls-it-input {
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--it-text);
+    background: transparent;
+    outline: none;
+    box-sizing: border-box;
+    min-width: 0;
+}
+.ls-it-input:focus {
+    box-shadow: none;
+    border-bottom: 1px solid var(--it-primary);
+    background: transparent;
+}
+.ls-it-input:hover:not(:focus):not(:disabled) {
+    border-color: var(--it-primary);
+}
+.ls-it-input:disabled {
+    background: var(--it-border-light);
+    color: var(--it-text-muted);
+    cursor: not-allowed;
+}
+.ls-it-number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.ls-it-select {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--it-border);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--it-text);
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border-color .15s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%236b7280' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    padding-right: 22px;
+}
+.ls-it-select:focus {
+    border-color: var(--it-primary);
+    box-shadow: 0 0 0 2px var(--it-primary-light);
+}
+.ls-it-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--it-primary);
+    cursor: pointer;
+    vertical-align: middle;
+}
+.ls-it-textarea {
+    resize: vertical;
+    min-height: 28px;
+    font-family: inherit;
+}
+
+/* ── M2O widget inside the tree cell ───────── */
+.ls-it-m2o-widget {
+    position: relative;
+    width: 100%;
+}
+.ls-it-m2o-widget .ls-m2o-autocomplete {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--it-text);
+    background: #fff;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    box-sizing: border-box;
+    cursor: text;
+}
+.ls-it-m2o-widget .ls-m2o-autocomplete:hover {
+    border-color: var(--it-border);
+    background: #fafbfc;
+}
+.ls-it-m2o-widget .ls-m2o-autocomplete:focus,
+.ls-it-m2o-widget.is-focused .ls-m2o-autocomplete {
+    border-color: var(--it-primary);
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--it-primary-light);
+}
+.ls-it-m2o-widget .ls-m2o-autocomplete::placeholder {
+    color: var(--it-text-light);
+    font-style: italic;
+}
+
+/* ── M2M widget (tags) — allow wrap, scale down pills ─ */
+.ls-it-m2m-widget {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+    max-width: 100%;
+    padding: 0;
+    margin: -2px 0;
+}
+.ls-it-m2m-widget .ls-m2m-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    line-height: 1.4;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+.ls-it-m2m-widget .ls-m2m-tag-remove {
+    cursor: pointer;
+    font-weight: 700;
+    opacity: .6;
+    padding: 0 2px;
+    line-height: 1;
+}
+.ls-it-m2m-widget .ls-m2m-tag-remove:hover { opacity: 1; }
+.ls-m2m-input {
+    border: none !important;
+    background: transparent !important;
+    padding: 2px 4px !important;
+    font-size: 12px !important;
+    min-width: 80px !important;
+    width: auto !important;
+    box-shadow: none !important;
+    flex: 1;
+}
+.ls-m2m-input:focus {
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+}
+
+/* ── Many2one avatar widget ────────────────── */
+.ls-m2o-avatar-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.ls-m2o-avatar-widget .ls-avatar-initial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--it-primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ── Many2one button widget ────────────────── */
+.ls-it-m2o-btn {
+    background: none;
+    border: 1px solid var(--it-border);
+    border-radius: 3px;
+    color: var(--it-primary);
+    padding: 1px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+}
+.ls-it-m2o-btn:hover {
+    background: var(--it-primary-bg);
+    border-color: var(--it-primary);
+}
+
+
+/* ── Favorite star button (boolean_favorite) ── */
+.ls-it-fav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    color: #d1d5db;
+    transition: color .15s, transform .15s;
+    font-family: inherit;
+}
+.ls-it-fav-btn:hover {
+    color: #f59e0b;
+    transform: scale(1.15);
+}
+
+/* ── Reference widget (dynamic FK) ─────────── */
+.ls-it-reference-widget {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    width: 100%;
+}
+.ls-it-reference-widget select.ls-it-input {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 100px;
+    max-width: 50%;
+}
+.ls-it-reference-widget input.ls-it-input {
+    flex: 1;
+    min-width: 50px;
+}
+
+/* ── Copy clipboard button ─────────────────── */
+.ls-copy-clipboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.ls-copy-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    opacity: .5;
+    padding: 1px 4px;
+    font-size: 11px;
+    color: var(--it-text-muted);
+    transition: all .15s;
+    font-family: inherit;
+}
+.ls-copy-btn:hover {
+    opacity: 1;
+    color: var(--it-primary);
+    border-color: var(--it-border);
+    background: var(--it-primary-bg);
+}
+
+/* ── Progress widget ────────────────────────── */
+.ls-progress-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    vertical-align: middle;
+    width: 100%;
+}
+.ls-progress-widget .ls-progress-track {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 60px;
+    max-width: 160px;
+}
+.ls-progress-widget .ls-progress-bar {
+    height: 100%;
+    background: var(--it-primary);
+    transition: width .3s, background .3s;
+}
+.ls-progress-widget .ls-progress-bar.low { background: var(--it-info); }
+.ls-progress-widget .ls-progress-bar.mid { background: var(--it-warning); }
+.ls-progress-widget .ls-progress-bar.high { background: var(--it-success); }
+.ls-progress-widget .ls-progress-label {
+    font-size: 11px;
+    color: var(--it-text-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 28px;
+    text-align: right;
+}
+.ls-it-td input[type="range"].ls-it-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    outline: none;
+    padding: 0;
+    border: none;
+}
+.ls-it-td input[type="range"].ls-it-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--it-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+}
+.ls-it-td input[type="range"].ls-it-input::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--it-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #fff;
+}
+
+/* ── Status with color widget ──────────────── */
+.ls-status-with-color {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 1px 0;
+}
+.ls-status-with-color .ls-status-dot-color {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ── Badge widget (selection with color) ───── */
+.ls-badge-widget {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Color picker (color widget) ───────────── */
+.ls-color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    padding: 2px 0;
+    align-items: center;
+}
+.ls-color-picker .ls-color-swatch {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .12s, border-color .12s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .15);
+}
+.ls-color-picker .ls-color-swatch:hover {
+    transform: scale(1.12);
+}
+.ls-color-picker .ls-color-swatch.selected {
+    border-color: var(--it-text);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--it-text);
+}
+.ls-color-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--it-border);
+    vertical-align: middle;
+}
+
+/* ── Priority stars widget ─────────────────── */
+.ls-priority-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    font-size: 14px;
+    line-height: 1;
+}
+.ls-priority-widget .ls-priority-star {
+    color: #e5e7eb;
+    cursor: default;
+}
+.ls-priority-widget .ls-priority-star.filled {
+    color: #f59e0b;
+}
+
+/* ── Drag Handle ───────────────────────────── */
+.ls-it-drag-handle {
+    cursor: grab;
+    color: var(--it-text-light);
+    font-size: 14px;
+    user-select: none;
+    transition: color .15s;
+    display: inline-block;
+    padding: 2px;
+    line-height: 1;
+}
+.ls-it-drag-handle:hover {
+    color: var(--it-primary);
+}
+.ls-it-drag-handle:active {
+    cursor: grabbing;
+}
+.ls-it-row.ls-it-drop-above {
+    box-shadow: inset 0 2px 0 0 var(--it-primary);
+}
+.ls-it-row.ls-it-drop-below {
+    box-shadow: inset 0 -2px 0 0 var(--it-primary);
+}
+
+/* ── Delete Button (always visible) ────────── */
+.ls-it-btn-delete {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--it-text-light);
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    padding: 0;
+    transition: all .15s;
+    opacity: .55;
+}
+.ls-it-row:hover .ls-it-btn-delete {
+    opacity: 1;
+}
+.ls-it-btn-delete:hover {
+    color: var(--it-danger);
+    background: #fef2f2;
+}
+.ls-it-btn-delete:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--it-primary);
+    outline-offset: 1px;
+}
+
+/* ── Aggregation Footer (tfoot) ────────────── */
+.ls-it-tfoot {
+    background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    box-shadow: inset 0 2px 0 var(--it-border);
+}
+.ls-it-footer td {
+    border-bottom: none;
+    border-top: 1px solid var(--it-border);
+}
+.ls-it-td-agg {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--it-text);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    background: transparent;
+    white-space: nowrap;
+}
+.ls-it-td-agg[data-type="float"],
+.ls-it-td-agg[data-type="integer"],
+.ls-it-td-agg[data-type="monetary"] {
+    text-align: right;
+}
+.ls-it-agg-label {
+    color: var(--it-text-muted);
+    font-weight: 500;
+    margin-right: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+.ls-it-agg-value {
+    font-weight: 700;
+    color: var(--it-primary);
+}
+
+/* ── Empty State ───────────────────────────── */
+.ls-it-empty {
+    padding: 48px 32px !important;
+    text-align: center;
+    color: var(--it-text-light);
+    font-size: 13px;
+    font-style: italic;
+    background: linear-gradient(180deg, #fafbfc 0%, #f4f6f8 100%);
+    border: none !important;
+    cursor: default;
+}
+.ls-it-empty::before {
+    content: '📋';
+    display: block;
+    font-size: 32px;
+    margin-bottom: 8px;
+    opacity: .4;
+    font-style: normal;
+}
+
+/* ── Quick create row ──────────────────────── */
+.ls-it-quick-create td {
+    background: var(--it-primary-bg);
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--it-border-light);
+}
+
+/* ── Controls (Add line + info) ────────────── */
+.ls-it-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px 4px 4px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ls-it-add-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    color: var(--it-primary);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px dashed transparent;
+    border-radius: 4px;
+    background: none;
+    font-family: inherit;
+    transition: all .2s;
+}
+.ls-it-add-line:hover {
+    border-color: var(--it-primary);
+    background: var(--it-primary-bg);
+}
+.ls-it-add-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--it-primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+.ls-it-info {
+    font-size: 12px;
+    color: var(--it-text-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ls-it-count {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--it-text-muted);
+}
+.ls-it-pager {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+.ls-it-pager button {
+    background: #fff;
+    border: 1px solid var(--it-border);
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--it-text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+}
+.ls-it-pager button:hover:not(:disabled) {
+    background: var(--it-primary-bg);
+    border-color: var(--it-primary);
+    color: var(--it-primary);
+}
+.ls-it-pager button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Sum Footer ────────────────────────────── */
+.ls-it-sum-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--it-text-muted);
+    border-top: 2px solid var(--it-border);
+    margin-top: -1px;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+}
+.ls-it-sum-label {
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    font-size: 11px;
+}
+.ls-it-sum-value {
+    color: var(--it-primary);
+    font-size: 15px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Selection Checkbox Styling ────────────── */
+.ls-it-td-check input[type="checkbox"],
+.ls-it-th-check input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--it-primary);
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* ── Row Animation ─────────────────────────── */
+@keyframes itRowFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes itStatusPulse {
+    0%   { transform: scale(1);   opacity: 1; }
+    50%  { transform: scale(1.4); opacity: .6; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+.ls-it-status-dot.dirty,
+.ls-it-status-dot.saved,
+.ls-it-status-dot.error {
+    animation: itStatusPulse 1.5s ease-in-out infinite;
+}
+
+/* ── Add-from-list dialog (extends M2O dialog) ── */
+.ls-add-from-list .ls-m2o-dialog-footer {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-top: 1px solid var(--it-border);
+    background: #f8f9fa;
+    gap: 8px;
+}
+.ls-add-from-list .ls-m2o-dialog-search-bar {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--it-border-light);
+}
+.ls-add-from-list .ls-m2o-dialog-search-box {
+    width: 100%;
+    max-width: 340px;
+    padding: 6px 12px;
+    border: 1px solid var(--it-border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--it-text);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.ls-add-from-list .ls-m2o-dialog-search-box:focus {
+    border-color: var(--it-primary);
+    box-shadow: 0 0 0 2px var(--it-primary-light);
+}
+.ls-add-from-list .ls-m2o-dialog-body {
+    flex: 1;
+    overflow: auto;
+    min-height: 200px;
+}
+.ls-m2o-dialog-empty {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--it-text-light);
+    font-style: italic;
+    font-size: 13px;
+}
+
+/* ── Responsive: small screens ─────────────── */
+@media (max-width: 768px) {
+    .ls-it-th,
+    .ls-it-td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    .ls-it-td {
+        max-width: 180px;
+    }
+    .ls-it-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .ls-it-info {
+        justify-content: center;
+    }
+    .ls-it-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .ls-it-bulk-bar {
+        justify-content: center;
+    }
+}
+
+/* ── Print ─────────────────────────────────── */
+@media print {
+    .ls-it-btn-delete,
+    .ls-it-add-line,
+    .ls-it-controls,
+    .ls-it-pager,
+    .ls-it-optional-toggle,
+    .ls-it-th-handle,
+    .ls-it-td-handle,
+    .ls-it-th-check,
+    .ls-it-td-check,
+    .ls-it-th-actions,
+    .ls-it-td-actions,
+    .ls-it-bulk-bar {
+        display: none !important;
+    }
+    .ls-it-table-wrap {
+        max-height: none;
+        overflow: visible;
+        border: 1px solid #999;
+    }
+    .ls-it-thead {
+        position: static;
+    }
+    .ls-it-tfoot {
+        position: static;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GAP FIXES v2 — Column Sort · Required marker · Spinner ·
+                  Loading overlay · Keyboard focus ring
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Sortable column header ─────────────────── */
+.ls-it-th.ls-it-th-sortable {
+    cursor: pointer;
+    padding-right: 28px; /* make room for sort icon */
+}
+.ls-it-th.ls-it-th-sortable:hover {
+    color: var(--it-primary);
+    background: var(--it-primary-bg);
+}
+.ls-it-th.ls-it-sorted-asc,
+.ls-it-th.ls-it-sorted-desc {
+    color: var(--it-primary);
+    background: rgba(113, 75, 103, .06);
+}
+
+/* Sort icon (▲ ▼ ⇅) */
+.ls-it-sort-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9px;
+    line-height: 1;
+    pointer-events: none;
+    color: var(--it-primary);
+    opacity: .9;
+}
+.ls-it-sort-icon.ls-it-sort-inactive {
+    color: var(--it-text-light);
+    opacity: .45;
+    font-size: 10px;
+}
+
+/* Required asterisk in <th> */
+.ls-it-th-required {
+    color: var(--it-danger);
+    font-weight: 900;
+    margin-left: 2px;
+    font-size: 13px;
+    vertical-align: super;
+    line-height: 0;
+}
+
+/* Required highlight on <td> — left micro-border */
+.ls-it-td.ls-it-required:not(.ls-it-readonly) {
+    border-left: 2px solid rgba(239, 68, 68, .35);
+}
+
+/* ── Loading spinner (used in "Load more" + row loading) ─── */
+.ls-it-spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(113, 75, 103, .25);
+    border-top-color: var(--it-primary);
+    border-radius: 50%;
+    animation: itSpin .65s linear infinite;
+    vertical-align: middle;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+@keyframes itSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Row-level loading shimmer */
+.ls-it-row.ls-it-row-loading .ls-it-td {
+    background: linear-gradient(90deg,
+        rgba(113,75,103,.04) 25%,
+        rgba(113,75,103,.10) 50%,
+        rgba(113,75,103,.04) 75%);
+    background-size: 200% 100%;
+    animation: itShimmer 1.2s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes itShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── Table-level loading overlay (full reload) ── */
+.ls-it-table-wrap.ls-it-loading {
+    pointer-events: none;
+    opacity: .55;
+    transition: opacity .2s;
+}
+
+/* ── Keyboard focus ring inside editable cell ── */
+.ls-it-row.editing .ls-it-td:focus-within {
+    outline: 2px solid var(--it-primary);
+    outline-offset: -2px;
+    border-radius: 2px;
+    z-index: 1;
+    position: relative;
+}
+
+/* ── Empty state: "No records yet" better copy ── */
+.ls-it-empty {
+    padding: 40px 24px !important;
+}
+.ls-it-empty::before {
+    content: '📄';
+}
+
+/* ── Tab-focus affordance on the whole row ── */
+.ls-it-row:focus-within:not(.editing) {
+    outline: 1px solid var(--it-primary-light);
+}
+
+/* ── onchange-toast (field update flash) ─────── */
+.ls-onchange-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-family: var(--ls-font, 'Inter', sans-serif);
+    box-shadow: 0 4px 20px rgba(0,0,0,.22);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .22s, transform .22s;
+    max-width: 380px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+.ls-onchange-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.ls-onchange-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* ── Decoration: "decoration-*" prefix keys ─────
+   Odoo 17 uses "decoration-danger" etc. in tree arch.
+   Mirror the short keys already in CSS but add the
+   prefixed variants so both work.                ── */
+.ls-it-row.ls-it-decoration-danger  { background: rgba(239, 68,  68, .06); }
+.ls-it-row.ls-it-decoration-warning { background: rgba(245, 158, 11, .06); }
+.ls-it-row.ls-it-decoration-success { background: rgba(16,  185, 129,.06); }
+.ls-it-row.ls-it-decoration-info    { background: rgba(59,  130, 246,.06); }
+.ls-it-row.ls-it-decoration-muted   { opacity: .55; }
+.ls-it-row.ls-it-decoration-bf      { font-weight: 700; }
+.ls-it-row.ls-it-decoration-it      { font-style: italic; }
+
+/* ── Add-from-list: wider dialog on desktop ── */
+@media (min-width: 768px) {
+    .ls-add-from-list .ls-m2o-dialog {
+        width: min(680px, 90vw);
+        max-height: 70vh;
+    }
+}
+
+/* ── Print: also hide status column + sort icons ── */
+@media print {
+    .ls-it-th-status,
+    .ls-it-td-status,
+    .ls-it-sort-icon,
+    .ls-it-th-resize {
+        display: none !important;
+    }
+    .ls-it-th.ls-it-th-sortable {
+        cursor: default;
+        padding-right: 12px;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION GROUPING — Odoo-style group-by headers in inline tree
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Group-by dropdown control ── */
+.ls-it-groupby-toggle {
+    margin-left: auto;
+}
+.ls-it-groupby-select {
+    font-size: 12px;
+    padding: 3px 8px;
+    border: 1px solid var(--it-border, #e5e7eb);
+    border-radius: 6px;
+    background: var(--it-bg, #fff);
+    color: var(--it-text, #1e293b);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ls-it-groupby-select:focus {
+    border-color: var(--it-accent, #714b67);
+    box-shadow: 0 0 0 2px rgba(113, 75, 103, 0.12);
+}
+
+/* ── Group Header Row ── */
+.o_group_header {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+}
+.o_group_header:hover {
+    background: rgba(113, 75, 103, 0.06) !important;
+}
+.o_group_header_cell {
+    padding: 8px 12px !important;
+    font-weight: 600;
+    font-size: 13px;
+    background: linear-gradient(135deg, rgba(113, 75, 103, 0.06), rgba(113, 75, 103, 0.02));
+    border-bottom: 2px solid rgba(113, 75, 103, 0.15);
+    border-top: 1px solid var(--it-border, #e5e7eb);
+    color: var(--it-text, #1e293b);
+}
+.o_group_header_inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.o_group_folded .o_group_header_cell {
+    background: var(--it-bg-alt, #f8fafc);
+    border-bottom: 1px solid var(--it-border, #e5e7eb);
+}
+
+/* ── Toggle Arrow ── */
+.o_group_toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    color: var(--it-accent, #714b67);
+    border-radius: 4px;
+    transition: background 0.15s, transform 0.2s;
+    flex-shrink: 0;
+}
+.o_group_open .o_group_toggle {
+    background: rgba(113, 75, 103, 0.1);
+}
+.o_group_header:hover .o_group_toggle {
+    background: rgba(113, 75, 103, 0.15);
+}
+
+/* ── Group Name ── */
+.o_group_name {
+    font-weight: 600;
+    color: var(--it-text, #1e293b);
+}
+
+/* ── Group Count Badge ── */
+.o_group_count {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--it-text-muted, #94a3b8);
+    background: rgba(113, 75, 103, 0.08);
+    padding: 1px 8px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+/* ── Group Aggregate in Header ── */
+.o_group_aggregate {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--it-accent, #714b67);
+}
+.o_group_agg_value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Group Loading Row ── */
+.o_group_loading_row td {
+    padding: 12px;
+    text-align: center;
+    color: var(--it-text-muted, #94a3b8);
+    font-size: 12px;
+}
+
+/* ── Group "More Rows" Link ── */
+.o_group_more_row {
+    cursor: pointer;
+}
+.o_group_more_cell {
+    padding: 6px 12px 6px 40px !important;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--it-accent, #714b67);
+    opacity: 0.8;
+    transition: opacity 0.15s;
+}
+.o_group_more_row:hover .o_group_more_cell {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* ── Group Footer (per-group aggregate) ── */
+.o_group_footer {
+    background: rgba(113, 75, 103, 0.03);
+    border-bottom: 2px solid rgba(113, 75, 103, 0.12);
+}
+.o_group_footer_cell {
+    padding: 4px 12px !important;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--it-accent, #714b67);
+    font-variant-numeric: tabular-nums;
+}
+.o_group_agg_label {
+    margin-right: 4px;
+    opacity: 0.6;
+}
+.o_group_agg_val {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Indentation for data rows within groups ── */
+.o_group_open + tr:not(.o_group_header):not(.o_group_footer):not(.o_group_more_row) td:first-child,
+.o_group_open ~ tr:not(.o_group_header):not(.o_group_footer):not(.o_group_more_row) td:first-child {
+    padding-left: 20px;
+}
+
+/* ── Dark Mode Overrides ── */
+[data-theme="dark"] .o_group_header_cell,
+.dark .o_group_header_cell {
+    background: linear-gradient(135deg, rgba(113, 75, 103, 0.12), rgba(113, 75, 103, 0.04));
+    border-bottom-color: rgba(113, 75, 103, 0.25);
+    color: #e2e8f0;
+}
+[data-theme="dark"] .o_group_folded .o_group_header_cell,
+.dark .o_group_folded .o_group_header_cell {
+    background: rgba(30, 41, 59, 0.6);
+}
+[data-theme="dark"] .o_group_name,
+.dark .o_group_name {
+    color: #e2e8f0;
+}
+[data-theme="dark"] .o_group_count,
+.dark .o_group_count {
+    background: rgba(113, 75, 103, 0.2);
+    color: #cbd5e1;
+}
+[data-theme="dark"] .o_group_footer,
+.dark .o_group_footer {
+    background: rgba(113, 75, 103, 0.08);
+    border-bottom-color: rgba(113, 75, 103, 0.2);
+}
+[data-theme="dark"] .o_group_footer_cell,
+.dark .o_group_footer_cell {
+    color: #c4a0b7;
+}
+[data-theme="dark"] .ls-it-groupby-select,
+.dark .ls-it-groupby-select {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(100, 116, 139, 0.4);
+    color: #e2e8f0;
+}
+
+/* ── Animation: smooth group expand/collapse ── */
+.o_group_header {
+    animation: groupFadeIn 0.2s ease-out;
+}
+@keyframes groupFadeIn {
+    from { opacity: 0.5; transform: translateY(-2px); }
+    to   { opacity: 1;   transform: translateY(0); }
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--begin::Head-->
+<head>
+    <base href="">
+    <title> {title} </title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="app/templates/{template}/media/logos/favicon.ico" rel="shortcut icon" />
+    <link href="manifest.json?appver=750" rel="manifest">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="app/images/icon.png" rel="apple-touch-icon" sizes="180x180">
+    <meta name="mobile-web-app-capable" content="yes">
+    {LIBRARIES}
+    {HEAD}
+    <script>
+
+        $(function () {
+          __adianti_set_language('{lang}');
+        });
+    </script>
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body class="app-default" data-kt-app-header-fixed="true" data-kt-app-layout="dark-sidebar"
+      data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
+      data-kt-app-sidebar-push-footer="true" data-kt-app-sidebar-push-header="true"
+      data-kt-app-sidebar-push-toolbar="true" data-kt-app-toolbar-enabled="true" id="kt_app_body">
+<!--begin::Theme mode setup on page load-->
+<script>
+    var defaultThemeMode = "light";
+    var themeMode;
+    if (document.documentElement) {
+        if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
+            themeMode = document.documentElement.getAttribute("data-bs-theme-mode");
+        } else {
+            if (localStorage.getItem("data-bs-theme") !== null) {
+                themeMode = localStorage.getItem("data-bs-theme");
+            } else {
+                themeMode = defaultThemeMode;
+            }
+        }
+        if (themeMode === "system") {
+            themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        document.documentElement.setAttribute("data-bs-theme", themeMode);
+    }
+
+
+</script>
+
+<!-- Page Loader -->
+<div class="o_loading" style="display:none">
+    <p>Loading ...</p>
+</div>
+<!-- #END# Page Loader -->
+<!--end::Theme mode setup on page load-->
+   <!--begin::Main-->
+            <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+
+                <!--begin::Content wrapper-->
+                <div class="d-flex flex-column flex-column-fluid">
+
+
+                    <!--begin::Content-->
+                    <div class="app-content flex-column-fluid" id="kt_app_content">
+                        <!--begin::Content container-->
+                        <div class="app-container container-xxl" id="kt_app_content_container">
+                            <section class="post" id='adianti_content'>
+                                <div class="adianti_tabs_container">
+                                    <div id="adianti_tab_content"></div>
+                                    <a class="tab-arrow tab-arrow-left" href="#" onclick="__adianti_scroll_tab('left')">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                    <a class="tab-arrow tab-arrow-right" href="#"
+                                       onclick="__adianti_scroll_tab('right')">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </div>
+                                <div id="adianti_div_content"></div>
+                            </section>
+                            <!-- /.content -->
+                            <div id="adianti_online_content"></div>
+                            <div id="adianti_online_content2"></div>
+                            <div class="right-panel" id="adianti_right_panel"></div>
+                           
+                        </div>
+                        <!--end::Content container-->
+                    </div>
+                    <!--end::Content-->
+
+
+                </div>
+                <!--end::Content wrapper-->
+ 
+
+            </div>
+            <!--end:::Main-->
+<script>
+    var hostUrl = "app/templates/{template}/";
+</script>
+
+<script src="app/templates/{template}/js/scripts.bundle.js"></script>
+</body>
+<!--end::Body-->
+</html>

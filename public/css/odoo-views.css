@@ -1,0 +1,427 @@
+/* ══════════════════════════════════════════════════════════════════
+   Graph & Pivot View Styles — Odoo-style analytics views
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Graph View ───────────────────────────────── */
+.ls-graph-view {
+    padding: 0 20px 20px;
+}
+
+.ls-graph-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.ls-graph-type-switcher {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.ls-graph-type-switcher .ls-btn.active {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.ls-graph-icon {
+    margin-right: 4px;
+}
+
+.ls-graph-config {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ls-graph-label,
+.ls-pivot-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ls-graph-select,
+.ls-pivot-select {
+    padding: 5px 10px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #374151;
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.ls-graph-select:focus,
+.ls-pivot-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.ls-graph-container {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ls-graph-container canvas {
+    max-height: 460px !important;
+}
+
+.ls-graph-summary {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.ls-graph-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ls-graph-stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ls-graph-stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Pivot View ───────────────────────────────── */
+.ls-pivot-view {
+    padding: 0 20px 20px;
+}
+
+.ls-pivot-toolbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.ls-pivot-config {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.ls-pivot-axis-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ls-pivot-label {
+    font-weight: 600;
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 65px;
+}
+
+.ls-pivot-tag-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.ls-pivot-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #e0e7ff;
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+}
+
+.ls-pivot-tag-measure {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.ls-pivot-tag-remove {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 2px;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.ls-pivot-tag-remove:hover {
+    opacity: 1;
+}
+
+.ls-pivot-select-sm {
+    padding: 3px 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    outline: none;
+}
+
+.ls-pivot-select-sm:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
+}
+
+.ls-pivot-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.ls-pivot-scroll {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.ls-pivot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.ls-pivot-table th,
+.ls-pivot-table td {
+    padding: 10px 16px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ls-pivot-corner {
+    text-align: left !important;
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+.ls-pivot-header-row {
+    background: #f8fafc;
+}
+
+.ls-pivot-col-header {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+    border-left: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.ls-pivot-col-header-leaf {
+    background: #eef2ff;
+    border-bottom: 1px solid #c7d2fe;
+}
+
+.ls-pivot-measure-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6366f1;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ls-pivot-total-header {
+    background: #eef2ff;
+    font-weight: 700;
+    color: #4f46e5;
+    border-bottom: 2px solid #c7d2fe;
+    border-left: 2px solid #e5e7eb;
+    text-align: center;
+}
+
+.ls-pivot-row {
+    transition: background 0.1s;
+}
+
+.ls-pivot-row:hover {
+    background: #f8fafc;
+}
+
+.ls-pivot-row-header {
+    text-align: left !important;
+    font-weight: 500;
+    color: #1e293b;
+    background: #fff;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.ls-pivot-expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    color: #6366f1;
+    padding: 2px 4px;
+    margin-right: 4px;
+    border-radius: 3px;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.ls-pivot-expand-btn:hover {
+    background: #e0e7ff;
+}
+
+.ls-pivot-expand-spacer {
+    display: inline-block;
+    width: 18px;
+    margin-right: 4px;
+}
+
+.ls-pivot-row-label {
+    font-weight: inherit;
+}
+
+.ls-pivot-cell {
+    font-variant-numeric: tabular-nums;
+    color: #374151;
+    border-left: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ls-pivot-cell:hover {
+    background: #f1f5f9;
+}
+
+.ls-pivot-total-cell {
+    font-weight: 600;
+    color: #4f46e5;
+    background: #fafbff;
+    border-left: 2px solid #e5e7eb;
+}
+
+.ls-pivot-total-row {
+    background: #f8fafc;
+}
+
+.ls-pivot-total-row .ls-pivot-row-header {
+    font-weight: 700;
+    background: #f8fafc;
+}
+
+.ls-pivot-grand-total {
+    background: #eef2ff;
+}
+
+.ls-pivot-grand-total td,
+.ls-pivot-grand-total .ls-pivot-row-header {
+    border-top: 2px solid #c7d2fe;
+    background: #eef2ff;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.ls-pivot-grand-cell {
+    background: #e0e7ff !important;
+    font-weight: 700;
+    color: #3730a3 !important;
+}
+
+.ls-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+}
+
+.ls-empty-text {
+    font-size: 14px;
+}
+
+/* ── View Switcher (shared across views) ──────── */
+.ls-view-switcher {
+    display: flex;
+    gap: 2px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.ls-view-switcher .ls-btn-icon {
+    width: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    background: transparent;
+    transition: all 0.15s;
+    font-size: 14px;
+}
+
+.ls-view-switcher .ls-btn-icon:hover {
+    color: #374151;
+    background: #e2e8f0;
+}
+
+.ls-view-switcher .ls-btn-icon.active {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    color: #4f46e5;
+}

@@ -1,0 +1,415 @@
+/* ══════════════════════════════════════════════════════════════
+   Accounting Reports — Styles
+   Premium financial report layout with print support
+   ══════════════════════════════════════════════════════════════ */
+
+.ls-report-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px 32px;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Toolbar ── */
+.ls-report-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ls-border, #e2e8f0);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.ls-report-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.ls-report-tab {
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ls-text-muted, #64748b);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ls-report-tab:hover {
+    background: var(--ls-bg-hover, #f1f5f9);
+    color: var(--ls-text, #1e293b);
+}
+
+.ls-report-tab.active {
+    background: var(--ls-primary, #7c3aed);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+}
+
+.ls-report-tab-icon {
+    font-size: 15px;
+}
+
+.ls-report-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Filters ── */
+.ls-report-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 12px 16px;
+    background: var(--ls-bg-secondary, #f8fafc);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.ls-report-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ls-report-filter-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ls-text-muted, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ls-report-filter-group input,
+.ls-report-filter-group select {
+    padding: 7px 10px;
+    border: 1px solid var(--ls-border, #d1d5db);
+    border-radius: 6px;
+    font-size: 13px;
+    background: var(--ls-bg, #fff);
+    color: var(--ls-text, #1e293b);
+    min-width: 140px;
+}
+
+.ls-report-filter-group input:focus,
+.ls-report-filter-group select:focus {
+    outline: none;
+    border-color: var(--ls-primary, #7c3aed);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ── Loading ── */
+.ls-report-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: var(--ls-text-muted, #64748b);
+    font-size: 14px;
+}
+
+.ls-report-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--ls-border, #e2e8f0);
+    border-top-color: var(--ls-primary, #7c3aed);
+    border-radius: 50%;
+    animation: ls-spin 0.7s linear infinite;
+}
+
+@keyframes ls-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Report Header ── */
+.ls-report-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ls-text, #1e293b);
+}
+
+.ls-report-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ls-text, #1e293b);
+}
+
+.ls-report-period {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--ls-text-muted, #64748b);
+}
+
+/* ── Tables ── */
+.ls-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.ls-report-table th {
+    background: var(--ls-bg-secondary, #f1f5f9);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--ls-text-muted, #475569);
+    border-bottom: 2px solid var(--ls-border, #cbd5e1);
+    white-space: nowrap;
+}
+
+.ls-report-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--ls-border-light, #f1f5f9);
+    color: var(--ls-text, #334155);
+}
+
+.ls-report-table tbody tr:hover {
+    background: var(--ls-bg-hover, #f8fafc);
+}
+
+.ls-col-code {
+    width: 80px;
+    font-weight: 600;
+    color: var(--ls-primary, #7c3aed);
+    font-variant-numeric: tabular-nums;
+}
+
+.ls-col-name {
+    min-width: 200px;
+}
+
+.ls-col-group {
+    min-width: 120px;
+    color: var(--ls-text-muted, #64748b);
+    font-size: 12px;
+}
+
+.ls-col-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    min-width: 110px;
+}
+
+.ls-negative {
+    color: #dc2626 !important;
+}
+
+.ls-report-total-row {
+    background: var(--ls-bg-secondary, #f1f5f9) !important;
+    border-top: 2px solid var(--ls-border, #94a3b8) !important;
+}
+
+.ls-report-total-row td {
+    padding: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.ls-report-subtotal {
+    background: var(--ls-bg-secondary, #f8fafc);
+}
+
+.ls-report-subtotal td {
+    font-weight: 600;
+}
+
+/* ── General Ledger specific ── */
+.ls-gl-account-section {
+    margin-bottom: 20px;
+}
+
+.ls-gl-account-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, var(--ls-primary, #7c3aed), #6d28d9);
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.ls-gl-account-header:hover {
+    opacity: 0.92;
+}
+
+.ls-gl-code {
+    font-weight: 700;
+    font-size: 14px;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.ls-gl-name {
+    font-weight: 600;
+    flex: 1;
+}
+
+.ls-gl-balance {
+    font-size: 13px;
+    opacity: 0.9;
+    font-variant-numeric: tabular-nums;
+}
+
+.ls-gl-move-link {
+    color: var(--ls-primary, #7c3aed);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.ls-gl-table {
+    font-size: 12px;
+}
+
+/* ── Balance Sheet specific ── */
+.ls-bs-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.ls-bs-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ls-text, #1e293b);
+    padding: 8px 0;
+    border-bottom: 2px solid var(--ls-primary, #7c3aed);
+    margin: 0 0 8px;
+}
+
+.ls-bs-check {
+    text-align: center;
+    padding: 16px;
+    margin-top: 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.ls-balanced {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ls-unbalanced {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+/* ── Income Statement specific ── */
+.ls-is-section {
+    margin-bottom: 16px;
+}
+
+.ls-is-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ls-text, #1e293b);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--ls-border, #e2e8f0);
+    margin: 0 0 4px;
+}
+
+.ls-is-summary {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--ls-bg-secondary, #f8fafc);
+    border-radius: 10px;
+    border: 1px solid var(--ls-border, #e2e8f0);
+}
+
+.ls-is-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--ls-text, #334155);
+}
+
+.ls-is-net-income {
+    font-size: 18px;
+    font-weight: 700;
+    border-top: 2px solid var(--ls-text, #1e293b);
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+.ls-profit strong { color: #16a34a; }
+.ls-loss strong { color: #dc2626; }
+
+/* ── Empty state ── */
+.ls-report-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ls-text-muted, #94a3b8);
+}
+
+.ls-report-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.ls-report-empty p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .ls-report-tab.active {
+    background: var(--ls-primary, #7c3aed);
+}
+
+[data-theme="dark"] .ls-report-filters {
+    background: var(--ls-bg-secondary, #1e293b);
+}
+
+[data-theme="dark"] .ls-report-table th {
+    background: var(--ls-bg-secondary, #1e293b);
+}
+
+[data-theme="dark"] .ls-gl-account-header {
+    background: linear-gradient(135deg, #6d28d9, #4c1d95);
+}
+
+[data-theme="dark"] .ls-balanced {
+    background: rgba(22, 163, 74, 0.15);
+}
+
+[data-theme="dark"] .ls-unbalanced {
+    background: rgba(220, 38, 38, 0.15);
+}
+
+/* ── Print ── */
+@media print {
+    .ls-report-toolbar,
+    .ls-report-filters,
+    .ls-report-actions {
+        display: none !important;
+    }
+    .ls-report-container {
+        max-width: 100%;
+        padding: 0;
+    }
+    .ls-report-table { font-size: 10px; }
+}

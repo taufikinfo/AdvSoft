@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  Accounting Sequences                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.sequence" id="seq_account_move_invoice">
+        <field name="name">Invoice Sequence</field>
+        <field name="code">account.move.invoice</field>
+        <field name="prefix">INV/{year}/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="use_date_range" eval="True"/>
+    </record>
+
+    <record model="ir.sequence" id="seq_account_move_bill">
+        <field name="name">Vendor Bill Sequence</field>
+        <field name="code">account.move.bill</field>
+        <field name="prefix">BILL/{year}/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="use_date_range" eval="True"/>
+    </record>
+
+    <record model="ir.sequence" id="seq_account_move_journal">
+        <field name="name">Journal Entry Sequence</field>
+        <field name="code">account.move.entry</field>
+        <field name="prefix">JE/{year}/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="use_date_range" eval="True"/>
+    </record>
+
+    <record model="ir.sequence" id="seq_account_payment">
+        <field name="name">Payment Sequence</field>
+        <field name="code">account.payment</field>
+        <field name="prefix">PAY/{year}/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="use_date_range" eval="True"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  System Parameters for Accounting              -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <data noupdate="1">
+        <record model="ir.config_parameter" id="config_account_fiscal_year_start">
+            <field name="key">account.fiscal_year_start_month</field>
+            <field name="value">1</field>
+        </record>
+
+        <record model="ir.config_parameter" id="config_account_tax_calculation">
+            <field name="key">account.tax_calculation_rounding_method</field>
+            <field name="value">round_per_line</field>
+        </record>
+    </data>
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  QWeb Reports                                  -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <record model="ir.actions.report" id="action_report_invoice">
+        <field name="name">Print Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">account.report_invoice</field>
+        <field name="print_report_name">'Invoice - %s' % (object.name)</field>
+    </record>
+
+    <template id="account.report_invoice">
+        <html>
+            <head>
+                <style>
+                    body { font-family: sans-serif; font-size: 14px; margin: 0; padding: 20px; }
+                    .header { display: flex; justify-content: space-between; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+                    .title { font-size: 24px; font-weight: bold; }
+                    .company-info { text-align: right; }
+                    .details { margin-bottom: 30px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f5f5f5; }
+                    .totals { width: 300px; float: right; }
+                    .totals th { background-color: transparent; border: none; text-align: right; }
+                    .totals td { border: none; text-align: right; border-bottom: 1px solid #ddd; }
+                    .totals .grand-total { font-weight: bold; font-size: 18px; }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="docs" t-as="o">
+                    <div class="header">
+                        <div class="title">
+                            <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+                            <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+                            <span t-if="o.move_type == 'out_refund'">Credit Note</span>
+                            <span t-if="o.move_type == 'in_invoice'">Vendor Bill</span>
+                            <br/>
+                            <span style="font-size: 16px; color: #555;" t-out="o.name"/>
+                        </div>
+                        <div class="company-info">
+                            <strong><t t-out="company.name or 'Larasoft ERP'"/></strong><br/>
+                            <span>Date: <t t-out="o.date"/></span>
+                        </div>
+                    </div>
+                    
+                    <div class="details">
+                        <strong>Customer/Vendor:</strong><br/>
+                        <span t-out="o.partner.name or 'N/A'"/>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th style="text-align: right;">Debit</th>
+                                <th style="text-align: right;">Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.lines" t-as="line">
+                                <tr>
+                                    <td><t t-out="line.name"/></td>
+                                    <td style="text-align: right;"><t t-out="line.debit"/></td>
+                                    <td style="text-align: right;"><t t-out="line.credit"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    
+                    <div style="overflow: hidden;">
+                        <table class="totals">
+                            <tr>
+                                <th>Total:</th>
+                                <td><t t-out="o.amount_total"/></td>
+                            </tr>
+                            <tr class="grand-total">
+                                <th>Amount Due:</th>
+                                <td><t t-out="o.amount_residual"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div style="page-break-after: always;"/>
+                </t>
+            </body>
+        </html>
+    </template>
+</odoo>
