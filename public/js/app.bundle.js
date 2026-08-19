@@ -1,6 +1,6 @@
 /**
  * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-19 06:47:56
+ * Generated: 2026-08-19 06:54:11
  */
 
 /* --- [FILE: js/core/owl-rpc.js] --- */
@@ -3165,44 +3165,19 @@ window.TEMPLATES.App = xml`
         </svg>
     </button>
 
-    <!-- Brand / Active App Title -->
     <div class="ls-navbar-brand" t-on-click="props.onHome" style="cursor:pointer;" title="Applications (Home)">
-        <t t-if="props.isHome">
-            <span class="ls-brand-logo">
-                <t t-out="window.lucideIcon('box', 20)"/>
-            </span>
-            <span class="ls-brand-name">Larasoft</span>
-        </t>
-        <t t-else="">
-            <span class="ls-brand-name" t-esc="this.activeApp ? this.activeApp.name : 'Larasoft'"/>
-        </t>
+        <span class="ls-brand-logo">
+            <t t-out="window.lucideIcon('box', 20)"/>
+        </span>
+        <span class="ls-brand-name">Larasoft</span>
     </div>
 
-    <!-- Active App Submenus (Inline Odoo Enterprise Navigation) -->
-    <div class="ls-navbar-menu" t-if="!props.isHome and props.subMenus and props.subMenus.length">
-        <t t-foreach="props.subMenus" t-as="item" t-key="item.id">
-            <div t-att-class="'ls-nav-item' + (props.activeMenuId === item.id ? ' active' : '')">
-                <t t-if="item.children and item.children.length">
-                    <span class="ls-nav-link ls-nav-dropdown-toggle"
-                          t-on-click="(ev) => this.toggleDropdown(item.id, ev)">
-                        <span t-esc="item.name"/>
-                        <span class="ls-nav-caret">▾</span>
-                    </span>
-                    <div class="ls-nav-dropdown" t-if="state.openDropdown === item.id">
-                        <t t-foreach="item.children" t-as="child" t-key="child.id">
-                            <div t-att-class="'ls-nav-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
-                                 t-on-click="() => this.onSubMenuClick(child)">
-                                <span t-esc="child.name"/>
-                            </div>
-                        </t>
-                    </div>
-                </t>
-                <t t-else="">
-                    <a href="#" class="ls-nav-link"
-                       t-on-click.prevent="() => this.onSubMenuClick(item)"
-                       t-esc="item.name"/>
-                </t>
-            </div>
+    <!-- App Switcher Top Links -->
+    <div class="ls-navbar-menu" t-if="!props.isHome">
+        <t t-foreach="props.apps" t-as="app" t-key="app.id">
+            <a href="#" t-att-class="'ls-nav-app' + (props.activeAppId === app.id ? ' active' : '')"
+               t-on-click.prevent="() => this.onAppClick(app)"
+               t-esc="app.name"/>
         </t>
     </div>
 
@@ -3230,6 +3205,37 @@ window.TEMPLATES.App = xml`
 </nav>
 `;
 
+    // ── SubMenu (Level 2-3 menu items) ───────────────────
+    window.TEMPLATES.SubMenu = xml`
+<div class="ls-submenu-bar" t-if="props.items and props.items.length">
+    <t t-foreach="props.items" t-as="item" t-key="item.id">
+        <div t-att-class="'ls-submenu-item' + (props.activeMenuId === item.id ? ' active' : '') + (state.openDropdown === item.id ? ' open' : '')">
+            <t t-if="item.children and item.children.length">
+                <button type="button" class="ls-submenu-label ls-submenu-dropdown-toggle"
+                        t-on-click="(ev) => this.toggleDropdown(item.id, ev)">
+                    <span t-esc="item.name"/>
+                    <span class="ls-submenu-caret">▾</span>
+                </button>
+                <div class="ls-submenu-dropdown" t-if="state.openDropdown === item.id">
+                    <t t-foreach="item.children" t-as="child" t-key="child.id">
+                        <div t-att-class="'ls-submenu-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
+                             t-on-click="() => this.onMenuClick(child)">
+                            <span t-esc="child.name"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <button type="button" class="ls-submenu-label"
+                        t-on-click="() => this.onMenuClick(item)">
+                    <span t-esc="item.name"/>
+                </button>
+            </t>
+        </div>
+    </t>
+</div>
+`;
+
     // ── Breadcrumb ───────────────────────────────────────
     window.TEMPLATES.Breadcrumb = xml`
 <div class="ls-breadcrumb" t-if="props.items and props.items.length">
@@ -3250,13 +3256,17 @@ window.TEMPLATES.App = xml`
 <div class="ls-webclient">
     <t t-if="!state.clientError">
         <NavBar apps="state.apps" activeAppId="state.activeAppId"
-                subMenus="currentSubMenus" activeMenuId="state.activeMenuId"
-                onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"
-                onHome.bind="goHome" onOpenProfile.bind="openProfile"
+                onAppClick.bind="onAppClick" onHome.bind="goHome"
+                onOpenProfile.bind="openProfile"
                 isHome="state.currentView === 'home'"/>
 
     <t t-if="state.currentView === 'home'">
         <AppSwitcher apps="state.apps" onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"/>
+    </t>
+
+    <t t-if="state.currentView !== 'home'">
+        <SubMenu items="currentSubMenus" activeMenuId="state.activeMenuId"
+                 onMenuClick.bind="onMenuClick"/>
     </t>
 
     <t t-if="state.currentView === 'action'">
@@ -32643,44 +32653,17 @@ window.ViewBuilderView = ViewBuilderView;
         }
     }
 
-    // ── NavBar Component (Odoo Enterprise Navigation) ────
+    // ── NavBar Component (Top Navigation) ───────────────
     class NavBar extends Component {
         static template = window.TEMPLATES.NavBar;
         static props = {
             apps: { type: Array },
             activeAppId: { type: Number, optional: true },
-            subMenus: { type: Array, optional: true },
-            activeMenuId: { type: Number, optional: true },
             onAppClick: { type: Function },
-            onMenuClick: { type: Function, optional: true },
             onHome: { type: Function },
             onOpenProfile: { type: Function, optional: true },
             isHome: { type: Boolean, optional: true },
         };
-
-        setup() {
-            this.state = useState({ openDropdown: null });
-            this._onDocClick = () => { this.state.openDropdown = null; };
-            onMounted(() => document.addEventListener('click', this._onDocClick));
-            owl.onWillDestroy(() => document.removeEventListener('click', this._onDocClick));
-        }
-
-        get activeApp() {
-            if (!this.props.activeAppId || !this.props.apps) return null;
-            return this.props.apps.find(a => a.id === this.props.activeAppId) || null;
-        }
-
-        toggleDropdown(id, ev) {
-            if (ev) ev.stopPropagation();
-            this.state.openDropdown = this.state.openDropdown === id ? null : id;
-        }
-
-        onSubMenuClick(item) {
-            this.state.openDropdown = null;
-            if (this.props.onMenuClick) {
-                this.props.onMenuClick(item);
-            }
-        }
 
         onAppClick(app) { this.props.onAppClick(app); }
         onProfileClick(ev) {
@@ -32714,12 +32697,21 @@ window.ViewBuilderView = ViewBuilderView;
 
         setup() {
             this.state = useState({ openDropdown: null });
-            this._onDocClick = () => { this.state.openDropdown = null; };
+            this._onDocClick = (ev) => {
+                if (ev.target.closest('.ls-submenu-dropdown') || ev.target.closest('.ls-submenu-dropdown-toggle')) {
+                    return;
+                }
+                this.state.openDropdown = null;
+            };
             onMounted(() => document.addEventListener('click', this._onDocClick));
+            owl.onWillDestroy(() => document.removeEventListener('click', this._onDocClick));
         }
 
         toggleDropdown(id, ev) {
-            if (ev) ev.stopPropagation();
+            if (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+            }
             this.state.openDropdown = this.state.openDropdown === id ? null : id;
         }
 
@@ -33003,14 +32995,79 @@ window.ViewBuilderView = ViewBuilderView;
         }
 
         get currentSubMenus() {
-            const app = this.state.apps.find(a => a.id === this.state.activeAppId);
+            if (!this.state.activeAppId) {
+                // If activeAppId is not set, try to find the app from currentModel
+                if (this.state.currentModel) {
+                    const match = this._findAppForModelOrAction(this.state.currentModel);
+                    if (match) {
+                        this.state.activeAppId = match.app.id;
+                    }
+                }
+            }
+            const app = (this.state.apps || []).find(a => a.id === this.state.activeAppId);
             return app?.children || [];
+        }
+
+        _findAppForModelOrAction(model, actionId) {
+            if (!this.state.apps || !this.state.apps.length) return null;
+            for (const app of this.state.apps) {
+                if (app.model === model || (actionId && app.action_id === actionId)) {
+                    return { app, menu: app };
+                }
+                const foundMenu = this._findMenuItem(app.children || [], model, actionId);
+                if (foundMenu) {
+                    return { app, menu: foundMenu };
+                }
+            }
+            return null;
+        }
+
+        _findMenuItem(items, model, actionId) {
+            for (const item of items) {
+                if (actionId && item.action_id === actionId) return item;
+                if (model && item.model === model) return item;
+                if (model && item.action && item.action.res_model === model) return item;
+                if (item.children && item.children.length) {
+                    const found = this._findMenuItem(item.children, model, actionId);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        _findMenuById(items, menuId) {
+            for (const item of items) {
+                if (item.id === menuId) return item;
+                if (item.children && item.children.length) {
+                    const found = this._findMenuById(item.children, menuId);
+                    if (found) return found;
+                }
+            }
+            return null;
         }
 
         // ── Action Execution (ActionService) ─────────────
 
         async _executeAction(actionDef, menuId) {
             this.state.activeMenuId = menuId;
+
+            // Ensure activeAppId is set
+            if (menuId) {
+                for (const app of this.state.apps) {
+                    if (app.id === menuId || this._findMenuById(app.children || [], menuId)) {
+                        this.state.activeAppId = app.id;
+                        break;
+                    }
+                }
+            }
+            if (!this.state.activeAppId && actionDef && actionDef.res_model) {
+                const match = this._findAppForModelOrAction(actionDef.res_model, actionDef.id);
+                if (match) {
+                    this.state.activeAppId = match.app.id;
+                    if (!this.state.activeMenuId) this.state.activeMenuId = match.menu.id;
+                }
+            }
+
             this.state.currentAction = actionDef;
             this.state.currentModel = actionDef.res_model;
             this.state.actionTitle = actionDef.name;
@@ -33058,6 +33115,13 @@ window.ViewBuilderView = ViewBuilderView;
 
         async _executeActionDict(actionDict) {
             if (actionDict.type !== 'ir.actions.act_window') return;
+
+            // Resolve activeAppId & activeMenuId from model/action
+            const match = this._findAppForModelOrAction(actionDict.res_model, actionDict.id);
+            if (match) {
+                this.state.activeAppId = match.app.id;
+                if (!this.state.activeMenuId) this.state.activeMenuId = match.menu.id;
+            }
 
             this.state.currentAction = actionDict;
             this.state.currentModel = actionDict.res_model;

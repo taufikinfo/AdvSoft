@@ -1,6 +1,6 @@
 /**
  * Adiantisoft Compiled Production Stylesheet
- * Generated: 2026-08-19 06:47:56
+ * Generated: 2026-08-19 06:54:11
  */
 
 /* --- [FILE: css/odoo-layout.css] --- */
@@ -3364,21 +3364,139 @@ html, body {
     font-weight: 600;
 }
 
-/* Dark mode overrides for navbar dropdowns */
-html[data-theme="dark"] .ls-nav-dropdown {
-    background: #1e1628;
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+/* ── SubMenu Bar (Secondary Nav Bar) ─────────────── */
+.ls-submenu-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 16px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--ls-border, #dee2e6);
+    height: 38px;
+    font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    z-index: 900;
+    flex-shrink: 0;
+    overflow: visible !important;
+    position: relative;
 }
-html[data-theme="dark"] .ls-nav-dropdown-item {
+.ls-submenu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ls-submenu-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    color: #475569;
+    font-weight: 500;
+    font-size: 13px;
+    font-family: var(--ls-font, inherit);
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    transition: all 0.15s ease;
+    user-select: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.ls-submenu-label:hover {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.05);
+}
+.ls-submenu-item.active > .ls-submenu-label,
+.ls-submenu-item.open > .ls-submenu-label,
+.ls-submenu-label.active {
+    color: #714B67;
+    font-weight: 600;
+    background: rgba(113, 75, 103, 0.1);
+}
+.ls-submenu-caret {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-left: 2px;
+    transition: transform 0.15s ease;
+}
+.ls-submenu-item.open .ls-submenu-caret {
+    transform: rotate(180deg);
+}
+.ls-submenu-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 200px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05);
+    z-index: 9999 !important;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    animation: ls-dropdown-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes ls-dropdown-in {
+    from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ls-submenu-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    white-space: nowrap;
+}
+.ls-submenu-dropdown-item:hover {
+    background: rgba(113, 75, 103, 0.08);
+    color: #714B67;
+    font-weight: 600;
+}
+.ls-submenu-dropdown-item.active {
+    background: rgba(113, 75, 103, 0.12);
+    color: #714B67;
+    font-weight: 600;
+}
+
+/* Dark mode overrides for submenu bar */
+html[data-theme="dark"] .ls-submenu-bar {
+    background: #191422;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .ls-submenu-label {
+    color: #94a3b8;
+}
+html[data-theme="dark"] .ls-submenu-label:hover {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.06);
+}
+html[data-theme="dark"] .ls-submenu-item.active > .ls-submenu-label,
+html[data-theme="dark"] .ls-submenu-label.active {
+    color: #c084fc;
+    background: rgba(192, 132, 252, 0.12);
+}
+html[data-theme="dark"] .ls-submenu-dropdown {
+    background: #231b2e;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+html[data-theme="dark"] .ls-submenu-dropdown-item {
     color: #cbd5e1;
 }
-html[data-theme="dark"] .ls-nav-dropdown-item:hover {
-    background: rgba(168, 85, 247, 0.15);
-    color: #f1f5f9;
+html[data-theme="dark"] .ls-submenu-dropdown-item:hover {
+    background: rgba(192, 132, 252, 0.15);
+    color: #ffffff;
 }
-html[data-theme="dark"] .ls-nav-dropdown-item.active {
-    background: rgba(168, 85, 247, 0.22);
+html[data-theme="dark"] .ls-submenu-dropdown-item.active {
+    background: rgba(192, 132, 252, 0.22);
     color: #ffffff;
 }
 

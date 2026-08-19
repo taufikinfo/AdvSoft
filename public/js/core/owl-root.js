@@ -204,44 +204,17 @@
         }
     }
 
-    // ── NavBar Component (Odoo Enterprise Navigation) ────
+    // ── NavBar Component (Top Navigation) ───────────────
     class NavBar extends Component {
         static template = window.TEMPLATES.NavBar;
         static props = {
             apps: { type: Array },
             activeAppId: { type: Number, optional: true },
-            subMenus: { type: Array, optional: true },
-            activeMenuId: { type: Number, optional: true },
             onAppClick: { type: Function },
-            onMenuClick: { type: Function, optional: true },
             onHome: { type: Function },
             onOpenProfile: { type: Function, optional: true },
             isHome: { type: Boolean, optional: true },
         };
-
-        setup() {
-            this.state = useState({ openDropdown: null });
-            this._onDocClick = () => { this.state.openDropdown = null; };
-            onMounted(() => document.addEventListener('click', this._onDocClick));
-            owl.onWillDestroy(() => document.removeEventListener('click', this._onDocClick));
-        }
-
-        get activeApp() {
-            if (!this.props.activeAppId || !this.props.apps) return null;
-            return this.props.apps.find(a => a.id === this.props.activeAppId) || null;
-        }
-
-        toggleDropdown(id, ev) {
-            if (ev) ev.stopPropagation();
-            this.state.openDropdown = this.state.openDropdown === id ? null : id;
-        }
-
-        onSubMenuClick(item) {
-            this.state.openDropdown = null;
-            if (this.props.onMenuClick) {
-                this.props.onMenuClick(item);
-            }
-        }
 
         onAppClick(app) { this.props.onAppClick(app); }
         onProfileClick(ev) {
@@ -275,12 +248,21 @@
 
         setup() {
             this.state = useState({ openDropdown: null });
-            this._onDocClick = () => { this.state.openDropdown = null; };
+            this._onDocClick = (ev) => {
+                if (ev.target.closest('.ls-submenu-dropdown') || ev.target.closest('.ls-submenu-dropdown-toggle')) {
+                    return;
+                }
+                this.state.openDropdown = null;
+            };
             onMounted(() => document.addEventListener('click', this._onDocClick));
+            owl.onWillDestroy(() => document.removeEventListener('click', this._onDocClick));
         }
 
         toggleDropdown(id, ev) {
-            if (ev) ev.stopPropagation();
+            if (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+            }
             this.state.openDropdown = this.state.openDropdown === id ? null : id;
         }
 
@@ -564,14 +546,79 @@
         }
 
         get currentSubMenus() {
-            const app = this.state.apps.find(a => a.id === this.state.activeAppId);
+            if (!this.state.activeAppId) {
+                // If activeAppId is not set, try to find the app from currentModel
+                if (this.state.currentModel) {
+                    const match = this._findAppForModelOrAction(this.state.currentModel);
+                    if (match) {
+                        this.state.activeAppId = match.app.id;
+                    }
+                }
+            }
+            const app = (this.state.apps || []).find(a => a.id === this.state.activeAppId);
             return app?.children || [];
+        }
+
+        _findAppForModelOrAction(model, actionId) {
+            if (!this.state.apps || !this.state.apps.length) return null;
+            for (const app of this.state.apps) {
+                if (app.model === model || (actionId && app.action_id === actionId)) {
+                    return { app, menu: app };
+                }
+                const foundMenu = this._findMenuItem(app.children || [], model, actionId);
+                if (foundMenu) {
+                    return { app, menu: foundMenu };
+                }
+            }
+            return null;
+        }
+
+        _findMenuItem(items, model, actionId) {
+            for (const item of items) {
+                if (actionId && item.action_id === actionId) return item;
+                if (model && item.model === model) return item;
+                if (model && item.action && item.action.res_model === model) return item;
+                if (item.children && item.children.length) {
+                    const found = this._findMenuItem(item.children, model, actionId);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        _findMenuById(items, menuId) {
+            for (const item of items) {
+                if (item.id === menuId) return item;
+                if (item.children && item.children.length) {
+                    const found = this._findMenuById(item.children, menuId);
+                    if (found) return found;
+                }
+            }
+            return null;
         }
 
         // ── Action Execution (ActionService) ─────────────
 
         async _executeAction(actionDef, menuId) {
             this.state.activeMenuId = menuId;
+
+            // Ensure activeAppId is set
+            if (menuId) {
+                for (const app of this.state.apps) {
+                    if (app.id === menuId || this._findMenuById(app.children || [], menuId)) {
+                        this.state.activeAppId = app.id;
+                        break;
+                    }
+                }
+            }
+            if (!this.state.activeAppId && actionDef && actionDef.res_model) {
+                const match = this._findAppForModelOrAction(actionDef.res_model, actionDef.id);
+                if (match) {
+                    this.state.activeAppId = match.app.id;
+                    if (!this.state.activeMenuId) this.state.activeMenuId = match.menu.id;
+                }
+            }
+
             this.state.currentAction = actionDef;
             this.state.currentModel = actionDef.res_model;
             this.state.actionTitle = actionDef.name;
@@ -619,6 +666,13 @@
 
         async _executeActionDict(actionDict) {
             if (actionDict.type !== 'ir.actions.act_window') return;
+
+            // Resolve activeAppId & activeMenuId from model/action
+            const match = this._findAppForModelOrAction(actionDict.res_model, actionDict.id);
+            if (match) {
+                this.state.activeAppId = match.app.id;
+                if (!this.state.activeMenuId) this.state.activeMenuId = match.menu.id;
+            }
 
             this.state.currentAction = actionDict;
             this.state.currentModel = actionDict.res_model;
