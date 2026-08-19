@@ -792,75 +792,90 @@ html, body {
     flex-shrink: 0;
 }
 
-/* ── SearchPanel Sidebar ─────────────────── */
+/* ── SearchPanel Sidebar (Odoo Enterprise Facets) ── */
 .ls-search-panel-sidebar {
-    width: 240px;
-    min-width: 240px;
-    background: var(--ls-bg);
-    border-right: 1px solid var(--ls-border-light);
+    width: 230px;
+    min-width: 230px;
+    background: var(--ls-bg, #ffffff);
+    border-right: 1px solid var(--ls-border-light, #e5e7eb);
     overflow-y: auto;
-    padding: 0;
+    padding: 8px 0;
     flex-shrink: 0;
 }
 .ls-sp-section {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--ls-border-light);
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--ls-border-light, #f1f5f9);
 }
 .ls-sp-section:last-child { border-bottom: none; }
 .ls-sp-section-header {
-    padding: 0 16px 8px;
+    padding: 4px 14px 6px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: .5px;
-    color: var(--ls-text-muted);
+    letter-spacing: .06em;
+    color: var(--ls-text-muted, #64748b);
 }
 .ls-sp-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 16px;
+    margin: 2px 8px;
+    padding: 6px 10px;
     cursor: pointer;
     font-size: 13px;
-    color: var(--ls-text);
-    transition: all .1s;
-    border-left: 3px solid transparent;
+    font-weight: 500;
+    color: var(--ls-text, #334155);
+    border-radius: 6px;
+    transition: all .15s ease;
     user-select: none;
 }
 .ls-sp-item:hover {
-    background: var(--ls-hover);
+    background: var(--ls-hover, rgba(0, 0, 0, 0.04));
+    color: #0f172a;
 }
 .ls-sp-item.active {
-    background: rgba(113,75,103,.06);
-    border-left-color: var(--ls-primary);
+    background: rgba(113, 75, 103, 0.12);
     font-weight: 600;
-    color: var(--ls-primary-dark);
+    color: #714B67;
 }
-.ls-sp-item-label { flex: 1; }
+.ls-sp-item-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ls-sp-item-count {
     font-size: 11px;
     font-weight: 600;
-    color: var(--ls-text-light);
-    min-width: 22px;
-    text-align: right;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 1px 7px;
+    border-radius: 9999px;
+    margin-left: 8px;
+    flex-shrink: 0;
 }
-.ls-sp-item.active .ls-sp-item-count { color: var(--ls-primary); }
+.ls-sp-item.active .ls-sp-item-count {
+    background: #714B67;
+    color: #ffffff;
+}
 .ls-sp-filter-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 16px;
+    margin: 2px 8px;
+    padding: 5px 10px;
     cursor: pointer;
     font-size: 13px;
-    color: var(--ls-text);
+    color: var(--ls-text, #334155);
+    border-radius: 6px;
+    transition: all .15s ease;
     user-select: none;
 }
-.ls-sp-filter-item:hover { background: var(--ls-hover); }
-.ls-sp-filter-item input[type="checkbox"] { cursor: pointer; accent-color: var(--ls-primary); }
+.ls-sp-filter-item:hover { background: var(--ls-hover, rgba(0, 0, 0, 0.04)); }
+.ls-sp-filter-item input[type="checkbox"] { cursor: pointer; accent-color: #714B67; }
 .ls-sp-filter-item .ls-sp-item-count {
     margin-left: auto;
     font-size: 11px;
-    color: var(--ls-text-light);
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 1px 7px;
+    border-radius: 9999px;
 }
 
 /* ── Tooltip ──────────────────────────────── */

@@ -1,6 +1,6 @@
 /**
  * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-19 06:38:06
+ * Generated: 2026-08-19 06:47:56
  */
 
 /* --- [FILE: js/core/owl-rpc.js] --- */
@@ -3165,18 +3165,44 @@ window.TEMPLATES.App = xml`
         </svg>
     </button>
 
-    <div class="ls-navbar-brand" t-on-click="props.onHome" style="cursor:pointer;">
-        <span class="ls-brand-logo">
-            <t t-out="window.lucideIcon('box', 20)"/>
-        </span>
-        <span class="ls-brand-name">Larasoft</span>
+    <!-- Brand / Active App Title -->
+    <div class="ls-navbar-brand" t-on-click="props.onHome" style="cursor:pointer;" title="Applications (Home)">
+        <t t-if="props.isHome">
+            <span class="ls-brand-logo">
+                <t t-out="window.lucideIcon('box', 20)"/>
+            </span>
+            <span class="ls-brand-name">Larasoft</span>
+        </t>
+        <t t-else="">
+            <span class="ls-brand-name" t-esc="this.activeApp ? this.activeApp.name : 'Larasoft'"/>
+        </t>
     </div>
 
-    <div class="ls-navbar-menu" t-if="!props.isHome">
-        <t t-foreach="props.apps" t-as="app" t-key="app.id">
-            <a href="#" t-att-class="'ls-nav-app' + (props.activeAppId === app.id ? ' active' : '')"
-               t-on-click.prevent="() => this.onAppClick(app)"
-               t-esc="app.name"/>
+    <!-- Active App Submenus (Inline Odoo Enterprise Navigation) -->
+    <div class="ls-navbar-menu" t-if="!props.isHome and props.subMenus and props.subMenus.length">
+        <t t-foreach="props.subMenus" t-as="item" t-key="item.id">
+            <div t-att-class="'ls-nav-item' + (props.activeMenuId === item.id ? ' active' : '')">
+                <t t-if="item.children and item.children.length">
+                    <span class="ls-nav-link ls-nav-dropdown-toggle"
+                          t-on-click="(ev) => this.toggleDropdown(item.id, ev)">
+                        <span t-esc="item.name"/>
+                        <span class="ls-nav-caret">▾</span>
+                    </span>
+                    <div class="ls-nav-dropdown" t-if="state.openDropdown === item.id">
+                        <t t-foreach="item.children" t-as="child" t-key="child.id">
+                            <div t-att-class="'ls-nav-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
+                                 t-on-click="() => this.onSubMenuClick(child)">
+                                <span t-esc="child.name"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <a href="#" class="ls-nav-link"
+                       t-on-click.prevent="() => this.onSubMenuClick(item)"
+                       t-esc="item.name"/>
+                </t>
+            </div>
         </t>
     </div>
 
@@ -3190,7 +3216,7 @@ window.TEMPLATES.App = xml`
         <t t-set="u" t-value="window.LarasoftUser || {}"/>
         <div class="ls-user-chip" t-if="u.uid" title="User Profile">
             <a href="#" t-on-click.prevent="() => this.onProfileClick()" title="My Profile" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;flex:1;min-width:0;cursor:pointer;">
-                <div class="ls-avatar" style="width:28px;height:28px;display:grid;place-items:center;background:rgba(255,255,255,0.2);border-radius:50%;font-weight:600;font-size:12px;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.15);">
+                <div class="ls-avatar" style="width:28px;height:28px;display:grid;place-items:center;background:rgba(255,255,255,0.22);border-radius:50%;font-weight:600;font-size:12px;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.15);">
                     <t t-esc="(u.name || u.login || '?').charAt(0).toUpperCase()"/>
                 </div>
                 <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
@@ -3202,39 +3228,6 @@ window.TEMPLATES.App = xml`
         </div>
     </div>
 </nav>
-`;
-
-    // ── SubMenu (Level 2-3 menu items) ───────────────────
-    window.TEMPLATES.SubMenu = xml`
-<div class="ls-submenu-bar" t-if="props.items and props.items.length">
-    <t t-foreach="props.items" t-as="item" t-key="item.id">
-        <div t-att-class="'ls-submenu-item' + (props.activeMenuId === item.id ? ' active' : '')"
-             style="position:relative;">
-            <t t-if="item.children and item.children.length">
-                <span class="ls-submenu-label" t-on-click="(ev) => this.toggleDropdown(item.id, ev)" style="cursor:pointer;">
-                    <t t-out="window.lucideIcon(item.icon || 'chevron-right', 14)"/>
-                    <span t-esc="item.name"/>
-                    <span class="ls-submenu-caret">▾</span>
-                </span>
-                <div class="ls-submenu-dropdown" t-if="state.openDropdown === item.id">
-                    <t t-foreach="item.children" t-as="child" t-key="child.id">
-                        <div t-att-class="'ls-submenu-dropdown-item' + (props.activeMenuId === child.id ? ' active' : '')"
-                             t-on-click="() => this.onMenuClick(child)">
-                            <t t-out="window.lucideIcon(child.icon || 'chevron-right', 14)"/>
-                            <span t-esc="child.name"/>
-                        </div>
-                    </t>
-                </div>
-            </t>
-            <t t-else="">
-                <span class="ls-submenu-label" t-on-click="() => this.onMenuClick(item)" style="cursor:pointer;">
-                    <t t-out="window.lucideIcon(item.icon || 'chevron-right', 14)"/>
-                    <span t-esc="item.name"/>
-                </span>
-            </t>
-        </div>
-    </t>
-</div>
 `;
 
     // ── Breadcrumb ───────────────────────────────────────
@@ -3252,22 +3245,18 @@ window.TEMPLATES.App = xml`
 </div>
 `;
 
-    // ── WebClient (Root) — NO duplicate control bar ──────
+    // ── WebClient (Root) ─────────────────────────────────
     window.TEMPLATES.Root = xml`
 <div class="ls-webclient">
     <t t-if="!state.clientError">
         <NavBar apps="state.apps" activeAppId="state.activeAppId"
-                onAppClick.bind="onAppClick" onHome.bind="goHome"
-                onOpenProfile.bind="openProfile"
+                subMenus="currentSubMenus" activeMenuId="state.activeMenuId"
+                onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"
+                onHome.bind="goHome" onOpenProfile.bind="openProfile"
                 isHome="state.currentView === 'home'"/>
 
     <t t-if="state.currentView === 'home'">
         <AppSwitcher apps="state.apps" onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"/>
-    </t>
-
-    <t t-if="state.currentView !== 'home'">
-        <SubMenu items="currentSubMenus" activeMenuId="state.activeMenuId"
-                 onMenuClick.bind="onMenuClick"/>
     </t>
 
     <t t-if="state.currentView === 'action'">
@@ -32654,17 +32643,45 @@ window.ViewBuilderView = ViewBuilderView;
         }
     }
 
-    // ── NavBar Component ─────────────────────────────────
+    // ── NavBar Component (Odoo Enterprise Navigation) ────
     class NavBar extends Component {
         static template = window.TEMPLATES.NavBar;
         static props = {
             apps: { type: Array },
             activeAppId: { type: Number, optional: true },
+            subMenus: { type: Array, optional: true },
+            activeMenuId: { type: Number, optional: true },
             onAppClick: { type: Function },
+            onMenuClick: { type: Function, optional: true },
             onHome: { type: Function },
             onOpenProfile: { type: Function, optional: true },
             isHome: { type: Boolean, optional: true },
         };
+
+        setup() {
+            this.state = useState({ openDropdown: null });
+            this._onDocClick = () => { this.state.openDropdown = null; };
+            onMounted(() => document.addEventListener('click', this._onDocClick));
+            owl.onWillDestroy(() => document.removeEventListener('click', this._onDocClick));
+        }
+
+        get activeApp() {
+            if (!this.props.activeAppId || !this.props.apps) return null;
+            return this.props.apps.find(a => a.id === this.props.activeAppId) || null;
+        }
+
+        toggleDropdown(id, ev) {
+            if (ev) ev.stopPropagation();
+            this.state.openDropdown = this.state.openDropdown === id ? null : id;
+        }
+
+        onSubMenuClick(item) {
+            this.state.openDropdown = null;
+            if (this.props.onMenuClick) {
+                this.props.onMenuClick(item);
+            }
+        }
+
         onAppClick(app) { this.props.onAppClick(app); }
         onProfileClick(ev) {
             if (ev) ev.preventDefault();
