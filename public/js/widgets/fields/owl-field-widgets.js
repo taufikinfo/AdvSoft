@@ -42,6 +42,13 @@ W.copy_clipboard = (f) => `<div class="ls-clipboard-widget">
 
 W.CopyClipboardChar = W.copy_clipboard;
 
+W.password = (f) => f._readonly
+    ? `<span class="ls-field-password-mask" style="letter-spacing:3px;color:var(--ls-muted,#6b7280);font-size:16px;">••••••••</span>`
+    : `<div class="ls-field-password-wrap" style="position:relative;display:flex;align-items:center;width:100%;max-width:360px;">
+        <input class="ls-field-input" type="password" data-field="${f.name}" value="${esc(f._val || '')}" placeholder="Leave blank to keep unchanged" autocomplete="new-password" style="padding-right:36px;width:100%;"/>
+        <button type="button" class="ls-btn-icon ls-password-toggle" onclick="const inp=this.previousElementSibling; if(inp.type==='password'){inp.type='text';this.textContent='🙈';}else{inp.type='password';this.textContent='👁️';}" style="position:absolute;right:6px;background:none;border:none;cursor:pointer;padding:4px;font-size:14px;color:var(--ls-muted,#6b7280);" title="Toggle visibility">👁️</button>
+       </div>`;
+
 W.char_emojis = (f) => `<div class="ls-char-emojis-widget">
     <input class="ls-field-input" data-field="${f.name}" value="${esc(f._val)}" placeholder="${esc(f.placeholder||'')}"/>
     <button class="ls-emoji-btn" title="Emoji">😀</button></div>`;
@@ -957,6 +964,7 @@ function renderListCell(fieldDef, value) {
     }
     else if (type === 'html') html = value ? '<span class="ls-list-muted">(HTML content)</span>' : '';
     else if (type === 'binary') html = value ? '<span>📎</span>' : '<span class="ls-empty-dash">—</span>';
+    else if (widget === 'password' || fieldDef.name === 'password') html = '<span class="ls-list-muted" style="letter-spacing:2px;">••••••••</span>';
     else html = `<span class="ls-list-char" style="font-weight:500;">${esc(value ?? '')}</span>`;
 
     return owl.markup(html);

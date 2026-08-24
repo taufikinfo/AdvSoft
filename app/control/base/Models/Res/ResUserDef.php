@@ -42,19 +42,66 @@ class ResUserDef extends ModelDefinition
         ]);
     }
 
+    public function transformRecord(object $record, ?array $fieldNames = null): array
+    {
+        $data = parent::transformRecord($record, $fieldNames);
+        $data['password'] = ''; // Never expose password hash to frontend
+        return $data;
+    }
+
+    protected function beforeCreate(array &$vals): void
+    {
+        if (!empty($vals['password'])) {
+            $vals['password'] = password_hash($vals['password'], PASSWORD_BCRYPT);
+        }
+    }
+
+    protected function beforeWrite(object $record, array &$vals): void
+    {
+        if (array_key_exists('password', $vals)) {
+            if (empty($vals['password']) || $vals['password'] === $record->password) {
+                unset($vals['password']);
+            } else if (!str_starts_with($vals['password'], '$2y$')) {
+                $vals['password'] = password_hash($vals['password'], PASSWORD_BCRYPT);
+            }
+        }
+    }
+
+    public function action_change_password(ResUser $record): array
+    {
+        return [
+            'type' => 'ir.actions.client',
+            'tag' => 'change_password_dialog',
+            'params' => [
+                'user_id' => $record->id,
+                'user_name' => $record->name,
+                'user_login' => $record->login,
+            ]
+        ];
+    }
+
     protected function defineViews(): void
     {
         $this->listView = ['type' => 'list', 'fields' => ['name', 'login', 'email', 'company_id', 'active']];
         $this->formView = [
             'type' => 'form',
+            'header_buttons' => [
+                [
+                    'name'   => 'action_change_password',
+                    'type'   => 'object',
+                    'string' => 'Change Password',
+                    'class'  => 'ls-btn-secondary',
+                    'icon'   => 'key',
+                ],
+            ],
             'groups' => [[
                 ['name', 'login', 'email'],
                 ['company_id', 'partner_id', 'active', 'share'],
             ]],
             'tabs' => [
-                ['name' => 'groups',  'label' => 'Groups',     'type' => 'field', 'field' => 'groups_id'],
-                ['name' => 'security','label' => 'Security',   'type' => 'field', 'field' => 'password'],
-                ['name' => 'history', 'label' => 'History',    'type' => 'field', 'field' => 'last_login_at'],
+                ['name' => 'groups',   'label' => 'Groups',   'type' => 'field', 'field' => 'groups_id'],
+                ['name' => 'security', 'label' => 'Security', 'type' => 'field', 'field' => 'password'],
+                ['name' => 'history',  'label' => 'History',  'type' => 'field', 'field' => 'last_login_at'],
             ],
         ];
         $this->searchView = [

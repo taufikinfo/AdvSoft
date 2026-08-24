@@ -811,6 +811,8 @@ class FormView extends Component {
                             const p = res.action.params || {};
                             this.showToast(`${p.title || 'Notification'}: ${p.message || ''}`);
                             await this.loadRecord();
+                        } else if (res.action.tag === 'change_password_dialog') {
+                            this.openPasswordChangeDialog(res.action.params || {});
                         }
                     } else if (res.action.type === 'ir.actions.act_window') {
                         if (window.__doAction) {
@@ -831,6 +833,82 @@ class FormView extends Component {
             // handle action type
             alert('Action type not fully implemented yet');
         }
+    }
+
+    openPasswordChangeDialog(params) {
+        const userId = params.user_id || this.state.record.id || this.props.recordId;
+        const userName = params.user_name || this.state.record.name || 'User';
+
+        const existingModal = document.getElementById('ls-change-password-modal');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'ls-change-password-modal';
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(2px);';
+        modal.innerHTML = `
+            <div style="background:var(--ls-card-bg,#fff);border-radius:12px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.2);width:100%;max-width:440px;padding:24px;border:1px solid var(--ls-border,#e5e7eb);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h3 style="margin:0;font-size:18px;font-weight:600;color:var(--ls-text,#1f2937);">Change Password</h3>
+                    <button type="button" class="ls-modal-close" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ls-muted,#9ca3af);">✕</button>
+                </div>
+                <p style="margin:0 0 16px 0;font-size:13px;color:var(--ls-muted,#6b7280);">Set a new password for <b>${userName}</b>.</p>
+                <div id="ls-pw-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:12px;"></div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:12px;font-weight:500;margin-bottom:4px;color:var(--ls-text,#374151);">New Password</label>
+                    <input type="password" id="ls-new-pw" class="ls-input" placeholder="At least 6 characters" minlength="6" style="width:100%;padding:8px 12px;border:1px solid var(--ls-border,#d1d5db);border-radius:6px;font-size:14px;box-sizing:border-box;"/>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:12px;font-weight:500;margin-bottom:4px;color:var(--ls-text,#374151);">Confirm Password</label>
+                    <input type="password" id="ls-confirm-pw" class="ls-input" placeholder="Repeat new password" minlength="6" style="width:100%;padding:8px 12px;border:1px solid var(--ls-border,#d1d5db);border-radius:6px;font-size:14px;box-sizing:border-box;"/>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                    <button type="button" class="ls-btn ls-modal-cancel" style="padding:8px 16px;border:1px solid var(--ls-border,#d1d5db);background:none;border-radius:6px;cursor:pointer;font-size:13px;">Cancel</button>
+                    <button type="button" id="ls-btn-save-pw" class="ls-btn ls-btn-primary" style="padding:8px 18px;background:var(--ls-primary,#714b67);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;">Update Password</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const close = () => modal.remove();
+        modal.querySelector('.ls-modal-close').onclick = close;
+        modal.querySelector('.ls-modal-cancel').onclick = close;
+
+        const btnSave = modal.querySelector('#ls-btn-save-pw');
+        const errEl = modal.querySelector('#ls-pw-error');
+        const newPw = modal.querySelector('#ls-new-pw');
+        const confPw = modal.querySelector('#ls-confirm-pw');
+
+        newPw.focus();
+
+        btnSave.onclick = async () => {
+            const val = newPw.value;
+            const conf = confPw.value;
+            if (!val || val.length < 6) {
+                errEl.textContent = 'Password must be at least 6 characters.';
+                errEl.style.display = 'block';
+                newPw.focus();
+                return;
+            }
+            if (val !== conf) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.style.display = 'block';
+                confPw.focus();
+                return;
+            }
+            btnSave.disabled = true;
+            btnSave.textContent = 'Saving...';
+            try {
+                await RPC.write('res.users', [Number(userId)], { password: val });
+                close();
+                this.showToast('Password updated successfully!');
+                await this.loadRecord();
+            } catch (e) {
+                btnSave.disabled = false;
+                btnSave.textContent = 'Update Password';
+                errEl.textContent = 'Error: ' + (e.message || e);
+                errEl.style.display = 'block';
+            }
+        };
     }
 
     // ══ PRINT REPORT ════════════════════════════════
