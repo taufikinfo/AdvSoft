@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Model\Tag;
+use App\Model\Project\Tag;
 use App\Advsoft\{ModelDefinition, Field};
 
 class TagDef extends ModelDefinition

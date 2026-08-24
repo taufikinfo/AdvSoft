@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Model\Stage;
+use App\Model\Project\Stage;
 use App\Advsoft\{ModelDefinition, Field};
 
 class StageDef extends ModelDefinition

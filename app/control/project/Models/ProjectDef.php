@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Model\Project;
+use App\Model\Project\Project;
 use App\Advsoft\{ModelDefinition, Field, Registry};
 
 /**

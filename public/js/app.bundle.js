@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 03:24:34
+ * Generated: 2026-08-24 03:30:01
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -12918,7 +12918,9 @@ class FormView extends Component {
 
         if (btn.type === 'object') {
             try {
-                const res = await window.AdvSoftRPC.call_button(this.props.model, this.props.recordId, btn.name);
+                const model = this._model || this.props.model || 'task';
+                const recordId = this.state.record.id || this.props.recordId;
+                const res = await window.AdvSoftRPC.call_button(model, recordId, btn.name);
                 if (res.action) {
                     if (res.action.type === 'ir.actions.client') {
                         if (res.action.tag === 'reload') {

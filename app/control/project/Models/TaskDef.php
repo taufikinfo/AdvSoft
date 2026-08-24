@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Model\Task;
+use App\Model\Project\{Task, Stage, Project, Tag};
 use App\Advsoft\{ModelDefinition, Field};
 use App\Advsoft\Core\Support\Log;
 
@@ -646,13 +646,13 @@ class TaskDef extends ModelDefinition
 
     public function getInProgressDomain(): array
     {
-        $stage = \App\Model\Stage::where('name', 'In Progress')->first();
+        $stage = Stage::where('name', 'In Progress')->first();
         return [['stage_id', '=', $stage?->id ?? 2]];
     }
 
     public function getDoneDomain(): array
     {
-        $stage = \App\Model\Stage::where('name', 'Done')->first();
+        $stage = Stage::where('name', 'Done')->first();
         return [['stage_id', '=', $stage?->id ?? 4]];
     }
 
@@ -666,7 +666,7 @@ class TaskDef extends ModelDefinition
      */
     public function action_mark_done(object $record): array
     {
-        $doneStage = \App\Model\Stage::where('name', 'Done')->first();
+        $doneStage = Stage::where('name', 'Done')->first();
         $record->progress = 100;
         if ($doneStage) $record->stage_id = $doneStage->id;
         $record->save();
@@ -688,7 +688,7 @@ class TaskDef extends ModelDefinition
      */
     public function action_confirm(object $record): array
     {
-        $inProgressStage = \App\Model\Stage::where('name', 'In Progress')->first();
+        $inProgressStage = Stage::where('name', 'In Progress')->first();
         if ($record->progress == 0) {
             $record->progress = 1; // Mark as started
         }
@@ -714,7 +714,7 @@ class TaskDef extends ModelDefinition
      */
     public function action_start_progress(object $record): array
     {
-        $inProgressStage = \App\Model\Stage::where('name', 'In Progress')->first();
+        $inProgressStage = Stage::where('name', 'In Progress')->first();
         if ($record->progress == 0) {
             $record->progress = 10; // Set initial progress
         }
@@ -740,7 +740,7 @@ class TaskDef extends ModelDefinition
      */
     public function action_reset_draft(object $record): array
     {
-        $newStage = \App\Model\Stage::where('name', 'New')->first();
+        $newStage = Stage::where('name', 'New')->first();
         $record->progress = 0;
         if ($newStage) {
             $record->stage_id = $newStage->id;
