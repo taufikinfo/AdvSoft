@@ -243,6 +243,14 @@ class OrmController extends Controller
             $field = $parts[0] ?? 'id';
             $dir = strtolower($parts[1] ?? 'desc');
             if (!in_array($dir, ['asc', 'desc'])) $dir = 'desc';
+
+            // Map standard Odoo audit aliases to database columns
+            if ($field === 'write_date') {
+                $field = 'updated_at';
+            } elseif ($field === 'create_date') {
+                $field = 'created_at';
+            }
+
             $query->orderBy($field, $dir);
         }
 

@@ -1,6 +1,6 @@
 /**
  * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-19 07:02:44
+ * Generated: 2026-08-19 07:12:06
  */
 
 /* --- [FILE: js/core/owl-rpc.js] --- */

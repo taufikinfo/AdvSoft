@@ -11,7 +11,7 @@ class SpreadsheetDocumentDef extends ModelDefinition
     public string $_name = 'spreadsheet.document';
     public string $_description = 'Spreadsheet Document';
     public string $_table = 'spreadsheet_data';
-    public string $_order = 'write_date desc';
+    public string $_order = 'updated_at desc';
     public string $_rec_name = 'name';
     public string $modelClass = SpreadsheetDocument::class;
 
