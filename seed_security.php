@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/app/bootstrap.php';
 
-use App\Models\Ir\IrModel;
-use App\Models\Ir\IrModelAccess;
-use App\Models\Res\ResGroup;
+use App\Model\Ir\IrModel;
+use App\Model\Ir\IrModelAccess;
+use App\Model\Res\ResGroup;
 use App\Odoo\Registry;
 use Adianti\Database\TTransaction;
 

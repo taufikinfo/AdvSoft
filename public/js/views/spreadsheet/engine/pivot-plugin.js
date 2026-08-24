@@ -62,7 +62,7 @@
             if (!pivot || !pivot.model) return null;
 
             try {
-                const rpc = window.LaravelRPC || window.rpc;
+                const rpc = window.LarasoftRPC || window.rpc;
                 const result = await rpc.searchRead(pivot.model, pivot.domain, {
                     fields: [...pivot.groupBy, ...pivot.measures.map(m => m.field)],
                     limit: pivot.rowLimit,

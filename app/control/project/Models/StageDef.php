@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Models\Stage;
+use App\Model\Stage;
 use App\Odoo\{ModelDefinition, Field};
 
 class StageDef extends ModelDefinition

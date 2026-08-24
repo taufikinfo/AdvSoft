@@ -3,7 +3,7 @@
 namespace App\Odoo;
 
 use Adianti\Database\TTransaction;
-use App\Models\BaseModel;
+use App\Model\BaseModel;
 
 // Import concern traits
 use App\Odoo\Concerns\HasLifecycleHooks;
@@ -626,7 +626,7 @@ abstract class ModelDefinition
 
         foreach ($fields as $field) {
             if ($field->type === Field::MANY2ONE && $field->relation) {
-                $relName = \App\Core\Support\Str::camel(preg_replace('/_id$/', '', $field->name));
+                $relName = \App\Odoo\Core\Support\Str::camel(preg_replace('/_id$/', '', $field->name));
                 $relDef = Registry::get($field->relation);
                 if ($relDef) {
                     $selectFields = $field->displayFields ?: ['id', $relDef->_rec_name];
@@ -638,9 +638,9 @@ abstract class ModelDefinition
                 }
             } elseif ($field->type === Field::MANY2MANY && $field->relation) {
                 $baseName = preg_replace('/_ids?$/', '', $field->name);
-                $o1 = \App\Core\Support\Str::camel($baseName . 's');
-                $o2 = \App\Core\Support\Str::camel($baseName);
-                $o3 = \App\Core\Support\Str::camel($field->name);
+                $o1 = \App\Odoo\Core\Support\Str::camel($baseName . 's');
+                $o2 = \App\Odoo\Core\Support\Str::camel($baseName);
+                $o3 = \App\Odoo\Core\Support\Str::camel($field->name);
                 $relName = method_exists($this->modelClass, $o1) ? $o1 : (method_exists($this->modelClass, $o2) ? $o2 : $o3);
                 if (method_exists($this->modelClass, $relName)) {
                     $relDef = Registry::get($field->relation);
@@ -651,9 +651,9 @@ abstract class ModelDefinition
                 }
             } elseif ($field->type === Field::ONE2MANY) {
                 $baseName = preg_replace('/_ids?$/', '', $field->name);
-                $o1 = \App\Core\Support\Str::camel($baseName . 's');
-                $o2 = \App\Core\Support\Str::camel($baseName);
-                $o3 = \App\Core\Support\Str::camel($field->name);
+                $o1 = \App\Odoo\Core\Support\Str::camel($baseName . 's');
+                $o2 = \App\Odoo\Core\Support\Str::camel($baseName);
+                $o3 = \App\Odoo\Core\Support\Str::camel($field->name);
                 $relName = method_exists($this->modelClass, $o1) ? $o1 : (method_exists($this->modelClass, $o2) ? $o2 : $o3);
                 if (method_exists($this->modelClass, $relName)) {
                     $loads[] = $relName;
@@ -661,7 +661,7 @@ abstract class ModelDefinition
                     if ($childDef) {
                         foreach ($childDef->getFields() as $childField) {
                             if ($childField->type === Field::MANY2ONE && $childField->relation) {
-                                $childRelName = \App\Core\Support\Str::camel(preg_replace('/_id$/', '', $childField->name));
+                                $childRelName = \App\Odoo\Core\Support\Str::camel(preg_replace('/_id$/', '', $childField->name));
                                 $childRelDef = Registry::get($childField->relation);
                                 if ($childRelDef && method_exists($childDef->modelClass, $childRelName)) {
                                     $selectFields = ['id', $childRelDef->_rec_name];
@@ -696,7 +696,7 @@ abstract class ModelDefinition
 
             switch ($field->type) {
                 case Field::MANY2ONE:
-                    $relName = \App\Core\Support\Str::camel(preg_replace('/_id$/', '', $name));
+                    $relName = \App\Odoo\Core\Support\Str::camel(preg_replace('/_id$/', '', $name));
                     $rel = $record->relationLoaded($relName) ? $record->getRelation($relName) : null;
                     if ($rel) {
                         $recName = $rel->{Registry::get($field->relation)?->_rec_name ?? 'name'} ?? '';
@@ -721,9 +721,9 @@ abstract class ModelDefinition
 
                 case Field::MANY2MANY:
                     $baseName = preg_replace('/_ids?$/', '', $name);
-                    $o1 = \App\Core\Support\Str::camel($baseName . 's');
-                    $o2 = \App\Core\Support\Str::camel($baseName);
-                    $o3 = \App\Core\Support\Str::camel($name);
+                    $o1 = \App\Odoo\Core\Support\Str::camel($baseName . 's');
+                    $o2 = \App\Odoo\Core\Support\Str::camel($baseName);
+                    $o3 = \App\Odoo\Core\Support\Str::camel($name);
                     $relName = method_exists($record, $o1) ? $o1 : (method_exists($record, $o2) ? $o2 : $o3);
                     if ($record->relationLoaded($relName)) {
                         $relDef = Registry::get($field->relation);
@@ -740,9 +740,9 @@ abstract class ModelDefinition
 
                 case Field::ONE2MANY:
                     $baseName = preg_replace('/_ids?$/', '', $name);
-                    $o1 = \App\Core\Support\Str::camel($baseName . 's');
-                    $o2 = \App\Core\Support\Str::camel($baseName);
-                    $o3 = \App\Core\Support\Str::camel($name);
+                    $o1 = \App\Odoo\Core\Support\Str::camel($baseName . 's');
+                    $o2 = \App\Odoo\Core\Support\Str::camel($baseName);
+                    $o3 = \App\Odoo\Core\Support\Str::camel($name);
                     $relName = method_exists($record, $o1) ? $o1 : (method_exists($record, $o2) ? $o2 : $o3);
                     $childDef = Registry::get($field->relation);
 
@@ -1142,9 +1142,9 @@ abstract class ModelDefinition
 
             if ($field->type === Field::MANY2MANY && is_array($value)) {
                 $baseName = preg_replace('/_ids?$/', '', $key);
-                $o1 = \App\Core\Support\Str::camel($baseName . 's');
-                $o2 = \App\Core\Support\Str::camel($baseName);
-                $o3 = \App\Core\Support\Str::camel($key);
+                $o1 = \App\Odoo\Core\Support\Str::camel($baseName . 's');
+                $o2 = \App\Odoo\Core\Support\Str::camel($baseName);
+                $o3 = \App\Odoo\Core\Support\Str::camel($key);
                 $syncMethod1 = 'sync' . ucfirst($o1);
                 $syncMethod2 = 'sync' . ucfirst($o2);
                 $syncMethod3 = 'sync' . ucfirst($o3);

@@ -2,7 +2,7 @@
 
 namespace Addons\Base\Models\Res;
 
-use App\Models\Res\ResPartner;
+use App\Model\Res\ResPartner;
 use App\Odoo\Field;
 use App\Odoo\ModelDefinition;
 

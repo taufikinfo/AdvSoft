@@ -59,7 +59,7 @@
             if (!list || !list.model) return null;
 
             try {
-                const rpc = window.LaravelRPC || window.rpc;
+                const rpc = window.LarasoftRPC || window.rpc;
                 const opts = {
                     fields: list.fields,
                     limit: list.limit,

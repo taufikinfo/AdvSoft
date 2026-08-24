@@ -7,7 +7,7 @@
 
     class SpreadsheetDocument {
         constructor(config = {}) {
-            this._rpc = config.rpc || window.LaravelRPC || window.rpc;
+            this._rpc = config.rpc || window.LarasoftRPC || window.rpc;
             this._model = config.model || 'spreadsheet.spreadsheet_data';
             this._currentId = null;
             this._currentName = '';

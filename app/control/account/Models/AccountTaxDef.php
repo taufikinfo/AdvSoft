@@ -2,7 +2,7 @@
 
 namespace Addons\Account\Models;
 
-use App\Models\Account\AccountTax;
+use App\Model\Account\AccountTax;
 use App\Odoo\{ModelDefinition, Field};
 
 /**

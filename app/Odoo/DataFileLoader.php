@@ -3,7 +3,7 @@
 namespace App\Odoo;
 
 use Adianti\Database\TTransaction;
-use App\Core\Support\Log;
+use App\Odoo\Core\Support\Log;
 
 /**
  * DataFileLoader — Loads XML and CSV data files from addon modules.
@@ -348,7 +348,7 @@ class DataFileLoader
         if (isset($element['view_type'])) $values['view_type'] = (string) $element['view_type'];
 
         $existingId = $this->resolveXmlId($xmlId);
-        $menuModel = \App\Models\Menu::class;
+        $menuModel = \App\Model\Menu::class;
 
         if ($existingId) {
             $menuModel::where('id', $existingId)->update($values);
@@ -382,7 +382,7 @@ class DataFileLoader
         if (isset($element['help'])) $values['help'] = (string) $element['help'];
 
         $existingId = $this->resolveXmlId($xmlId);
-        $actionModel = \App\Models\Action::class;
+        $actionModel = \App\Model\Action::class;
 
         if ($existingId) {
             $actionModel::where('id', $existingId)->update($values);

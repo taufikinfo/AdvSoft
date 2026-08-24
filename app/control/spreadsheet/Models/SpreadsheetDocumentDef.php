@@ -2,7 +2,7 @@
 
 namespace Addons\Spreadsheet\Models;
 
-use App\Models\SpreadsheetDocument;
+use App\Model\SpreadsheetDocument;
 use App\Odoo\Field;
 use App\Odoo\ModelDefinition;
 

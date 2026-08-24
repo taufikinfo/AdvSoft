@@ -10,7 +10,7 @@
 
 require_once __DIR__ . '/app/bootstrap.php';
 
-use App\Core\Support\AssetCompiler;
+use App\Odoo\Core\Support\AssetCompiler;
 
 echo "=== Compiling Adiantisoft Production Assets ===\n";
 

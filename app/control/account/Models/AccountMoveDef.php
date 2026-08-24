@@ -2,9 +2,9 @@
 
 namespace Addons\Account\Models;
 
-use App\Models\Account\AccountMove;
+use App\Model\Account\AccountMove;
 use App\Odoo\{ModelDefinition, Field, Registry};
-use App\Core\Support\Log;
+use App\Odoo\Core\Support\Log;
 
 /**
  * AccountMoveDef — Journal Entries / Invoices
@@ -503,7 +503,7 @@ class AccountMoveDef extends ModelDefinition
                 default                     => 'general',
             };
 
-            $journal = \App\Models\Account\AccountJournal::where('type', $journalType)->first();
+            $journal = \App\Model\Account\AccountJournal::where('type', $journalType)->first();
             if ($journal) {
                 $values['journal_id'] = $journal->id;
             }
@@ -527,7 +527,7 @@ class AccountMoveDef extends ModelDefinition
         $defaults['name'] = '/';
 
         // Default journal (general)
-        $journal = \App\Models\Account\AccountJournal::where('type', 'general')->first();
+        $journal = \App\Model\Account\AccountJournal::where('type', 'general')->first();
         if ($journal) {
             $defaults['journal_id'] = $journal->id;
         }

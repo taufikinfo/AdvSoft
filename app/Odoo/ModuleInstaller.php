@@ -2,8 +2,8 @@
 
 namespace App\Odoo;
 
-use App\Models\Ir\IrModuleModule;
-use App\Core\Support\Log;
+use App\Model\Ir\IrModuleModule;
+use App\Odoo\Core\Support\Log;
 
 /**
  * ModuleInstaller — Odoo-style addon lifecycle manager.

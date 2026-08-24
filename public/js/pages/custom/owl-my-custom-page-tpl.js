@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  MyCustomPage — Owl Template
-//  Contoh halaman kustom terintegrasi dengan backend Laravel.
+//  Contoh halaman kustom terintegrasi dengan backend Adiantisoft.
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { xml } = owl;

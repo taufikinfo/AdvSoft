@@ -327,8 +327,8 @@ trait HasAccessControl
     /** @var bool Superuser flag (bypass all ACLs) */
     protected bool $_isSuperuser = false;
 
-    /** @var \App\Models\Res\ResUser|null Override user for this recordset */
-    protected ?\App\Models\Res\ResUser $_user = null;
+    /** @var \App\Model\Res\ResUser|null Override user for this recordset */
+    protected ?\App\Model\Res\ResUser $_user = null;
 
     /** @var int|null Override company for this recordset */
     protected ?int $_companyId = null;
@@ -368,8 +368,8 @@ trait HasAccessControl
 
         // 2. DB ir.model.access check
         // If the model has ANY rules defined in DB, DB is the strict source of truth.
-        $modelId = \App\Models\Ir\IrModel::where('model', $modelName)->value('id');
-        $hasDbRules = $modelId ? \App\Models\Ir\IrModelAccess::where('model_id', $modelId)->where('active', true)->exists() : false;
+        $modelId = \App\Model\Ir\IrModel::where('model', $modelName)->value('id');
+        $hasDbRules = $modelId ? \App\Model\Ir\IrModelAccess::where('model_id', $modelId)->where('active', true)->exists() : false;
 
         if ($hasDbRules) {
             try {
@@ -456,7 +456,7 @@ trait HasAccessControl
     /**
      * with_user(user) — returns a copy acting as the given user.
      */
-    public function withUser(\App\Models\Res\ResUser $user): static
+    public function withUser(\App\Model\Res\ResUser $user): static
     {
         $clone = clone $this;
         $clone->_user = $user;
@@ -468,7 +468,7 @@ trait HasAccessControl
     /**
      * with_company(company_id) — returns a copy with different company context.
      */
-    public function withCompany(int|\App\Models\Res\ResCompany $company): static
+    public function withCompany(int|\App\Model\Res\ResCompany $company): static
     {
         $clone = clone $this;
         $clone->_companyId = is_int($company) ? $company : $company->id;

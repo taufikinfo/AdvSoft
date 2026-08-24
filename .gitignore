@@ -1,0 +1,12 @@
+/node_modules
+/vendor
+.env
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+/storage/output/*
+!/storage/output/.gitkeep
+/database/*.sqlite
+/database/*.sqlite-wal
+/database/*.sqlite-shm
+.DS_Store
+Thumbs.db

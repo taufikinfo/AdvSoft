@@ -10,7 +10,7 @@ class IrActionReportDef extends ModelDefinition
     public string $_name = 'ir.actions.report';
     public string $_description = 'Report Action';
     public string $_table = 'ir_act_report_xml';
-    public string $modelClass = \App\Models\Ir\IrActionReport::class;
+    public string $modelClass = \App\Model\Ir\IrActionReport::class;
 
     protected function defineFields(): void
     {

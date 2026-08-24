@@ -10,7 +10,7 @@ use App\Models\Res\ResGroup;
 use App\Models\Res\ResGroupsCategory;
 use App\Models\Res\ResPartner;
 use App\Models\Res\ResUser;
-use App\Core\Database\Seeder;
+use App\Odoo\Core\Database\Seeder;
 
 class SecuritySeeder extends Seeder
 {

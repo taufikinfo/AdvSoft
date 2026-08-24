@@ -2,7 +2,7 @@
 
 namespace Addons\Base\Models\Ir;
 
-use App\Models\Ir\IrRule;
+use App\Model\Ir\IrRule;
 use App\Odoo\Field;
 use App\Odoo\ModelDefinition;
 

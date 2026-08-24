@@ -105,7 +105,7 @@ class Registry
                 if ($addonDir === '.' || $addonDir === '..') continue;
                 $addonModelsPath = $controlPath . DIRECTORY_SEPARATOR . $addonDir . DIRECTORY_SEPARATOR . 'Models';
                 if (is_dir($addonModelsPath)) {
-                    $namespace = 'Addons\\' . \App\Core\Support\Str::studly($addonDir) . '\\Models\\';
+                    $namespace = 'Addons\\' . \App\Odoo\Core\Support\Str::studly($addonDir) . '\\Models\\';
                     self::discoverModels($addonModelsPath, $namespace);
                 }
             }

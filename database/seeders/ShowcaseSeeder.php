@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Core\Database\Seeder;
+use App\Odoo\Core\Database\Seeder;
 use App\Models\Showcase;
 
 class ShowcaseSeeder extends Seeder

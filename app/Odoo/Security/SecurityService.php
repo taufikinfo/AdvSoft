@@ -2,10 +2,10 @@
 
 namespace App\Odoo\Security;
 
-use App\Models\Ir\IrModel;
-use App\Models\Ir\IrModelAccess;
-use App\Models\Ir\IrRule;
-use App\Models\Res\ResUser;
+use App\Model\Ir\IrModel;
+use App\Model\Ir\IrModelAccess;
+use App\Model\Ir\IrRule;
+use App\Model\Res\ResUser;
 use App\Odoo\Domain;
 use App\Odoo\Exceptions\AccessDenied;
 
@@ -359,7 +359,7 @@ class SecurityService
         foreach ($groupSpec as $nameOrId) {
             if (is_int($nameOrId) && in_array($nameOrId, $userGroupIds, true)) return true;
             if (is_string($nameOrId)) {
-                $gid = \App\Models\Res\ResGroup::where('name', $nameOrId)->value('id');
+                $gid = \App\Model\Res\ResGroup::where('name', $nameOrId)->value('id');
                 if ($gid && in_array($gid, $userGroupIds, true)) return true;
             }
         }

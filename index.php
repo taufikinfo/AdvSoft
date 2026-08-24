@@ -6,11 +6,11 @@
 
 require_once __DIR__ . '/app/bootstrap.php';
 
-use App\Core\Application;
-use App\Core\Http\Request;
-use App\Core\Http\Response;
-use App\Core\Http\JsonResponse;
-use App\Core\Http\Router;
+use App\Odoo\Core\Application;
+use App\Odoo\Core\Http\Request;
+use App\Odoo\Core\Http\Response;
+use App\Odoo\Core\Http\JsonResponse;
+use App\Odoo\Core\Http\Router;
 use App\Odoo\Security\SecurityContext;
 use App\Odoo\Security\SecurityService;
 

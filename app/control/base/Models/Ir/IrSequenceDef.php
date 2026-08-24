@@ -2,7 +2,7 @@
 
 namespace Addons\Base\Models\Ir;
 
-use App\Models\Ir\IrSequence;
+use App\Model\Ir\IrSequence;
 use App\Odoo\{ModelDefinition, Field};
 
 /**

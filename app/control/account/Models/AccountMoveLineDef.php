@@ -2,7 +2,7 @@
 
 namespace Addons\Account\Models;
 
-use App\Models\Account\AccountMoveLine;
+use App\Model\Account\AccountMoveLine;
 use App\Odoo\{ModelDefinition, Field, Registry};
 
 /**

@@ -2,7 +2,7 @@
 
 namespace Addons\Base\Models;
 
-use App\Models\SavedFilter;
+use App\Model\SavedFilter;
 use App\Odoo\{ModelDefinition, Field};
 
 class SavedFilterDef extends ModelDefinition

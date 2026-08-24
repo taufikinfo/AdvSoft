@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Models\Tag;
+use App\Model\Tag;
 use App\Odoo\{ModelDefinition, Field};
 
 class TagDef extends ModelDefinition

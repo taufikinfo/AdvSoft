@@ -1,20 +1,20 @@
 <?php
 
-use App\Core\Support\Route;
-use App\Core\Http\Request;
-use App\Core\Http\JsonResponse;
-use App\Http\Controllers\OrmController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SecurityController;
-use App\Http\Controllers\MenuEditorController;
-use App\Http\Controllers\SpreadsheetCollaborationController;
-use App\Http\Controllers\ViewBuilderController;
-use App\Http\Controllers\AccountReportController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\CustomPageController;
-use App\Http\Controllers\HtmlFieldController;
-use App\Http\Controllers\QWebController;
+use App\Odoo\Core\Support\Route;
+use App\Odoo\Core\Http\Request;
+use App\Odoo\Core\Http\JsonResponse;
+use App\Control\Controllers\OrmController;
+use App\Control\Controllers\AuthController;
+use App\Control\Controllers\ProfileController;
+use App\Control\Controllers\SecurityController;
+use App\Control\Controllers\MenuEditorController;
+use App\Control\Controllers\SpreadsheetCollaborationController;
+use App\Control\Controllers\ViewBuilderController;
+use App\Control\Controllers\AccountReportController;
+use App\Control\Controllers\ReportController;
+use App\Control\Controllers\CustomPageController;
+use App\Control\Controllers\HtmlFieldController;
+use App\Control\Controllers\QWebController;
 
 // Main SPA & Standard Adianti Controller entry point
 Route::any('/engine.php', function (Request $request) {
@@ -309,13 +309,13 @@ Route::prefix('api/modules')->group(function () {
 // System Config API
 Route::prefix('api/config')->group(function () {
     Route::get('/params', function (Request $request) {
-        return response()->json(\App\Models\Ir\IrConfigParameter::getAllParams());
+        return response()->json(\App\Model\Ir\IrConfigParameter::getAllParams());
     });
     Route::get('/param/{key}', function (Request $request, string $key) {
-        return response()->json(['value' => \App\Models\Ir\IrConfigParameter::getParam($key)]);
+        return response()->json(['value' => \App\Model\Ir\IrConfigParameter::getParam($key)]);
     });
     Route::post('/param', function (Request $request) {
-        \App\Models\Ir\IrConfigParameter::setParam($request->input('key'), $request->input('value'));
+        \App\Model\Ir\IrConfigParameter::setParam($request->input('key'), $request->input('value'));
         return response()->json(['success' => true]);
     });
 });
@@ -325,7 +325,7 @@ Route::prefix('api/sequence')->group(function () {
     Route::post('/next', function (Request $request) {
         $code = $request->input('code');
         $companyId = $request->input('company_id');
-        $value = \App\Models\Ir\IrSequence::nextByCode($code, $companyId);
+        $value = \App\Model\Ir\IrSequence::nextByCode($code, $companyId);
         return response()->json(['value' => $value]);
     });
 });

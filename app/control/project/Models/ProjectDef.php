@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Models\Project;
+use App\Model\Project;
 use App\Odoo\{ModelDefinition, Field, Registry};
 
 /**

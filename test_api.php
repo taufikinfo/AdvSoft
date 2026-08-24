@@ -6,12 +6,13 @@
 require_once __DIR__ . '/app/bootstrap.php';
 require_once __DIR__ . '/routes/web.php';
 
-use App\Core\Http\Request;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\OrmController;
-use App\Http\Controllers\AccountReportController;
-use App\Http\Controllers\MenuEditorController;
-use App\Http\Controllers\ViewBuilderController;
+use App\Odoo\Core\Http\Request;
+use App\Control\Controllers\AuthController;
+use App\Control\Controllers\OrmController;
+use App\Control\Controllers\AccountReportController;
+use App\Control\Controllers\MenuEditorController;
+use App\Control\Controllers\ViewBuilderController;
+use App\Control\Controllers\CustomPageController;
 use App\Odoo\Registry;
 
 function makeReq($uri, $method = 'GET', $params = []) {
@@ -119,7 +120,7 @@ echo "Status: " . $res->getStatusCode() . "\n";
 echo "Response: " . $res->getContent() . "\n";
 
 echo "\n=== 10. Testing Custom Page Controller (index / create table) ===\n";
-$cp = app(\App\Http\Controllers\CustomPageController::class);
+$cp = app(\App\Control\Controllers\CustomPageController::class);
 $res = $cp->index();
 echo "Status: " . $res->getStatusCode() . "\n";
 echo "Response: " . $res->getContent() . "\n";
@@ -146,7 +147,7 @@ echo "Status: " . $res->getStatusCode() . "\n";
 $data = json_decode($res->getContent(), true);
 echo "Loaded views: " . implode(', ', array_keys($data['views'] ?? [])) . "\n";
 echo "\n=== 14. Testing Standard Adianti URL Routing ===\n";
-$router = \App\Core\Http\Router::getInstance();
+$router = \App\Odoo\Core\Http\Router::getInstance();
 $adiantiReq = makeReq('/engine.php', 'GET', ['class' => 'CustomPageController']);
 $res = $router->dispatch($adiantiReq);
 echo "Engine route status: " . ($res ? "OK" : "NO_RES") . "\n";

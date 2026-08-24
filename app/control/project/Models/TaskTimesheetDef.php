@@ -10,7 +10,7 @@ class TaskTimesheetDef extends ModelDefinition
     public string $_description = 'Timesheet';
     public string $_table = 'task_timesheets';
     public string $_rec_name = 'name';
-    public string $modelClass = \App\Models\TaskTimesheet::class;
+    public string $modelClass = \App\Model\TaskTimesheet::class;
 
     protected function defineFields(): void
     {

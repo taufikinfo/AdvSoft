@@ -2,7 +2,7 @@
 
 namespace Addons\Showcase\Models;
 
-use App\Models\Showcase;
+use App\Model\Showcase;
 use App\Odoo\Field;
 use App\Odoo\ModelDefinition;
 

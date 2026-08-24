@@ -2,7 +2,7 @@
 
 namespace Addons\Account\Models;
 
-use App\Models\Account\AccountPayment;
+use App\Model\Account\AccountPayment;
 use App\Odoo\{ModelDefinition, Field};
 
 /**

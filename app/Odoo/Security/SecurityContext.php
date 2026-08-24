@@ -2,9 +2,9 @@
 
 namespace App\Odoo\Security;
 
-use App\Models\Res\ResUser;
-use App\Models\Res\ResGroup;
-use App\Models\Res\ResCompany;
+use App\Model\Res\ResUser;
+use App\Model\Res\ResGroup;
+use App\Model\Res\ResCompany;
 
 /**
  * SecurityContext — request-scoped security state.

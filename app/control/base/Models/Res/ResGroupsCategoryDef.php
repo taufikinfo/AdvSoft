@@ -2,7 +2,7 @@
 
 namespace Addons\Base\Models\Res;
 
-use App\Models\Res\ResGroupsCategory;
+use App\Model\Res\ResGroupsCategory;
 use App\Odoo\Field;
 use App\Odoo\ModelDefinition;
 
