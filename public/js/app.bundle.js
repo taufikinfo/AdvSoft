@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 02:36:59
+ * Generated: 2026-08-24 03:13:52
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -11899,7 +11899,7 @@ window.TEMPLATES.FormView = xml`
     </div>
 
     <!-- ══════════════ Form Body ══════════════ -->
-    <div class="ls-form-view" t-on-change="_onWidgetChange" t-on-click="_onWidgetClick" t-on-focusout="_onWidgetFocusOut">
+    <div class="ls-form-view" t-on-input="_onWidgetInput" t-on-change="_onWidgetChange" t-on-click="_onWidgetClick" t-on-focusout="_onWidgetFocusOut">
         <t t-if="state.loading">
             <div class="ls-loading"><div class="ls-spinner"/> Loading...</div>
         </t>
@@ -11947,6 +11947,7 @@ window.TEMPLATES.FormView = xml`
                 <div class="oe_title" t-if="titleField">
                     <h1>
                         <input class="ls-form-title-text" t-att-value="state.record[titleField]"
+                               t-on-input="(ev) => this.debouncedUpdate(titleField, ev.target.value)"
                                t-on-change="(ev) => this.updateField(titleField, ev.target.value)"
                                placeholder="Untitled"
                                aria-label="Record title"/>
@@ -12557,6 +12558,20 @@ class FormView extends Component {
         }
     }
 
+    _onWidgetInput(ev) {
+        const target = ev.target;
+        if (target.closest('.ls-inline-tree')) return; // Ignore events from InlineTreeWidget
+
+        const fieldName = target.getAttribute('data-field');
+        if (!fieldName || target.type === 'file') return;
+
+        let value = target.value;
+        if (target.type === 'checkbox') value = target.checked;
+        if (target.type === 'number') value = target.value === '' ? null : parseFloat(target.value);
+
+        this.debouncedUpdate(fieldName, value);
+    }
+
     _onWidgetChange(ev) {
         const target = ev.target;
         if (target.closest('.ls-inline-tree')) return; // Ignore events from InlineTreeWidget
@@ -12598,7 +12613,7 @@ class FormView extends Component {
 
         let value = target.value;
         if (target.type === 'checkbox') value = target.checked;
-        if (target.type === 'number') value = parseFloat(target.value);
+        if (target.type === 'number') value = target.value === '' ? null : parseFloat(target.value);
 
         this.updateField(fieldName, value);
     }
@@ -13572,10 +13587,38 @@ class FormView extends Component {
 
     // ── Save / Discard ───────────────────────
     async saveRecord() {
-        // ── Force-sync RTEs before save ──
+        // ── 1. Force-sync RTEs before save ──
         if (this._rteInstances) {
             this._rteInstances.forEach(inst => {
                 if (inst.fieldName) this.state.record[inst.fieldName] = inst.getValue();
+            });
+        }
+
+        // ── 2. Harvest all DOM inputs inside the form sheet directly ──
+        const formEl = document.querySelector('.ls-form-sheet') || this.formFieldsRef?.el;
+        if (formEl) {
+            // Harvest title input
+            const titleInput = formEl.querySelector('.ls-form-title-text');
+            if (titleInput && this.titleField) {
+                this.state.record[this.titleField] = titleInput.value;
+            }
+
+            // Harvest standard inputs
+            const inputs = formEl.querySelectorAll('input[data-field], textarea[data-field], select[data-field]');
+            inputs.forEach(input => {
+                if (input.closest('.ls-inline-tree')) return;
+                const fieldName = input.getAttribute('data-field');
+                if (!fieldName) return;
+
+                if (input.type === 'checkbox') {
+                    this.state.record[fieldName] = input.checked;
+                } else if (input.type === 'number') {
+                    this.state.record[fieldName] = input.value === '' ? null : parseFloat(input.value);
+                } else if (input.type === 'file') {
+                    // Handled by onChange FileReader
+                } else if (!input.classList.contains('ls-m2o-autocomplete')) {
+                    this.state.record[fieldName] = input.value;
+                }
             });
         }
 
@@ -13635,7 +13678,15 @@ class FormView extends Component {
             await RPC.write(this._model, [rec.id], values);
             this.state.dirty = false;
             this.showToast('Record saved successfully');
-            if (this.props.onSaved) this.props.onSaved(rec);
+            try {
+                const refreshed = await RPC.read(this._model, rec.id);
+                if (refreshed) {
+                    Object.assign(this.state.record, refreshed);
+                }
+            } catch (e) {
+                console.warn('Post-save refresh failed:', e);
+            }
+            if (this.props.onSaved) this.props.onSaved(this.state.record);
         }
     }
 
