@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
+use App\Advsoft\Core\Database\Migration;
+use App\Advsoft\Core\Database\Schema;
 
 /**
  * Aligns spreadsheet_operations with the revision-based collaboration sync:

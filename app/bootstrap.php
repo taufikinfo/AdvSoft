@@ -40,6 +40,13 @@ $modelAliases = [
     'App\Core\Database\QueryBuilder'      => \App\Advsoft\Core\Database\QueryBuilder::class,
     'App\Core\Database\SchemaManager'     => \App\Advsoft\Core\Database\SchemaManager::class,
     'App\Core\Database\Seeder'            => \App\Advsoft\Core\Database\Seeder::class,
+    'App\Core\Database\Migration'         => \App\Advsoft\Core\Database\Migration::class,
+    'App\Core\Database\Blueprint'         => \App\Advsoft\Core\Database\Blueprint::class,
+    'App\Core\Database\Schema'            => \App\Advsoft\Core\Database\Schema::class,
+    'Illuminate\Database\Migrations\Migration'      => \App\Advsoft\Core\Database\Migration::class,
+    'Illuminate\Database\Schema\Blueprint'          => \App\Advsoft\Core\Database\Blueprint::class,
+    'Illuminate\Database\Schema\ColumnDefinition'   => \App\Advsoft\Core\Database\ColumnDefinition::class,
+    'Illuminate\Support\Facades\Schema'             => \App\Advsoft\Core\Database\Schema::class,
     // Odoo Legacy Aliases
     'App\Odoo\Registry'                   => \App\Advsoft\Registry::class,
     'App\Odoo\Field'                      => \App\Advsoft\Field::class,

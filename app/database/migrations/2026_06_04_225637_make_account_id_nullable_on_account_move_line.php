@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use App\Advsoft\Core\Database\Migration;
+use App\Advsoft\Core\Database\Blueprint;
+use App\Advsoft\Core\Database\Schema;
 
 /**
  * Make account_id nullable on account_move_line.

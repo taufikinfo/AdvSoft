@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use App\Advsoft\Core\Database\Migration;
+use App\Advsoft\Core\Database\Blueprint;
+use App\Advsoft\Core\Database\Schema;
 
 /**
  * ir_ui_views — Stores custom view definitions (overrides).
