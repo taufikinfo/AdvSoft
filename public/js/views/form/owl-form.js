@@ -1035,13 +1035,14 @@ class FormView extends Component {
                             noCreate: (effectiveDef.options || {}).no_create,
                             onAdd: (opt) => {
                                 let current = this.state.record[fname] ? [...this.state.record[fname]] : [];
-                                if (!current.find(t => t.id === opt.id)) {
+                                const optId = typeof opt === 'object' && opt !== null ? opt.id : opt;
+                                if (!current.find(t => (typeof t === 'object' && t !== null ? t.id : t) === optId)) {
                                     current.push(opt);
                                     this.updateField(fname, current);
                                 }
                             },
                             onRemove: (tagId) => {
-                                const newArr = (this.state.record[fname] || []).filter(t => t.id !== tagId);
+                                const newArr = (this.state.record[fname] || []).filter(t => (typeof t === 'object' && t !== null ? t.id : t) !== tagId);
                                 this.updateField(fname, newArr);
                             }
                         };
@@ -1537,7 +1538,7 @@ class FormView extends Component {
             if (fdef.type === 'many2one') {
                 values[fname] = rec[fname] ? (Array.isArray(rec[fname]) ? rec[fname][0] : rec[fname]) : null;
             } else if (fdef.type === 'many2many') {
-                values[fname] = (rec[fname] || []).map(t => t.id);
+                values[fname] = (rec[fname] || []).map(t => typeof t === 'object' && t !== null ? t.id : t);
             } else if (fdef.type === 'one2many') {
                 continue;
             } else if (fdef.type === 'reference') {

@@ -120,6 +120,11 @@ class Field
     public ?string $relation = null;    // Related model name (comodel_name)
     public ?string $inverseField = null; // For One2many: FK field on child
     public ?string $pivot = null;       // For Many2many: pivot table name
+    public ?string $relationTable = null; // Alias for pivot
+    public ?string $column1 = null;     // Many2many source FK column
+    public ?string $column2 = null;     // Many2many target FK column
+    public ?string $foreignKey = null;  // Alias for column1
+    public ?string $relatedKey = null;  // Alias for column2
     public ?string $relatedField = null; // For Related fields: 'project_id.name'
     public ?array $domain = null;       // Domain filter for relational fields (array, legacy string auto-decoded)
     public ?string $ondelete = null;    // cascade, restrict, set null
@@ -191,11 +196,14 @@ class Field
             }
         }
 
-        // Map Odoo snake_case to camelCase
+        // Map snake_case to camelCase
         $keyMap = [
             'inverse_field' => 'inverseField',
             'inverse_name' => 'inverseField',
             'related_field' => 'relatedField',
+            'relation_table' => 'relationTable',
+            'foreign_key' => 'foreignKey',
+            'related_key' => 'relatedKey',
             'currency_field' => 'currencyField',
             'currency_symbol' => 'currencySymbol',
             'max_size' => 'maxSize',
@@ -213,6 +221,14 @@ class Field
                 $this->{$mappedKey} = $value;
             }
         }
+
+        // Normalize Many2many aliases
+        if ($this->pivot && !$this->relationTable) $this->relationTable = $this->pivot;
+        if ($this->relationTable && !$this->pivot) $this->pivot = $this->relationTable;
+        if ($this->foreignKey && !$this->column1) $this->column1 = $this->foreignKey;
+        if ($this->column1 && !$this->foreignKey) $this->foreignKey = $this->column1;
+        if ($this->relatedKey && !$this->column2) $this->column2 = $this->relatedKey;
+        if ($this->column2 && !$this->relatedKey) $this->relatedKey = $this->column2;
 
         // ── Auto-set defaults based on type ──────────────
         $this->applyTypeDefaults($type, $attrs);

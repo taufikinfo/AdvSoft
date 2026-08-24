@@ -10,3 +10,4 @@
 /database/*.sqlite-shm
 .DS_Store
 Thumbs.db
+app/storage/logs/adianti.log

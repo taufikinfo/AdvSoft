@@ -725,14 +725,45 @@ abstract class ModelDefinition
                     $o2 = \App\Advsoft\Core\Support\Str::camel($baseName);
                     $o3 = \App\Advsoft\Core\Support\Str::camel($name);
                     $relName = method_exists($record, $o1) ? $o1 : (method_exists($record, $o2) ? $o2 : $o3);
+                    $relDef = Registry::get($field->relation);
+                    $recNameField = $relDef?->_rec_name ?? 'name';
+
                     if ($record->relationLoaded($relName)) {
-                        $relDef = Registry::get($field->relation);
-                        $recNameField = $relDef?->_rec_name ?? 'name';
                         $result[$name] = $record->getRelation($relName)->map(function ($r) use ($recNameField) {
                             $item = ['id' => $r->id, 'name' => $r->$recNameField ?? ''];
                             if (isset($r->color)) $item['color'] = $r->color;
                             return $item;
                         })->values()->toArray();
+                    } elseif (!empty($record->id) && $relDef) {
+                        // Load directly from pivot table
+                        $pivotTable = $field->relationTable ?: ($field->pivot ?: null);
+                        $col1 = $field->column1 ?: ($field->foreignKey ?: strtolower($this->_name) . '_id');
+                        $col2 = $field->column2 ?: ($field->relatedKey ?: (preg_replace('/_ids?$/', '', $name) . '_id'));
+
+                        $relItems = [];
+                        if ($pivotTable) {
+                            $hasTx = (bool) TTransaction::get();
+                            if (!$hasTx) TTransaction::open('advsoft');
+                            $conn = TTransaction::get();
+                            try {
+                                $stmt = $conn->prepare("SELECT {$col2} FROM {$pivotTable} WHERE {$col1} = :rec_id");
+                                $stmt->execute([':rec_id' => $record->id]);
+                                $relIds = $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+                                if (!empty($relIds)) {
+                                    $targetClass = $relDef->modelClass;
+                                    $records = $targetClass::whereIn('id', $relIds)->get();
+                                    foreach ($records as $r) {
+                                        $item = ['id' => $r->id, 'name' => $r->$recNameField ?? ''];
+                                        if (isset($r->color)) $item['color'] = $r->color;
+                                        $relItems[] = $item;
+                                    }
+                                }
+                            } catch (\Throwable $e) {
+                                // ignore
+                            }
+                            if (!$hasTx) TTransaction::close();
+                        }
+                        $result[$name] = $relItems;
                     } else {
                         $result[$name] = [];
                     }
@@ -1186,30 +1217,33 @@ abstract class ModelDefinition
                     $relObj = method_exists($record, $relName) ? $record->$relName() : null;
                     if ($relObj && is_object($relObj) && method_exists($relObj, 'sync')) {
                         $relObj->sync($flatIds);
-                    } elseif (!empty($field->relationTable) && !empty($field->column1) && !empty($field->column2)) {
-                        $opened = false;
-                        if (!TTransaction::get()) {
-                            TTransaction::open('advsoft');
-                            $opened = true;
-                        }
-                        $conn = TTransaction::get();
-                        $driver = $conn->getAttribute(\PDO::ATTR_DRIVER_NAME);
-                        $table = $field->relationTable;
-                        $col1 = $field->column1;
-                        $col2 = $field->column2;
+                    } else {
+                        $table = $field->relationTable ?: ($field->pivot ?: null);
+                        $col1 = $field->column1 ?: ($field->foreignKey ?: strtolower($this->_name) . '_id');
+                        $col2 = $field->column2 ?: ($field->relatedKey ?: (preg_replace('/_ids?$/', '', $key) . '_id'));
 
-                        $delStmt = $conn->prepare("DELETE FROM {$table} WHERE {$col1} = :rec_id");
-                        $delStmt->execute([':rec_id' => $record->id]);
+                        if (!empty($table) && !empty($col1) && !empty($col2)) {
+                            $opened = false;
+                            if (!TTransaction::get()) {
+                                TTransaction::open('advsoft');
+                                $opened = true;
+                            }
+                            $conn = TTransaction::get();
+                            $driver = $conn->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-                        $insSql = ($driver === 'mysql')
-                            ? "INSERT IGNORE INTO {$table} ({$col1}, {$col2}) VALUES (:rec_id, :rel_id)"
-                            : "INSERT OR IGNORE INTO {$table} ({$col1}, {$col2}) VALUES (:rec_id, :rel_id)";
-                        $insStmt = $conn->prepare($insSql);
-                        foreach ($flatIds as $fId) {
-                            $insStmt->execute([':rec_id' => $record->id, ':rel_id' => $fId]);
-                        }
-                        if ($opened) {
-                            TTransaction::close();
+                            $delStmt = $conn->prepare("DELETE FROM {$table} WHERE {$col1} = :rec_id");
+                            $delStmt->execute([':rec_id' => $record->id]);
+
+                            $insSql = ($driver === 'mysql')
+                                ? "INSERT IGNORE INTO {$table} ({$col1}, {$col2}) VALUES (:rec_id, :rel_id)"
+                                : "INSERT OR IGNORE INTO {$table} ({$col1}, {$col2}) VALUES (:rec_id, :rel_id)";
+                            $insStmt = $conn->prepare($insSql);
+                            foreach ($flatIds as $fId) {
+                                $insStmt->execute([':rec_id' => $record->id, ':rel_id' => $fId]);
+                            }
+                            if ($opened) {
+                                TTransaction::close();
+                            }
                         }
                     }
                 }
