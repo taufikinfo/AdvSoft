@@ -3,7 +3,7 @@
 namespace Addons\Base\Models;
 
 use App\Model\SavedFilter;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 class SavedFilterDef extends ModelDefinition
 {

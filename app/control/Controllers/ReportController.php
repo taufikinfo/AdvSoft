@@ -2,12 +2,12 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\Response;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\Registry;
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\QWeb\QWeb;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\Response;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\Registry;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\QWeb\QWeb;
 use Dompdf\Dompdf;
 
 class ReportController extends Controller

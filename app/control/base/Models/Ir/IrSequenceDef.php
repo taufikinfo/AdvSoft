@@ -3,7 +3,7 @@
 namespace Addons\Base\Models\Ir;
 
 use App\Model\Ir\IrSequence;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * IrSequenceDef — Sequence Generator (auto-incrementing codes).

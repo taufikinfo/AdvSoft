@@ -10,7 +10,7 @@ use App\Models\Res\ResGroup;
 use App\Models\Res\ResGroupsCategory;
 use App\Models\Res\ResPartner;
 use App\Models\Res\ResUser;
-use App\Odoo\Core\Database\Seeder;
+use App\Advsoft\Core\Database\Seeder;
 
 class SecuritySeeder extends Seeder
 {
@@ -96,7 +96,7 @@ class SecuritySeeder extends Seeder
         // ─────────────────────────────────────────────
         //  5. Register every Larasoft model in ir_model
         // ─────────────────────────────────────────────
-        $models = \App\Odoo\Registry::all();
+        $models = \App\Advsoft\Registry::all();
         foreach ($models as $name => $def) {
             $desc = $def->_description ?: class_basename($def);
             $module = method_exists($def, 'getModule') ? ($def->getModule() ?: 'larasoft') : 'larasoft';
@@ -212,7 +212,7 @@ class SecuritySeeder extends Seeder
     protected function discoverModels(): array
     {
         $map = [];
-        $dir = __DIR__ . '/../../app/Odoo/Models';
+        $dir = __DIR__ . '/../../app/Advsoft/Models';
         if (!is_dir($dir)) return $map;
         $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
         foreach ($rii as $file) {

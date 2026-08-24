@@ -3,8 +3,8 @@
 namespace Addons\Base\Models\Ir;
 
 use App\Model\Menu;
-use App\Odoo\Field;
-use App\Odoo\ModelDefinition;
+use App\Advsoft\Field;
+use App\Advsoft\ModelDefinition;
 
 /**
  * IrUiMenuDef – Odoo ir.ui.menu equivalent.

@@ -3,8 +3,8 @@
 namespace Addons\Project\Models;
 
 use App\Model\Task;
-use App\Odoo\{ModelDefinition, Field};
-use App\Odoo\Core\Support\Log;
+use App\Advsoft\{ModelDefinition, Field};
+use App\Advsoft\Core\Support\Log;
 
 /**
  * TaskDef – Full Odoo-style configurable model definition for project.task.
@@ -519,7 +519,7 @@ class TaskDef extends ModelDefinition
     {
         if (isset($values['stage_id'])) {
             $stageId = is_array($values['stage_id']) ? $values['stage_id'][0] : $values['stage_id'];
-            $stageDef = \App\Odoo\Registry::get('stage');
+            $stageDef = \App\Advsoft\Registry::get('stage');
             if ($stageDef && $stageId) {
                 $stage = $stageDef->modelClass::find($stageId);
                 if ($stage && strtolower($stage->name) === 'done') {
@@ -535,7 +535,7 @@ class TaskDef extends ModelDefinition
     {
         if (isset($values['project_id'])) {
             $projectId = is_array($values['project_id']) ? $values['project_id'][0] : $values['project_id'];
-            $projectDef = \App\Odoo\Registry::get('project.project');
+            $projectDef = \App\Advsoft\Registry::get('project.project');
             
             if ($projectDef && $projectId) {
                 $project = $projectDef->modelClass::find($projectId);

@@ -2,10 +2,10 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\QWeb\QWeb;
-use App\Odoo\QWeb\QWebLoader;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\QWeb\QWeb;
+use App\Advsoft\QWeb\QWebLoader;
 use Adianti\Database\TTransaction;
 
 /**

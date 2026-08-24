@@ -3,7 +3,7 @@
 namespace Addons\Base\Models\Ir;
 
 use App\Model\Ir\IrModuleModule;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * IrModuleModuleDef — Module Manager.
@@ -140,7 +140,7 @@ class IrModuleModuleDef extends ModelDefinition
     public function action_install($record, $values): array
     {
         // Trigger the module installer
-        $installer = app(\App\Odoo\ModuleInstaller::class);
+        $installer = app(\App\Advsoft\ModuleInstaller::class);
         $installer->install($record->name);
         
         return ['success' => true, 'message' => "Module '{$record->display_name}' installed successfully."];
@@ -151,7 +151,7 @@ class IrModuleModuleDef extends ModelDefinition
      */
     public function action_upgrade($record, $values): array
     {
-        $installer = app(\App\Odoo\ModuleInstaller::class);
+        $installer = app(\App\Advsoft\ModuleInstaller::class);
         $installer->upgrade($record->name);
         
         return ['success' => true, 'message' => "Module '{$record->display_name}' upgraded successfully."];

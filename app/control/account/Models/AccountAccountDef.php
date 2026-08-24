@@ -3,7 +3,7 @@
 namespace Addons\Account\Models;
 
 use App\Model\Account\AccountAccount;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * AccountAccountDef — Chart of Accounts (Bagan Akun / CoA)

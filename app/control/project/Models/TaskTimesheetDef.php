@@ -2,7 +2,7 @@
 
 namespace Addons\Project\Models;
 
-use App\Odoo\ModelDefinition;
+use App\Advsoft\ModelDefinition;
 
 class TaskTimesheetDef extends ModelDefinition
 {
@@ -14,27 +14,27 @@ class TaskTimesheetDef extends ModelDefinition
 
     protected function defineFields(): void
     {
-        $this->addField('id', \App\Odoo\Field::INTEGER, ['string' => 'ID', 'readonly' => true]);
-        $this->addField('date', \App\Odoo\Field::DATE, [
+        $this->addField('id', \App\Advsoft\Field::INTEGER, ['string' => 'ID', 'readonly' => true]);
+        $this->addField('date', \App\Advsoft\Field::DATE, [
             'string' => 'Date',
             'required' => true,
             'default' => fn() => date('Y-m-d'),
         ]);
-        $this->addField('user_id', \App\Odoo\Field::MANY2ONE, [
+        $this->addField('user_id', \App\Advsoft\Field::MANY2ONE, [
             'string' => 'Employee',
             'relation' => 'res.users',
             'required' => true,
             'default' => 1,
         ]);
-        $this->addField('name', \App\Odoo\Field::CHAR, [
+        $this->addField('name', \App\Advsoft\Field::CHAR, [
             'string' => 'Description',
             'default' => 'Timesheet entry',
         ]);
-        $this->addField('unit_amount', \App\Odoo\Field::FLOAT, [
+        $this->addField('unit_amount', \App\Advsoft\Field::FLOAT, [
             'string' => 'Hours Spent',
             'default' => 0.0,
         ]);
-        $this->addField('task_id', \App\Odoo\Field::MANY2ONE, [
+        $this->addField('task_id', \App\Advsoft\Field::MANY2ONE, [
             'string' => 'Task',
             'relation' => 'task',
             'required' => true,
@@ -81,7 +81,7 @@ class TaskTimesheetDef extends ModelDefinition
             $userId = is_array($values['user_id']) ? $values['user_id'][0] : $values['user_id'];
 
             // Ambil data user dari model User (res.users)
-            $userDef = \App\Odoo\Registry::get('res.users');
+            $userDef = \App\Advsoft\Registry::get('res.users');
             if ($userDef && $userId) {
                 $user = $userDef->modelClass::find($userId);
                 if ($user) {

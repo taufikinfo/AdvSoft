@@ -4,10 +4,10 @@ namespace App\Control\Controllers;
 
 use App\Model\Action;
 use App\Model\Menu;
-use App\Odoo\Registry;
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\Core\Http\Request;
+use App\Advsoft\Registry;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Request;
 
 /**
  * MenuEditorController – Odoo-style Menu Editor API.

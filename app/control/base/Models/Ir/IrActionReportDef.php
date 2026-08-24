@@ -2,8 +2,8 @@
 
 namespace Addons\Base\Models\Ir;
 
-use App\Odoo\Field;
-use App\Odoo\ModelDefinition;
+use App\Advsoft\Field;
+use App\Advsoft\ModelDefinition;
 
 class IrActionReportDef extends ModelDefinition
 {

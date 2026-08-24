@@ -3,7 +3,7 @@
 namespace Addons\Base\Models\Ir;
 
 use App\Model\Ir\IrConfigParameter;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * IrConfigParameterDef — System Parameters (key-value store).

@@ -5,15 +5,15 @@
  */
 
 require_once __DIR__ . '/../init.php';
-require_once __DIR__ . '/Odoo/Core/Application.php';
-require_once __DIR__ . '/Odoo/Core/helpers.php';
+require_once __DIR__ . '/Advsoft/Core/Application.php';
+require_once __DIR__ . '/Advsoft/Core/helpers.php';
 
-use App\Odoo\Core\Application;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Support\Log;
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\Security\SecurityService;
-use App\Odoo\Registry;
+use App\Advsoft\Core\Application;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Support\Log;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\Security\SecurityService;
+use App\Advsoft\Registry;
 use Adianti\Database\TTransaction;
 
 if (!class_exists('Log')) {
@@ -23,22 +23,47 @@ if (!class_exists('Illuminate\Support\Facades\Log')) {
     class_alias(Log::class, 'Illuminate\Support\Facades\Log');
 }
 
-// Register domain model & core aliases
+// Register domain model, core, and legacy aliases
 $modelAliases = [
-    'App\Core\Application'                => \App\Odoo\Core\Application::class,
-    'App\Core\Http\Request'               => \App\Odoo\Core\Http\Request::class,
-    'App\Core\Http\Response'              => \App\Odoo\Core\Http\Response::class,
-    'App\Core\Http\JsonResponse'          => \App\Odoo\Core\Http\JsonResponse::class,
-    'App\Core\Http\Router'                => \App\Odoo\Core\Http\Router::class,
-    'App\Core\Support\Route'              => \App\Odoo\Core\Support\Route::class,
-    'App\Core\Support\Log'                => \App\Odoo\Core\Support\Log::class,
-    'App\Core\Support\Str'                => \App\Odoo\Core\Support\Str::class,
-    'App\Core\Support\Collection'         => \App\Odoo\Core\Support\Collection::class,
-    'App\Core\Support\AssetCompiler'      => \App\Odoo\Core\Support\AssetCompiler::class,
-    'App\Core\View\ViewEngine'            => \App\Odoo\Core\View\ViewEngine::class,
-    'App\Core\Database\QueryBuilder'      => \App\Odoo\Core\Database\QueryBuilder::class,
-    'App\Core\Database\SchemaManager'     => \App\Odoo\Core\Database\SchemaManager::class,
-    'App\Core\Database\Seeder'            => \App\Odoo\Core\Database\Seeder::class,
+    // Core Aliases
+    'App\Core\Application'                => \App\Advsoft\Core\Application::class,
+    'App\Core\Http\Request'               => \App\Advsoft\Core\Http\Request::class,
+    'App\Core\Http\Response'              => \App\Advsoft\Core\Http\Response::class,
+    'App\Core\Http\JsonResponse'          => \App\Advsoft\Core\Http\JsonResponse::class,
+    'App\Core\Http\Router'                => \App\Advsoft\Core\Http\Router::class,
+    'App\Core\Support\Route'              => \App\Advsoft\Core\Support\Route::class,
+    'App\Core\Support\Log'                => \App\Advsoft\Core\Support\Log::class,
+    'App\Core\Support\Str'                => \App\Advsoft\Core\Support\Str::class,
+    'App\Core\Support\Collection'         => \App\Advsoft\Core\Support\Collection::class,
+    'App\Core\Support\AssetCompiler'      => \App\Advsoft\Core\Support\AssetCompiler::class,
+    'App\Core\View\ViewEngine'            => \App\Advsoft\Core\View\ViewEngine::class,
+    'App\Core\Database\QueryBuilder'      => \App\Advsoft\Core\Database\QueryBuilder::class,
+    'App\Core\Database\SchemaManager'     => \App\Advsoft\Core\Database\SchemaManager::class,
+    'App\Core\Database\Seeder'            => \App\Advsoft\Core\Database\Seeder::class,
+    // Odoo Legacy Aliases
+    'App\Odoo\Registry'                   => \App\Advsoft\Registry::class,
+    'App\Odoo\Field'                      => \App\Advsoft\Field::class,
+    'App\Odoo\Domain'                     => \App\Advsoft\Domain::class,
+    'App\Odoo\ModelDefinition'            => \App\Advsoft\ModelDefinition::class,
+    'App\Odoo\ModuleInstaller'            => \App\Advsoft\ModuleInstaller::class,
+    'App\Odoo\DataFileLoader'             => \App\Advsoft\DataFileLoader::class,
+    'App\Odoo\Security\SecurityContext'   => \App\Advsoft\Security\SecurityContext::class,
+    'App\Odoo\Security\SecurityService'   => \App\Advsoft\Security\SecurityService::class,
+    'App\Odoo\Core\Application'           => \App\Advsoft\Core\Application::class,
+    'App\Odoo\Core\Http\Request'          => \App\Advsoft\Core\Http\Request::class,
+    'App\Odoo\Core\Http\Response'         => \App\Advsoft\Core\Http\Response::class,
+    'App\Odoo\Core\Http\JsonResponse'     => \App\Advsoft\Core\Http\JsonResponse::class,
+    'App\Odoo\Core\Http\Router'           => \App\Advsoft\Core\Http\Router::class,
+    'App\Odoo\Core\Support\Route'         => \App\Advsoft\Core\Support\Route::class,
+    'App\Odoo\Core\Support\Log'           => \App\Advsoft\Core\Support\Log::class,
+    'App\Odoo\Core\Support\Str'           => \App\Advsoft\Core\Support\Str::class,
+    'App\Odoo\Core\Support\Collection'    => \App\Advsoft\Core\Support\Collection::class,
+    'App\Odoo\Core\Support\AssetCompiler' => \App\Advsoft\Core\Support\AssetCompiler::class,
+    'App\Odoo\Core\View\ViewEngine'       => \App\Advsoft\Core\View\ViewEngine::class,
+    'App\Odoo\Core\Database\QueryBuilder' => \App\Advsoft\Core\Database\QueryBuilder::class,
+    'App\Odoo\Core\Database\SchemaManager'=> \App\Advsoft\Core\Database\SchemaManager::class,
+    'App\Odoo\Core\Database\Seeder'       => \App\Advsoft\Core\Database\Seeder::class,
+    // Model Aliases
     'App\Model\Project'                   => \App\Model\Project\Project::class,
     'App\Model\Task'                      => \App\Model\Project\Task::class,
     'App\Model\Stage'                     => \App\Model\Project\Stage::class,

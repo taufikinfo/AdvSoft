@@ -2,10 +2,10 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\Security\SecurityService;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\Security\SecurityService;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 
 class ProfileController extends Controller
 {

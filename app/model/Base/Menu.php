@@ -23,7 +23,7 @@ class Menu extends BaseModel
         return $this->action_id ? Action::find($this->action_id) : null;
     }
 
-    public function children(): \App\Odoo\Core\Database\QueryBuilder
+    public function children(): \App\Advsoft\Core\Database\QueryBuilder
     {
         return Menu::where('parent_id', '=', $this->id)->orderBy('sequence', 'asc');
     }

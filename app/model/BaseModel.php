@@ -7,8 +7,8 @@ use Adianti\Database\TTransaction;
 use Adianti\Database\TRepository;
 use Adianti\Database\TCriteria;
 use Adianti\Database\TFilter;
-use App\Odoo\Core\Support\Collection;
-use App\Odoo\Core\Database\QueryBuilder;
+use App\Advsoft\Core\Support\Collection;
+use App\Advsoft\Core\Database\QueryBuilder;
 
 /**
  * Base Active Record Model for AdvSoft built on Adianti TRecord.

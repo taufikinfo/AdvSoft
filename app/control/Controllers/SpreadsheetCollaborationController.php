@@ -6,9 +6,9 @@ use App\Model\SpreadsheetDocument;
 use App\Model\SpreadsheetCollaboration;
 use App\Model\SpreadsheetOperation;
 use App\Model\Res\ResUser;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Security\SecurityContext;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Security\SecurityContext;
 
 class SpreadsheetCollaborationController extends Controller
 {

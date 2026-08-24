@@ -6,7 +6,7 @@ use App\Models\Project;
 use App\Models\Stage;
 use App\Models\Tag;
 use App\Models\Task;
-use App\Odoo\Core\Database\Seeder;
+use App\Advsoft\Core\Database\Seeder;
 
 class TaskSeeder extends Seeder
 {

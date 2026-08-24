@@ -3,7 +3,7 @@
 namespace Addons\Project\Models;
 
 use App\Model\Project;
-use App\Odoo\{ModelDefinition, Field, Registry};
+use App\Advsoft\{ModelDefinition, Field, Registry};
 
 /**
  * ProjectDef – Project model with Odoo-style Computed Fields & Onchanges.

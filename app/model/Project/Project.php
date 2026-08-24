@@ -5,7 +5,7 @@ namespace App\Model\Project;
 use App\Model\BaseModel;
 use App\Model\Res\ResUser;
 use App\Model\Res\ResPartner;
-use App\Odoo\Core\Database\QueryBuilder;
+use App\Advsoft\Core\Database\QueryBuilder;
 
 /**
  * Project Model — Represents a workspace project.

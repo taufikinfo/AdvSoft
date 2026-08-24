@@ -3,7 +3,7 @@
 namespace Addons\Project\Models;
 
 use App\Model\Tag;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 class TagDef extends ModelDefinition
 {

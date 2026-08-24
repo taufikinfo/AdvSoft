@@ -2,8 +2,8 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 use Adianti\Database\TTransaction;
 
 /**

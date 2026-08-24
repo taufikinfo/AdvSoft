@@ -2,11 +2,11 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\{Registry, Domain, Field, Security\SecurityContext, Security\SecurityService};
-use App\Odoo\Exceptions\AccessDenied;
+use App\Advsoft\{Registry, Domain, Field, Security\SecurityContext, Security\SecurityService};
+use App\Advsoft\Exceptions\AccessDenied;
 use App\Model\SavedFilter;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 use Adianti\Database\TTransaction;
 
 /**
@@ -326,7 +326,7 @@ class OrmController extends Controller
         if ($modelName && !$def->isSuperuser()) {
             try {
                 $this->security->checkAccessRule($modelName, 'create', [0], true);
-            } catch (\App\Odoo\Exceptions\AccessDenied $e) {
+            } catch (\App\Advsoft\Exceptions\AccessDenied $e) {
                 return response()->json(['error' => $e->getMessage()], 403);
             }
         }
@@ -378,7 +378,7 @@ class OrmController extends Controller
         if ($modelName && !empty($ids) && !$def->isSuperuser()) {
             try {
                 $this->security->checkAccessRule($modelName, 'write', (array)$ids, true);
-            } catch (\App\Odoo\Exceptions\AccessDenied $e) {
+            } catch (\App\Advsoft\Exceptions\AccessDenied $e) {
                 return response()->json(['error' => $e->getMessage()], 403);
             }
         }
@@ -419,7 +419,7 @@ class OrmController extends Controller
         if ($modelName && !empty($ids) && !$def->isSuperuser()) {
             try {
                 $this->security->checkAccessRule($modelName, 'unlink', (array)$ids, true);
-            } catch (\App\Odoo\Exceptions\AccessDenied $e) {
+            } catch (\App\Advsoft\Exceptions\AccessDenied $e) {
                 return response()->json(['error' => $e->getMessage()], 403);
             }
         }
@@ -1297,7 +1297,7 @@ class OrmController extends Controller
         $selects = [$groupByField, 'COUNT(*) as __count'];
         foreach ($aggregateFields as $af) {
             $afDef = $childDef->getField($af);
-            if ($afDef && in_array($afDef->type, [\App\Odoo\Field::INTEGER, \App\Odoo\Field::FLOAT, \App\Odoo\Field::MONETARY])) {
+            if ($afDef && in_array($afDef->type, [\App\Advsoft\Field::INTEGER, \App\Advsoft\Field::FLOAT, \App\Advsoft\Field::MONETARY])) {
                 $selects[] = "SUM({$af}) as {$af}__sum";
                 $selects[] = "AVG({$af}) as {$af}__avg";
             }
@@ -1307,7 +1307,7 @@ class OrmController extends Controller
 
         // Resolve display names for many2one group-by field
         $labelMap = [];
-        if ($gbFieldDef->type === \App\Odoo\Field::MANY2ONE && $gbFieldDef->relation) {
+        if ($gbFieldDef->type === \App\Advsoft\Field::MANY2ONE && $gbFieldDef->relation) {
             $relDef = Registry::get($gbFieldDef->relation);
             if ($relDef) {
                 $ids = $groupRows->pluck($groupByField)->filter()->unique()->toArray();
@@ -1315,7 +1315,7 @@ class OrmController extends Controller
                 $relRecords = ($relDef->modelClass)::whereIn('id', $ids)->get()->keyBy('id');
                 $labelMap = $relRecords->mapWithKeys(fn($r) => [$r->id => $r->$recNameField])->toArray();
             }
-        } elseif ($gbFieldDef->type === \App\Odoo\Field::SELECTION) {
+        } elseif ($gbFieldDef->type === \App\Advsoft\Field::SELECTION) {
             $labelMap = collect($gbFieldDef->selection)->pluck(1, 0)->toArray();
         }
 
@@ -1620,7 +1620,7 @@ class OrmController extends Controller
             ->orderBy('sequence')
             ->get();
 
-        $ctx = app(\App\Odoo\Security\SecurityContext::class);
+        $ctx = app(\App\Advsoft\Security\SecurityContext::class);
         $user = $ctx->getUser();
         $isAdmin = $user && ($user->isAdmin() || $ctx->isSuperuser());
         $userGroupNames = $ctx->getGroupNames();

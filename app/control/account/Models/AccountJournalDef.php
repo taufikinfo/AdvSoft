@@ -3,7 +3,7 @@
 namespace Addons\Account\Models;
 
 use App\Model\Account\AccountJournal;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * AccountJournalDef — Accounting Journals

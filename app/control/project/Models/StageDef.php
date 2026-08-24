@@ -3,7 +3,7 @@
 namespace Addons\Project\Models;
 
 use App\Model\Stage;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 class StageDef extends ModelDefinition
 {

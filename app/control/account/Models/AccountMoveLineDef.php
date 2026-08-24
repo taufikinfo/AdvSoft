@@ -3,7 +3,7 @@
 namespace Addons\Account\Models;
 
 use App\Model\Account\AccountMoveLine;
-use App\Odoo\{ModelDefinition, Field, Registry};
+use App\Advsoft\{ModelDefinition, Field, Registry};
 
 /**
  * AccountMoveLineDef — Journal Entry Lines (Double-Entry)

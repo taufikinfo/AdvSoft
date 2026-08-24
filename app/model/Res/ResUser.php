@@ -93,9 +93,9 @@ class ResUser extends BaseModel
         return array_map(fn($g) => $g->id, $this->getAllGroups());
     }
 
-    public function groups(): \App\Odoo\Core\Support\Collection
+    public function groups(): \App\Advsoft\Core\Support\Collection
     {
-        return new \App\Odoo\Core\Support\Collection($this->getAllGroups());
+        return new \App\Advsoft\Core\Support\Collection($this->getAllGroups());
     }
 
     public function hasGroup(string $nameOrXmlId): bool

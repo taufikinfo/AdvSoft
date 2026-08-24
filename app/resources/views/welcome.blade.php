@@ -155,7 +155,7 @@
         <!-- Production Mode: Pre-Compiled Single Bundles -->
         @php
             if (!file_exists(public_path('js/app.bundle.js')) || !file_exists(public_path('css/app.bundle.css'))) {
-                \App\Odoo\Core\Support\AssetCompiler::compileAll();
+                \App\Advsoft\Core\Support\AssetCompiler::compileAll();
             }
             $assetVer = file_exists(public_path('js/app.bundle.js')) ? filemtime(public_path('js/app.bundle.js')) : '1.0';
         @endphp
@@ -168,7 +168,7 @@
     <script>
     window.__CSRF_TOKEN__ = '{{ csrf_token() }}';
     @php
-        $ctx = app(\App\Odoo\Security\SecurityContext::class);
+        $ctx = app(\App\Advsoft\Security\SecurityContext::class);
         $userArr = $ctx->toArray();
     @endphp
     window.AdvSoftUser = @json($userArr);

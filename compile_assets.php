@@ -10,7 +10,7 @@
 
 require_once __DIR__ . '/app/bootstrap.php';
 
-use App\Odoo\Core\Support\AssetCompiler;
+use App\Advsoft\Core\Support\AssetCompiler;
 
 echo "=== Compiling AdvSoft Production Assets ===\n";
 

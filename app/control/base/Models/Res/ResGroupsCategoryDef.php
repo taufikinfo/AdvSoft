@@ -3,8 +3,8 @@
 namespace Addons\Base\Models\Res;
 
 use App\Model\Res\ResGroupsCategory;
-use App\Odoo\Field;
-use App\Odoo\ModelDefinition;
+use App\Advsoft\Field;
+use App\Advsoft\ModelDefinition;
 
 class ResGroupsCategoryDef extends ModelDefinition
 {

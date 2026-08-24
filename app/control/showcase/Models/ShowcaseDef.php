@@ -3,8 +3,8 @@
 namespace Addons\Showcase\Models;
 
 use App\Model\Showcase;
-use App\Odoo\Field;
-use App\Odoo\ModelDefinition;
+use App\Advsoft\Field;
+use App\Advsoft\ModelDefinition;
 
 class ShowcaseDef extends ModelDefinition
 {

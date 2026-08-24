@@ -6,14 +6,14 @@
 require_once __DIR__ . '/app/bootstrap.php';
 require_once __DIR__ . '/routes/web.php';
 
-use App\Odoo\Core\Http\Request;
+use App\Advsoft\Core\Http\Request;
 use App\Control\Controllers\AuthController;
 use App\Control\Controllers\OrmController;
 use App\Control\Controllers\AccountReportController;
 use App\Control\Controllers\MenuEditorController;
 use App\Control\Controllers\ViewBuilderController;
 use App\Control\Controllers\CustomPageController;
-use App\Odoo\Registry;
+use App\Advsoft\Registry;
 
 function makeReq($uri, $method = 'GET', $params = []) {
     while (\Adianti\Database\TTransaction::get()) {
@@ -129,7 +129,7 @@ echo "Status: " . $res->getStatusCode() . "\n";
 echo "Response: " . $res->getContent() . "\n";
 
 echo "\n=== 11. Testing Module Installer (discoverAll) ===\n";
-$mi = app(\App\Odoo\ModuleInstaller::class);
+$mi = app(\App\Advsoft\ModuleInstaller::class);
 $modules = $mi->discoverAll();
 echo "\n=== 12. Testing ORM write on res.users (Many2Many groups_id) ===\n";
 $userWriteReq = makeReq('/api/orm/write', 'POST', [
@@ -150,7 +150,7 @@ echo "Status: " . $res->getStatusCode() . "\n";
 $data = json_decode($res->getContent(), true);
 echo "Loaded views: " . implode(', ', array_keys($data['views'] ?? [])) . "\n";
 echo "\n=== 14. Testing Standard Adianti URL Routing ===\n";
-$router = \App\Odoo\Core\Http\Router::getInstance();
+$router = \App\Advsoft\Core\Http\Router::getInstance();
 $adiantiReq = makeReq('/engine.php', 'GET', ['class' => 'CustomPageController']);
 $res = $router->dispatch($adiantiReq);
 echo "Engine route status: " . ($res ? "OK" : "NO_RES") . "\n";

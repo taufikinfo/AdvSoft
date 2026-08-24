@@ -6,13 +6,13 @@
 
 require_once __DIR__ . '/app/bootstrap.php';
 
-use App\Odoo\Core\Application;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\Response;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\Core\Http\Router;
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\Security\SecurityService;
+use App\Advsoft\Core\Application;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\Response;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Router;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\Security\SecurityService;
 
 $container = Application::getInstance();
 $request = Request::capture();

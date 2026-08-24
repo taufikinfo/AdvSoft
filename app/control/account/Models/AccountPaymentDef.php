@@ -3,7 +3,7 @@
 namespace Addons\Account\Models;
 
 use App\Model\Account\AccountPayment;
-use App\Odoo\{ModelDefinition, Field};
+use App\Advsoft\{ModelDefinition, Field};
 
 /**
  * AccountPaymentDef — Payment Records

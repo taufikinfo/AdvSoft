@@ -2,10 +2,10 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Registry;
-use App\Odoo\Field;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Registry;
+use App\Advsoft\Field;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 
 /**
  * ViewBuilderController — API for the Odoo-style View Builder.

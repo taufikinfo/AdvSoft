@@ -29,7 +29,7 @@ class Task extends BaseModel
         return $this->user_id ? ResUser::find($this->user_id) : null;
     }
 
-    public function timesheets(): \App\Odoo\Core\Database\QueryBuilder
+    public function timesheets(): \App\Advsoft\Core\Database\QueryBuilder
     {
         return TaskTimesheet::where('task_id', '=', $this->id);
     }

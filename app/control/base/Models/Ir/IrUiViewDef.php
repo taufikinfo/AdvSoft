@@ -3,8 +3,8 @@
 namespace Addons\Base\Models\Ir;
 
 use App\Model\Ir\IrUiView;
-use App\Odoo\Field;
-use App\Odoo\ModelDefinition;
+use App\Advsoft\Field;
+use App\Advsoft\ModelDefinition;
 
 /**
  * IrUiViewDef – Odoo ir.ui.view equivalent for views storage and customization.

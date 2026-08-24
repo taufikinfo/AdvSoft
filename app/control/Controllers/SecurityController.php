@@ -9,11 +9,11 @@ use App\Model\Res\ResCompany;
 use App\Model\Res\ResGroup;
 use App\Model\Res\ResGroupsCategory;
 use App\Model\Res\ResUser;
-use App\Odoo\Registry;
-use App\Odoo\Security\SecurityContext;
-use App\Odoo\Security\SecurityService;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Registry;
+use App\Advsoft\Security\SecurityContext;
+use App\Advsoft\Security\SecurityService;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 use Adianti\Database\TTransaction;
 
 /**

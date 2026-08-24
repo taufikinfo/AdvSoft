@@ -3,8 +3,8 @@
 namespace Addons\Account\Models;
 
 use App\Model\Account\AccountMove;
-use App\Odoo\{ModelDefinition, Field, Registry};
-use App\Odoo\Core\Support\Log;
+use App\Advsoft\{ModelDefinition, Field, Registry};
+use App\Advsoft\Core\Support\Log;
 
 /**
  * AccountMoveDef — Journal Entries / Invoices

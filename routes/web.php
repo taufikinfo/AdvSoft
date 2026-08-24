@@ -1,8 +1,8 @@
 <?php
 
-use App\Odoo\Core\Support\Route;
-use App\Odoo\Core\Http\Request;
-use App\Odoo\Core\Http\JsonResponse;
+use App\Advsoft\Core\Support\Route;
+use App\Advsoft\Core\Http\Request;
+use App\Advsoft\Core\Http\JsonResponse;
 use App\Control\Controllers\OrmController;
 use App\Control\Controllers\AuthController;
 use App\Control\Controllers\ProfileController;
@@ -39,7 +39,7 @@ Route::any('/index.php', function (Request $request) {
         header("Location: /#{$query}");
         exit;
     }
-    $user = app(\App\Odoo\Security\SecurityContext::class)->getUser();
+    $user = app(\App\Advsoft\Security\SecurityContext::class)->getUser();
     if (!$user) {
         header('Location: /login');
         exit;
@@ -59,7 +59,7 @@ Route::get('/', function (Request $request) {
         header("Location: /#{$query}");
         exit;
     }
-    $user = app(\App\Odoo\Security\SecurityContext::class)->getUser();
+    $user = app(\App\Advsoft\Security\SecurityContext::class)->getUser();
     if (!$user) {
         header('Location: /login');
         exit;
@@ -68,7 +68,7 @@ Route::get('/', function (Request $request) {
 });
 
 Route::get('/login', function (Request $request) {
-    if (app(\App\Odoo\Security\SecurityContext::class)->getUser()) {
+    if (app(\App\Advsoft\Security\SecurityContext::class)->getUser()) {
         header('Location: /');
         exit;
     }
@@ -76,7 +76,7 @@ Route::get('/login', function (Request $request) {
 })->name('login');
 
 Route::get('/register', function (Request $request) {
-    if (app(\App\Odoo\Security\SecurityContext::class)->getUser()) {
+    if (app(\App\Advsoft\Security\SecurityContext::class)->getUser()) {
         header('Location: /');
         exit;
     }
@@ -84,7 +84,7 @@ Route::get('/register', function (Request $request) {
 })->name('register');
 
 Route::get('/logout', function (Request $request) {
-    app(\App\Odoo\Security\SecurityContext::class)->logout();
+    app(\App\Advsoft\Security\SecurityContext::class)->logout();
     if (session_status() === PHP_SESSION_ACTIVE) {
         session_destroy();
     }
@@ -282,12 +282,12 @@ Route::prefix('api/html-field')->group(function () {
 // Module Management API
 Route::prefix('api/modules')->group(function () {
     Route::get('/discover', function (Request $request) {
-        $installer = app(\App\Odoo\ModuleInstaller::class);
+        $installer = app(\App\Advsoft\ModuleInstaller::class);
         $modules = $installer->discoverAll();
         return response()->json(['modules' => $modules->map(fn($m) => $m->toArray())]);
     });
     Route::post('/install', function (Request $request) {
-        $installer = app(\App\Odoo\ModuleInstaller::class);
+        $installer = app(\App\Advsoft\ModuleInstaller::class);
         try {
             $installer->install($request->input('module'));
             return response()->json(['success' => true, 'message' => "Module installed."]);
@@ -296,7 +296,7 @@ Route::prefix('api/modules')->group(function () {
         }
     });
     Route::post('/upgrade', function (Request $request) {
-        $installer = app(\App\Odoo\ModuleInstaller::class);
+        $installer = app(\App\Advsoft\ModuleInstaller::class);
         try {
             $installer->upgrade($request->input('module'));
             return response()->json(['success' => true, 'message' => "Module upgraded."]);

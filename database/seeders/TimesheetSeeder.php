@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Odoo\Core\Database\Seeder;
+use App\Advsoft\Core\Database\Seeder;
 use App\Models\TaskTimesheet;
 use App\Models\Task;
 use App\Models\Res\ResUser;

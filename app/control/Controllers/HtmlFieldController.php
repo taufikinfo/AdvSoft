@@ -2,14 +2,14 @@
 
 namespace App\Control\Controllers;
 
-use App\Odoo\Field\Html\EmbedExtractor;
-use App\Odoo\Field\Html\HtmlFieldConfig;
-use App\Odoo\Field\Html\HtmlSanitizer;
-use App\Odoo\Field\Html\MentionParser;
-use App\Odoo\Registry;
-use App\Odoo\Field;
-use App\Odoo\Core\Http\JsonResponse;
-use App\Odoo\Core\Http\Request;
+use App\Advsoft\Field\Html\EmbedExtractor;
+use App\Advsoft\Field\Html\HtmlFieldConfig;
+use App\Advsoft\Field\Html\HtmlSanitizer;
+use App\Advsoft\Field\Html\MentionParser;
+use App\Advsoft\Registry;
+use App\Advsoft\Field;
+use App\Advsoft\Core\Http\JsonResponse;
+use App\Advsoft\Core\Http\Request;
 use Adianti\Database\TTransaction;
 
 /**
