@@ -1141,6 +1141,7 @@ php test_api.php
 - [x] **Scenario 17**: Nested parent-child data retrieval
 - [x] **Scenario 18**: Dynamic relation loading (`loadO2m`)
 - [x] **Scenario 19**: Collaborative spreadsheet document persistence
+- [x] **Scenario 20**: Column-level statistical aggregation (`sum`, `avg`, `max`, `min`)
 
 ---
 

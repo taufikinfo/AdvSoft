@@ -233,4 +233,20 @@ if (!empty($createdDoc['id'])) {
     echo "Spreadsheet write status: " . $res->getStatusCode() . " body: " . $res->getContent() . "\n";
 }
 
+echo "\n=== 20. Testing ORM Aggregate Endpoint (sum, avg, max, min) ===\n";
+$aggReq = makeReq('/api/orm/aggregate', 'POST', [
+    'model'    => 'task.timesheet',
+    'domain'   => [],
+    'measures' => [
+        ['field' => 'unit_amount', 'type' => 'sum'],
+        ['field' => 'unit_amount', 'type' => 'avg'],
+        ['field' => 'unit_amount', 'type' => 'max'],
+        ['field' => 'unit_amount', 'type' => 'min'],
+    ]
+]);
+$res = $orm->aggregate($aggReq);
+echo "Aggregate status: " . $res->getStatusCode() . "\n";
+$aggData = json_decode($res->getContent(), true);
+echo "Aggregate response: " . json_encode($aggData) . "\n";
+
 echo "\n=== ALL PURE ADIANTI TESTS PASSED! ===\n";

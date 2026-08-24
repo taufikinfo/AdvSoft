@@ -89,6 +89,26 @@ abstract class BaseModel extends TRecord
         return (int) $repo->count($criteria ?: new TCriteria());
     }
 
+    public static function sum(string $column): float
+    {
+        return static::query()->sum($column);
+    }
+
+    public static function avg(string $column): float
+    {
+        return static::query()->avg($column);
+    }
+
+    public static function max(string $column): mixed
+    {
+        return static::query()->max($column);
+    }
+
+    public static function min(string $column): mixed
+    {
+        return static::query()->min($column);
+    }
+
     /**
      * Query by single condition
      */

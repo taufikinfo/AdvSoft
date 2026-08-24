@@ -217,6 +217,44 @@ class QueryBuilder
         return (int) $stmt->fetchColumn();
     }
 
+    public function sum(string $column): float
+    {
+        $pdo = $this->getPdo();
+        $whereSql = $this->toWhereSql();
+        $stmt = $pdo->prepare("SELECT SUM({$column}) FROM {$this->table} WHERE {$whereSql}");
+        $stmt->execute($this->params);
+        $val = $stmt->fetchColumn();
+        return $val !== false && $val !== null ? (float) $val : 0.0;
+    }
+
+    public function avg(string $column): float
+    {
+        $pdo = $this->getPdo();
+        $whereSql = $this->toWhereSql();
+        $stmt = $pdo->prepare("SELECT AVG({$column}) FROM {$this->table} WHERE {$whereSql}");
+        $stmt->execute($this->params);
+        $val = $stmt->fetchColumn();
+        return $val !== false && $val !== null ? (float) $val : 0.0;
+    }
+
+    public function max(string $column): mixed
+    {
+        $pdo = $this->getPdo();
+        $whereSql = $this->toWhereSql();
+        $stmt = $pdo->prepare("SELECT MAX({$column}) FROM {$this->table} WHERE {$whereSql}");
+        $stmt->execute($this->params);
+        return $stmt->fetchColumn();
+    }
+
+    public function min(string $column): mixed
+    {
+        $pdo = $this->getPdo();
+        $whereSql = $this->toWhereSql();
+        $stmt = $pdo->prepare("SELECT MIN({$column}) FROM {$this->table} WHERE {$whereSql}");
+        $stmt->execute($this->params);
+        return $stmt->fetchColumn();
+    }
+
     public function get(array $columns = ['*']): Collection
     {
         $pdo = $this->getPdo();
