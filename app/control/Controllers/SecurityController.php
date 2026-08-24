@@ -278,7 +278,7 @@ class SecurityController extends Controller
         $this->authorizeAdmin();
         $group = ResGroup::findOrFail($id);
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $conn = TTransaction::get();
         $stmt = $conn->prepare("SELECT user_id FROM res_users_groups_rel WHERE group_id = :gid");
         $stmt->execute([':gid' => $id]);
@@ -344,7 +344,7 @@ class SecurityController extends Controller
             'group_ids' => 'present',
         ]);
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $conn = TTransaction::get();
         $stmt = $conn->prepare("DELETE FROM res_users_groups_rel WHERE user_id = :uid");
         $stmt->execute([':uid' => $target->id]);
@@ -382,7 +382,7 @@ class SecurityController extends Controller
         ]);
 
         if (!empty($data['group_ids'])) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
             $conn = TTransaction::get();
             $stmt = $conn->prepare("INSERT INTO res_users_groups_rel (user_id, group_id) VALUES (:uid, :gid)");
             foreach ($data['group_ids'] as $gid) {
@@ -414,7 +414,7 @@ class SecurityController extends Controller
         $userGroupIds = $user->getGroupIds();
         $isSuper = $user->isAdmin();
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $models = IrModel::all();
         $acls = IrModelAccess::all();
         $userGroupIds = $user->getDirectGroupIds();

@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  MyCustomPage — Owl Component
-//  Halaman kustom terintegrasi dengan backend Adiantisoft.
+//  Halaman kustom terintegrasi dengan backend AdvSoft.
 //  Fitur: CRUD items, stats, search/filter, sorting, modals.
 // ══════════════════════════════════════════════════════════════
 (function () {

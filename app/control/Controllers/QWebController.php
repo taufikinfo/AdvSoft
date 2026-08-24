@@ -38,7 +38,7 @@ class QWebController extends Controller
 
     public function show(string $id): JsonResponse
     {
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $conn = TTransaction::get();
         $stmt = $conn->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND (id = :id OR name = :name OR key = :key) LIMIT 1");
         $stmt->execute([':id' => $id, ':name' => $id, ':key' => $id]);

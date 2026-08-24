@@ -57,8 +57,8 @@ class ModuleInstaller
                     'display_name' => $manifest['name'] ?? ucfirst($dir),
                     'version' => $manifest['version'] ?? '1.0.0',
                     'category' => $manifest['category'] ?? null,
-                    'depends' => $manifest['depends'] ?? [],
-                    'data_files' => $manifest['data'] ?? [],
+                    'depends' => is_array($manifest['depends'] ?? null) ? json_encode($manifest['depends']) : ($manifest['depends'] ?? '[]'),
+                    'data_files' => is_array($manifest['data'] ?? null) ? json_encode($manifest['data']) : ($manifest['data'] ?? '[]'),
                     'auto_install' => $manifest['auto_install'] ?? false,
                 ]
             );
@@ -181,7 +181,7 @@ class ModuleInstaller
 
     protected function ensureModelDataTable(): void
     {
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $driver = $conn->getAttribute(\PDO::ATTR_DRIVER_NAME);
         $pkDef = ($driver === 'mysql') ? 'id INT AUTO_INCREMENT PRIMARY KEY' : 'id INTEGER PRIMARY KEY AUTOINCREMENT';
@@ -196,5 +196,6 @@ class ModuleInstaller
             created_at DATETIME,
             updated_at DATETIME
         )");
+        \Adianti\Database\TTransaction::close();
     }
 }

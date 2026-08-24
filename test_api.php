@@ -1,6 +1,6 @@
 <?php
 /**
- * Test script for pure Adiantisoft APIs
+ * Test script for pure AdvSoft APIs
  */
 
 require_once __DIR__ . '/app/bootstrap.php';
@@ -16,6 +16,9 @@ use App\Control\Controllers\CustomPageController;
 use App\Odoo\Registry;
 
 function makeReq($uri, $method = 'GET', $params = []) {
+    while (\Adianti\Database\TTransaction::get()) {
+        try { \Adianti\Database\TTransaction::close(); } catch (\Throwable $e) { break; }
+    }
     $raw = json_encode($params);
     $server = [
         'REQUEST_METHOD' => strtoupper($method),
@@ -227,7 +230,7 @@ if (!empty($createdDoc['id'])) {
         ]
     ]);
     $res = $orm->write($writeDocReq);
-    echo "Spreadsheet write status: " . $res->getStatusCode() . "\n";
+    echo "Spreadsheet write status: " . $res->getStatusCode() . " body: " . $res->getContent() . "\n";
 }
 
 echo "\n=== ALL PURE ADIANTI TESTS PASSED! ===\n";

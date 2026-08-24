@@ -118,6 +118,9 @@ class TConnection
                 break;
             case 'sqlite':
                 $conn = new PDO("sqlite:{$name}{$opts}");
+                @$conn->exec("PRAGMA journal_mode = WAL;");
+                @$conn->exec("PRAGMA busy_timeout = 10000;");
+                @$conn->exec("PRAGMA synchronous = NORMAL;");
                 if (is_null($fkey) OR $fkey == '1')
                 {
                     $conn-> query ('PRAGMA foreign_keys = ON'); // referential integrity must be enabled

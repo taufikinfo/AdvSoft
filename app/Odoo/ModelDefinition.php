@@ -1008,9 +1008,11 @@ abstract class ModelDefinition
      * Prepare values for Eloquent create/update (strip non-scalar fields).
      * Applies field defaults for missing keys (including callable defaults).
      */
-    public function prepareWriteValues(array $values): array
+    public function prepareWriteValues(array $values, bool $applyDefaults = false): array
     {
-        $values = $this->applyDefaults($values);
+        if ($applyDefaults) {
+            $values = $this->applyDefaults($values);
+        }
 
         $scalar = [];
         foreach ($values as $key => $value) {
@@ -1185,7 +1187,11 @@ abstract class ModelDefinition
                     if ($relObj && is_object($relObj) && method_exists($relObj, 'sync')) {
                         $relObj->sync($flatIds);
                     } elseif (!empty($field->relationTable) && !empty($field->column1) && !empty($field->column2)) {
-                        TTransaction::open('adiantisoft');
+                        $opened = false;
+                        if (!TTransaction::get()) {
+                            TTransaction::open('advsoft');
+                            $opened = true;
+                        }
                         $conn = TTransaction::get();
                         $driver = $conn->getAttribute(\PDO::ATTR_DRIVER_NAME);
                         $table = $field->relationTable;
@@ -1201,6 +1207,9 @@ abstract class ModelDefinition
                         $insStmt = $conn->prepare($insSql);
                         foreach ($flatIds as $fId) {
                             $insStmt->execute([':rec_id' => $record->id, ':rel_id' => $fId]);
+                        }
+                        if ($opened) {
+                            TTransaction::close();
                         }
                     }
                 }
@@ -1276,7 +1285,7 @@ abstract class ModelDefinition
             }
         }
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $pdo = TTransaction::get();
         $table = $this->_table;
 
@@ -1289,6 +1298,7 @@ abstract class ModelDefinition
 
         $stmt = $pdo->query("SELECT {$selects} FROM {$table} GROUP BY {$groupBy}");
         $groups = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+        TTransaction::close();
 
         $extractAggs = function (array $g) use ($measures, $groupBy) {
             $aggs = [];

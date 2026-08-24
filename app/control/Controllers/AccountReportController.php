@@ -14,7 +14,7 @@ class AccountReportController extends Controller
     protected function getPdo(): \PDO
     {
         if (!TTransaction::get()) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         return TTransaction::get();
     }

@@ -32,7 +32,7 @@ class QueryBuilder
     protected function getPdo(): \PDO
     {
         if (!TTransaction::get()) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         return TTransaction::get();
     }
@@ -190,7 +190,8 @@ class QueryBuilder
 
     public function pluck(string $column, ?string $key = null): Collection
     {
-        return $this->get([$column])->pluck($column, $key);
+        $cols = $key ? [$column, $key] : [$column];
+        return $this->get($cols)->pluck($column, $key);
     }
 
     public function toWhereSql(): string

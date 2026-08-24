@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  MyCustomPage — Owl Template
-//  Contoh halaman kustom terintegrasi dengan backend Adiantisoft.
+//  Contoh halaman kustom terintegrasi dengan backend AdvSoft.
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { xml } = owl;

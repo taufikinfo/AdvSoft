@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('task_timesheets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('task_id')->nullable()->constrained('tasks')->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('res_users')->onDelete('set null');
             $table->date('date')->nullable();
             $table->string('name')->nullable();
             $table->decimal('unit_amount', 8, 2)->default(0);

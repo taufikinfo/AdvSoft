@@ -120,7 +120,7 @@ class AssetCompiler
     public static function compileJs(): string
     {
         $files = self::getJsFileList();
-        $buffer = "/**\n * Adiantisoft Compiled Production Bundle\n * Generated: " . date('Y-m-d H:i:s') . "\n */\n\n";
+        $buffer = "/**\n * AdvSoft Compiled Production Bundle\n * Generated: " . date('Y-m-d H:i:s') . "\n */\n\n";
 
         foreach ($files as $file) {
             $fullPath = public_path($file);
@@ -142,7 +142,7 @@ class AssetCompiler
     public static function compileCss(): string
     {
         $files = self::getCssFileList();
-        $buffer = "/**\n * Adiantisoft Compiled Production Stylesheet\n * Generated: " . date('Y-m-d H:i:s') . "\n */\n\n";
+        $buffer = "/**\n * AdvSoft Compiled Production Stylesheet\n * Generated: " . date('Y-m-d H:i:s') . "\n */\n\n";
 
         foreach ($files as $file) {
             $fullPath = public_path($file);

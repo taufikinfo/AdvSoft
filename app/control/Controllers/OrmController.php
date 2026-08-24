@@ -142,7 +142,7 @@ class OrmController extends Controller
             return new JsonResponse(['groups' => $groups]);
         }
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         $pdo = TTransaction::get();
         $table = $def->_table;
 
@@ -191,6 +191,8 @@ class OrmController extends Controller
             }
             $groups[] = $item;
         }
+
+        TTransaction::close();
 
         return new JsonResponse(['groups' => $groups]);
     }
@@ -478,12 +480,13 @@ class OrmController extends Controller
         // Also fetch custom saved filters for this model
         $filters = [];
         try {
-            \Adianti\Database\TTransaction::open('adiantisoft');
+            \Adianti\Database\TTransaction::open('advsoft');
             $conn = \Adianti\Database\TTransaction::get();
             $stmt = $conn->prepare("SELECT * FROM saved_filter WHERE model = :m AND (is_global = 1 OR user_id = :uid) ORDER BY name ASC");
             $uid = $this->ctx->getUid() ?: 1;
             $stmt->execute([':m' => $modelName, ':uid' => $uid]);
             $filters = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+            \Adianti\Database\TTransaction::close();
         } catch (\Throwable $e) {
             $filters = [];
         }
@@ -527,11 +530,12 @@ class OrmController extends Controller
         $codeView = $def->getView($viewType);
 
         // 2. Check for custom override from View Builder
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $stmt = $conn->prepare("SELECT * FROM ir_ui_views WHERE model = :m AND type = :t AND active = 1 ORDER BY priority ASC LIMIT 1");
         $stmt->execute([':m' => $modelName, ':t' => $viewType]);
         $custom = $stmt->fetch(\PDO::FETCH_OBJ);
+        \Adianti\Database\TTransaction::close();
 
         if (!$custom) {
             return $codeView;
@@ -1059,7 +1063,7 @@ class OrmController extends Controller
         // Apply default + onchange + constraint
         $scalar = $childDef->applyOnchangeMulti(array_keys($scalar), $scalar);
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         try {
             $temp = new ($childDef->modelClass);
             $err = $childDef->validateConstraints($temp, $scalar);
@@ -1117,7 +1121,7 @@ class OrmController extends Controller
         $scalar = $childDef->prepareWriteValues($values);
         $scalar = $childDef->applyOnchangeMulti(array_keys($scalar), $scalar);
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         try {
             $err = $childDef->validateConstraints($record, $scalar);
             if ($err) {
@@ -1382,7 +1386,7 @@ class OrmController extends Controller
         $field = $parentDef->getField($fieldName);
         $childDef = $this->resolveChild($field->relation, 'create');
 
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         try {
             $created = [];
             foreach ($records as $values) {

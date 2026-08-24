@@ -7,7 +7,7 @@ use App\Model\Res\ResGroup;
 use App\Odoo\Registry;
 use Adianti\Database\TTransaction;
 
-TTransaction::open('adiantisoft');
+TTransaction::open('advsoft');
 $conn = TTransaction::get();
 
 $models = Registry::all();

@@ -26,7 +26,7 @@ trait HasLifecycleHooks
     {
         $hasTx = (bool) TTransaction::get();
         if (!$hasTx) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         try {
             if ($this->enableLifecycleHooks) {
@@ -66,7 +66,7 @@ trait HasLifecycleHooks
     {
         $hasTx = (bool) TTransaction::get();
         if (!$hasTx) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         try {
             $scalar = $this->prepareWriteValues($vals);
@@ -110,7 +110,7 @@ trait HasLifecycleHooks
     {
         $hasTx = (bool) TTransaction::get();
         if (!$hasTx) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         try {
             foreach ($ids as $id) {

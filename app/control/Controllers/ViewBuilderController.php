@@ -84,7 +84,7 @@ class ViewBuilderController extends Controller
         $type  = $req->input('type', 'list');
 
         // Check for custom override in ir_ui_views
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $stmt = $conn->prepare("SELECT * FROM ir_ui_views WHERE model = :m AND type = :t AND active = 1 ORDER BY priority ASC LIMIT 1");
         $stmt->execute([':m' => $model, ':t' => $type]);
@@ -298,7 +298,7 @@ class ViewBuilderController extends Controller
         $arch  = $req->input('arch', []);
         $name  = $req->input('name', "{$model}.{$type}.custom");
 
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $stmt = $conn->prepare("SELECT id FROM ir_ui_views WHERE model = :m AND type = :t AND active = 1 LIMIT 1");
         $stmt->execute([':m' => $model, ':t' => $type]);
@@ -357,7 +357,7 @@ class ViewBuilderController extends Controller
      */
     public function deleteView($id)
     {
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $stmt = $conn->prepare("DELETE FROM ir_ui_views WHERE id = :id");
         $stmt->execute([':id' => $id]);
@@ -370,7 +370,7 @@ class ViewBuilderController extends Controller
      */
     public function listCustomViews()
     {
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $conn = \Adianti\Database\TTransaction::get();
         $stmt = $conn->query("SELECT * FROM ir_ui_views WHERE active = 1 ORDER BY model ASC, type ASC");
         $views = $stmt->fetchAll(\PDO::FETCH_OBJ) ?: [];

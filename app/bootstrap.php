@@ -1,6 +1,6 @@
 <?php
 /**
- * Adiantisoft Application Bootstrap — Pure Adianti PHP Framework
+ * AdvSoft Application Bootstrap — Pure Adianti PHP Framework
  * Initializes Adianti Core, Service Container, Security Context, and Odoo Registry.
  */
 
@@ -87,17 +87,16 @@ foreach ($modelAliases as $alias => $target) {
 $basePath = realpath(__DIR__ . '/..');
 $app = new Application($basePath);
 
-// 2. Ensure Database Connection / Transaction is ready
+// 2. Ensure Database Connection is ready
 try {
-    if (!TTransaction::get()) {
-        TTransaction::open('adiantisoft');
-    }
+    TTransaction::open('advsoft');
     $conn = TTransaction::get();
     if ($conn instanceof \PDO) {
         @$conn->exec("PRAGMA journal_mode = WAL;");
         @$conn->exec("PRAGMA busy_timeout = 10000;");
         @$conn->exec("PRAGMA synchronous = NORMAL;");
     }
+    TTransaction::close();
 } catch (\Throwable $e) {
     error_log("Database connection note: " . $e->getMessage());
 }

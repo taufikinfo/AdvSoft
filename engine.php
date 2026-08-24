@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Adiantisoft — Standard Adianti Framework Engine Gateway.
+ * AdvSoft — Standard Adianti Framework Engine Gateway.
  * Dispatches standard Adianti controller actions via class & method parameters.
  */
 

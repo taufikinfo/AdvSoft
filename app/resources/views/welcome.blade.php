@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Adiantisoft — Business Applications</title>
-    <meta name="description" content="Adiantisoft is a metadata-driven business application platform with configurable views, ORM, and Odoo-style architecture.">
+    <title>AdvSoft — Business Applications</title>
+    <meta name="description" content="AdvSoft is a metadata-driven business application platform with configurable views, ORM, and Odoo-style architecture.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">

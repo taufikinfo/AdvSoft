@@ -21,7 +21,7 @@ abstract class Seeder
 
     protected function db(): \PDO
     {
-        TTransaction::open('adiantisoft');
+        TTransaction::open('advsoft');
         return TTransaction::get();
     }
 }

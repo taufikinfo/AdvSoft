@@ -1,6 +1,6 @@
 /**
- * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-24 01:04:09
+ * AdvSoft Compiled Production Bundle
+ * Generated: 2026-08-24 01:23:31
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -29989,7 +29989,7 @@ window.TEMPLATES.ViewBuilder = xml`
 /* --- [FILE: js/pages/custom/owl-my-custom-page-tpl.js] --- */
 // ══════════════════════════════════════════════════════════════
 //  MyCustomPage — Owl Template
-//  Contoh halaman kustom terintegrasi dengan backend Adiantisoft.
+//  Contoh halaman kustom terintegrasi dengan backend AdvSoft.
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { xml } = owl;
@@ -30427,7 +30427,7 @@ window.AccountingReports = AccountingReports;
 /* --- [FILE: js/pages/adianti/owl-adianti-page.js] --- */
 // ══════════════════════════════════════════════════════════════
 //  AdiantiPageView — Owl Component
-//  Renders any standard Adianti Controller inside Adiantisoft SPA
+//  Renders any standard Adianti Controller inside AdvSoft SPA
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, useRef, onMounted } = owl;
@@ -32696,7 +32696,7 @@ window.ViewBuilderView = ViewBuilderView;
 /* --- [FILE: js/pages/custom/owl-my-custom-page.js] --- */
 // ══════════════════════════════════════════════════════════════
 //  MyCustomPage — Owl Component
-//  Halaman kustom terintegrasi dengan backend Adiantisoft.
+//  Halaman kustom terintegrasi dengan backend AdvSoft.
 //  Fitur: CRUD items, stats, search/filter, sorting, modals.
 // ══════════════════════════════════════════════════════════════
 (function () {

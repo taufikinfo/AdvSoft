@@ -14,14 +14,15 @@ class CustomPageController extends Controller
     protected function getPdo(): \PDO
     {
         if (!TTransaction::get()) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         return TTransaction::get();
     }
 
     public function index(): JsonResponse
     {
-        $pdo = $this->getPdo();
+        TTransaction::open('advsoft');
+        $pdo = TTransaction::get();
         $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
         $pkDef = ($driver === 'mysql') ? 'id INT AUTO_INCREMENT PRIMARY KEY' : 'id INTEGER PRIMARY KEY AUTOINCREMENT';
         $pdo->exec("CREATE TABLE IF NOT EXISTS custom_page_items (
@@ -45,6 +46,7 @@ class CustomPageController extends Controller
             elseif ($st === 'pending') $pending++;
             elseif ($st === 'inactive') $inactive++;
         }
+        TTransaction::close();
 
         return new JsonResponse([
             'items' => $items,
@@ -63,7 +65,8 @@ class CustomPageController extends Controller
             'name' => 'required',
         ]);
 
-        $pdo = $this->getPdo();
+        TTransaction::open('advsoft');
+        $pdo = TTransaction::get();
         $stmt = $pdo->prepare("INSERT INTO custom_page_items (name, description, status, created_at, updated_at) VALUES (:name, :description, :status, :created_at, :updated_at)");
         $now = date('Y-m-d H:i:s');
         $stmt->execute([
@@ -78,6 +81,7 @@ class CustomPageController extends Controller
         $stmt = $pdo->prepare("SELECT * FROM custom_page_items WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $item = $stmt->fetch(\PDO::FETCH_ASSOC);
+        TTransaction::close();
 
         return new JsonResponse([
             'success' => true,
@@ -92,7 +96,8 @@ class CustomPageController extends Controller
             'name' => 'required',
         ]);
 
-        $pdo = $this->getPdo();
+        TTransaction::open('advsoft');
+        $pdo = TTransaction::get();
         $stmt = $pdo->prepare("UPDATE custom_page_items SET name = :name, description = :description, status = :status, updated_at = :updated_at WHERE id = :id");
         $now = date('Y-m-d H:i:s');
         $stmt->execute([
@@ -106,6 +111,7 @@ class CustomPageController extends Controller
         $stmt = $pdo->prepare("SELECT * FROM custom_page_items WHERE id = :id");
         $stmt->execute([':id' => $data['id']]);
         $item = $stmt->fetch(\PDO::FETCH_ASSOC);
+        TTransaction::close();
 
         return new JsonResponse([
             'success' => true,
@@ -120,9 +126,11 @@ class CustomPageController extends Controller
             return new JsonResponse(['error' => 'ID wajib diisi.'], 422);
         }
 
-        $pdo = $this->getPdo();
+        TTransaction::open('advsoft');
+        $pdo = TTransaction::get();
         $stmt = $pdo->prepare("DELETE FROM custom_page_items WHERE id = :id");
         $stmt->execute([':id' => $id]);
+        TTransaction::close();
 
         return new JsonResponse(['success' => true]);
     }

@@ -11,7 +11,7 @@ use App\Odoo\Core\Support\Collection;
 use App\Odoo\Core\Database\QueryBuilder;
 
 /**
- * Base Active Record Model for Adiantisoft built on Adianti TRecord.
+ * Base Active Record Model for AdvSoft built on Adianti TRecord.
  */
 abstract class BaseModel extends TRecord
 {
@@ -26,13 +26,7 @@ abstract class BaseModel extends TRecord
     public static function openTransaction(): void
     {
         if (!TTransaction::get()) {
-            TTransaction::open('adiantisoft');
-            $conn = TTransaction::get();
-            if ($conn instanceof \PDO) {
-                @$conn->exec("PRAGMA journal_mode = WAL;");
-                @$conn->exec("PRAGMA busy_timeout = 10000;");
-                @$conn->exec("PRAGMA synchronous = NORMAL;");
-            }
+            TTransaction::open('advsoft');
         }
     }
 

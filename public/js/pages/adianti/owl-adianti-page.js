@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  AdiantiPageView — Owl Component
-//  Renders any standard Adianti Controller inside Adiantisoft SPA
+//  Renders any standard Adianti Controller inside AdvSoft SPA
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, useRef, onMounted } = owl;

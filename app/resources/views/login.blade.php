@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="<?= csrf_token() ?>">
-    <title>Sign in · Adiantisoft</title>
+    <title>Sign in · AdvSoft</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/odoo-menu.css?v=26">
@@ -99,7 +99,7 @@
 </head>
 <body>
     <div class="login-card">
-        <h1>Adiantisoft</h1>
+        <h1>AdvSoft</h1>
         <p class="subtitle">Sign in to your workspace</p>
         <div class="error" id="login-error"></div>
         <form id="login-form" autocomplete="on">

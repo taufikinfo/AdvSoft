@@ -11,7 +11,7 @@ class SchemaManager
 {
     protected string $database;
 
-    public function __construct(string $database = 'adiantisoft')
+    public function __construct(string $database = 'AdvSoft')
     {
         $this->database = $database;
     }

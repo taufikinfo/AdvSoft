@@ -20,19 +20,25 @@ class QWebLoader
     protected function getPdo(): \PDO
     {
         if (!TTransaction::get()) {
-            TTransaction::open('adiantisoft');
+            TTransaction::open('advsoft');
         }
         return TTransaction::get();
     }
 
     public function loadFromDb(string $templateName): ?string
     {
-        $pdo = $this->getPdo();
+        $opened = false;
+        if (!TTransaction::get()) {
+            TTransaction::open('advsoft');
+            $opened = true;
+        }
+        $pdo = TTransaction::get();
         $stmt = $pdo->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND active = 1 AND (key = :k OR name = :n) ORDER BY priority ASC LIMIT 1");
         $stmt->execute([':k' => $templateName, ':n' => $templateName]);
         $record = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$record) {
+            if ($opened) TTransaction::close();
             return null;
         }
 
@@ -41,11 +47,13 @@ class QWebLoader
             $stmtP->execute([':id' => $record['inherit_id']]);
             $parent = $stmtP->fetch(\PDO::FETCH_ASSOC);
 
+            if ($opened) TTransaction::close();
             if ($parent && ($parent['type'] ?? '') === 'qweb') {
                 return $parent['arch'];
             }
         }
 
+        if ($opened) TTransaction::close();
         return $record['arch'];
     }
 

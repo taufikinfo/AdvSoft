@@ -109,7 +109,7 @@ class SecurityService
 
         $userGroupIds = $this->live()->getGroupIds();
 
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $pdo = \Adianti\Database\TTransaction::get();
 
         $groupClause = "group_id IS NULL";
@@ -128,6 +128,7 @@ class SecurityService
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':mid' => $model->id]);
         $allowed = (bool) $stmt->fetchColumn();
+        \Adianti\Database\TTransaction::close();
 
         if (!$allowed) {
             if ($raise) {
@@ -211,7 +212,7 @@ class SecurityService
 
         $userGroupIds = $this->live()->getGroupIds();
 
-        \Adianti\Database\TTransaction::open('adiantisoft');
+        \Adianti\Database\TTransaction::open('advsoft');
         $pdo = \Adianti\Database\TTransaction::get();
 
         $groupClause = "r.global = 1";
@@ -229,6 +230,7 @@ class SecurityService
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':mid' => $model->id]);
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+        \Adianti\Database\TTransaction::close();
 
         $rules = [];
         foreach ($rows as $row) {

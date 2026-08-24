@@ -66,7 +66,7 @@ Open your browser at: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 ```
 AdvSoft/
 ├── app/
-│   ├── config/              # Application & database configurations (adiantisoft.ini, application.php)
+│   ├── config/              # Application & database configurations (AdvSoft.ini, application.php)
 │   ├── control/             # Adianti Page & Action Controllers (app/control/Controllers/)
 │   ├── database/            # Database runners & schema migrations
 │   ├── model/               # Active Record Models (BaseModel, Account, Project, Res, Ir, etc.)
@@ -145,7 +145,7 @@ Acesse no seu navegador: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 ```
 AdvSoft/
 ├── app/
-│   ├── config/              # Configurações do aplicativo e banco de dados (adiantisoft.ini, application.php)
+│   ├── config/              # Configurações do aplicativo e banco de dados (AdvSoft.ini, application.php)
 │   ├── control/             # Controladores de Página e Ação Adianti (app/control/Controllers/)
 │   ├── database/            # Scripts de execução e migrações do banco de dados
 │   ├── model/               # Modelos Active Record (BaseModel, Account, Project, Res, Ir, etc.)

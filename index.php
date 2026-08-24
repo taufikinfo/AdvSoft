@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Adiantisoft — Pure Adianti Framework Front Controller & Application Gateway.
+ * AdvSoft — Pure Adianti Framework Front Controller & Application Gateway.
  */
 
 require_once __DIR__ . '/app/bootstrap.php';
