@@ -85,26 +85,25 @@ class TaskDef extends ModelDefinition
             'invisible' => true,
         ]);
 
-        // Extra fields to demonstrate widgets (store=false so no DB migration needed)
+        // Interactive fields with database persistence
         $this->addField('is_favorite', Field::BOOLEAN, [
             'string' => 'Favorite',
             'widget' => 'boolean_favorite',
-            'store' => false,
+            'default' => false,
+            'searchable' => true,
         ]);
         $this->addField('color', Field::CHAR, [
             'string' => 'Color',
             'widget' => 'color_picker',
-            'store' => false,
         ]);
         $this->addField('email', Field::CHAR, [
             'string' => 'Email',
             'widget' => 'email',
-            'store' => false,
+            'searchable' => true,
         ]);
         $this->addField('website', Field::CHAR, [
             'string' => 'Website',
             'widget' => 'url',
-            'store' => false,
         ]);
 
         // Relational fields

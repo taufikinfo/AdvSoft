@@ -915,6 +915,10 @@ CREATE TABLE `tasks` (
   `planned_hours` decimal(14,2) NOT NULL DEFAULT '0.00',
   `progress` decimal(14,2) NOT NULL DEFAULT '0.00',
   `active` int NOT NULL DEFAULT '1',
+  `is_favorite` tinyint(1) NOT NULL DEFAULT '0',
+  `color` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

@@ -531,10 +531,22 @@ class FormView extends Component {
         }
 
         // Favorite toggle widget
-        if (target.classList.contains('ls-favorite-widget')) {
-            const fieldName = target.getAttribute('data-field');
-            const currentVal = parseInt(target.getAttribute('data-val')) || 0;
-            this.updateField(fieldName, currentVal ? 0 : 1);
+        if (target.classList.contains('ls-favorite-widget') || target.closest('.ls-favorite-widget')) {
+            const widget = target.classList.contains('ls-favorite-widget') ? target : target.closest('.ls-favorite-widget');
+            const fieldName = widget.getAttribute('data-field');
+            if (fieldName) {
+                const currentVal = !!this.state.record[fieldName];
+                const newVal = !currentVal;
+                this.updateField(fieldName, newVal);
+                widget.setAttribute('data-val', newVal ? '1' : '0');
+                if (newVal) {
+                    widget.classList.add('active');
+                    widget.textContent = '★';
+                } else {
+                    widget.classList.remove('active');
+                    widget.textContent = '☆';
+                }
+            }
         }
 
         // Image upload proxy
