@@ -415,6 +415,11 @@ class OrmController extends Controller
         $modelName = $def->_name ?? null;
         $ids = $request->input('ids', []);
 
+        // Close any dangling read transaction before executing unlink
+        if (\Adianti\Database\TTransaction::get()) {
+            \Adianti\Database\TTransaction::close();
+        }
+
         // L4: verify each id passes unlink record rules
         if ($modelName && !empty($ids) && !$def->isSuperuser()) {
             try {
@@ -425,11 +430,11 @@ class OrmController extends Controller
         }
 
         try {
-            $error = $def->performUnlink($ids);
+            $error = $def->performUnlink((array)$ids);
             if ($error) {
                 return response()->json(['error' => $error], 422);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
 
@@ -877,14 +882,27 @@ class OrmController extends Controller
                 return response()->json(['error' => "Method $method not found on " . $def->_name], 400);
             }
 
-            $record = $def->newQuery()->find($id);
+            if (\Adianti\Database\TTransaction::get()) {
+                \Adianti\Database\TTransaction::close();
+            }
+
+            \Adianti\Database\TTransaction::open('advsoft');
+            $record = ($def->modelClass)::find($id);
             if (!$record) {
+                \Adianti\Database\TTransaction::close();
                 return response()->json(['error' => "Record not found"], 404);
             }
 
             $result = $def->{$method}($record);
+            if ($record instanceof \Adianti\Database\TRecord) {
+                $record->store();
+            }
+            \Adianti\Database\TTransaction::close();
             return response()->json(['action' => $result]);
         } catch (\Throwable $e) {
+            if (\Adianti\Database\TTransaction::get()) {
+                \Adianti\Database\TTransaction::rollback();
+            }
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
@@ -895,38 +913,54 @@ class OrmController extends Controller
      */
     public function callButtonMulti(Request $request): JsonResponse
     {
-        $def = $this->resolveModel($request, 'write');
-        $method = $request->input('method');
-        $ids = $request->input('ids', []);
+        try {
+            $def = $this->resolveModel($request, 'write');
+            $method = $request->input('method');
+            $ids = $request->input('ids', []);
 
-        if (!method_exists($def, $method)) {
-            return response()->json(['error' => "Method $method not found on " . $def->_name], 400);
-        }
-
-        $results = [];
-        $errors = [];
-
-        foreach ($ids as $id) {
-            $record = $def->newQuery()->find($id);
-            if (!$record) {
-                $errors[] = "Record $id not found";
-                continue;
+            if (!method_exists($def, $method)) {
+                return response()->json(['error' => "Method $method not found on " . $def->_name], 400);
             }
 
-            try {
-                $result = $def->{$method}($record);
-                $results[] = ['id' => $id, 'result' => $result];
-            } catch (\Exception $e) {
-                $errors[] = "Record $id: " . $e->getMessage();
+            if (\Adianti\Database\TTransaction::get()) {
+                \Adianti\Database\TTransaction::close();
             }
-        }
 
-        return response()->json([
-            'success' => empty($errors),
-            'results' => $results,
-            'errors'  => $errors,
-            'count'   => count($results),
-        ]);
+            \Adianti\Database\TTransaction::open('advsoft');
+            $results = [];
+            $errors = [];
+
+            foreach ($ids as $id) {
+                $record = ($def->modelClass)::find($id);
+                if (!$record) {
+                    $errors[] = "Record $id not found";
+                    continue;
+                }
+
+                try {
+                    $res = $def->{$method}($record);
+                    if ($record instanceof \Adianti\Database\TRecord) {
+                        $record->store();
+                    }
+                    $results[] = ['id' => $id, 'result' => $res];
+                } catch (\Throwable $e) {
+                    $errors[] = "Record $id: " . $e->getMessage();
+                }
+            }
+            \Adianti\Database\TTransaction::close();
+
+            return response()->json([
+                'success' => empty($errors),
+                'results' => $results,
+                'errors'  => $errors,
+                'count'   => count($results),
+            ]);
+        } catch (\Throwable $e) {
+            if (\Adianti\Database\TTransaction::get()) {
+                \Adianti\Database\TTransaction::rollback();
+            }
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     /**

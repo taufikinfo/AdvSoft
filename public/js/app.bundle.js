@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 03:49:02
+ * Generated: 2026-08-24 04:05:11
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -13740,6 +13740,27 @@ class FormView extends Component {
 
     async discardChanges() {
         await this.loadRecord();
+    }
+
+    goBack() {
+        if (this.props.onBack) {
+            this.props.onBack();
+        } else {
+            const cls = window.AdvSoftLayout ? window.AdvSoftLayout._modelViewToClass(this._model, 'list') : 'HomeView';
+            window.location.hash = `#class=${cls}`;
+        }
+    }
+
+    showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `ls-toast ls-toast-${type}`;
+        toast.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--ls-primary,#714b67);color:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:99999;font-size:14px;transition:opacity 0.3s ease;';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     toggleActionMenu() {

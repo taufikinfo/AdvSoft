@@ -21,8 +21,6 @@ class AccountMove extends BaseModel
      */
     public function actionPost(): array
     {
-        self::openTransaction();
-
         if ($this->state === 'posted') {
             return ['error' => 'Entry ini sudah diposting.'];
         }
@@ -55,7 +53,7 @@ class AccountMove extends BaseModel
 
         $this->state = 'posted';
         $this->amount_total = $totalDebit;
-        $this->save();
+        $this->store();
 
         return ['message' => "Entry '{$this->name}' berhasil diposting."];
     }
@@ -65,9 +63,8 @@ class AccountMove extends BaseModel
      */
     public function actionDraft(): array
     {
-        self::openTransaction();
         $this->state = 'draft';
-        $this->save();
+        $this->store();
 
         return ['message' => "Entry '{$this->name}' berhasil diubah ke draft."];
     }
@@ -77,9 +74,8 @@ class AccountMove extends BaseModel
      */
     public function actionCancel(): array
     {
-        self::openTransaction();
         $this->state = 'cancel';
-        $this->save();
+        $this->store();
 
         return ['message' => "Entry '{$this->name}' telah dibatalkan."];
     }

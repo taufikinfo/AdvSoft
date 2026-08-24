@@ -264,7 +264,7 @@ class AccountMoveDef extends ModelDefinition
                     'type'      => 'object',
                     'string'    => 'Reset to Draft',
                     'class'     => 'ls-btn-secondary',
-                    'invisible' => "state != 'cancel'",
+                    'invisible' => "state == 'draft'",
                 ],
                 [
                     'name'      => 'action_cancel',

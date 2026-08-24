@@ -93,7 +93,7 @@ echo "View Builder models: " . count(json_decode($res->getContent(), true) ?? []
 echo "\n=== 7. Testing ORM Controller (write account.move) ===\n";
 $writeReq = makeReq('/api/orm/write', 'POST', [
     'model' => 'account.move',
-    'id' => 1,
+    'id' => 2,
     'values' => [
         'ref' => 'TEST-REF-' . time()
     ]
@@ -105,7 +105,7 @@ echo "Response: " . $res->getContent() . "\n";
 echo "\n=== 8. Testing Action Button (action_draft on account.move) ===\n";
 $btnReq = makeReq('/api/orm/call_button', 'POST', [
     'model' => 'account.move',
-    'id' => 1,
+    'id' => 2,
     'method' => 'action_draft'
 ]);
 $res = $orm->callButton($btnReq);
@@ -115,7 +115,7 @@ echo "Response: " . $res->getContent() . "\n";
 echo "\n=== 9. Testing Action Button (action_post on account.move) ===\n";
 $btnReq = makeReq('/api/orm/call_button', 'POST', [
     'model' => 'account.move',
-    'id' => 1,
+    'id' => 2,
     'method' => 'action_post'
 ]);
 $res = $orm->callButton($btnReq);
