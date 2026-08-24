@@ -130,34 +130,34 @@
             $allScripts = array_merge($coreFiles, $widgetFiles, $viewFiles, $pageTpls, $pageScripts, ['js/core/owl-root.js']);
         @endphp
         @foreach($allScripts as $script)
-            <script src="{{ asset($script) }}?v=adianti-1.0" defer></script>
+            <script src="{{ asset($script) }}?v={{ file_exists(public_path($script)) ? filemtime(public_path($script)) : time() }}" defer></script>
         @endforeach
         <!-- Styles (Unbundled) -->
-        <link rel="stylesheet" href="{{ asset('css/advsoft-layout.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-dialog.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-list.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-form.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-menu.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-widgets.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-kanban.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-calendar.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-spreadsheet.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-views.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-inline-tree.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-security.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-menu-editor.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-view-builder.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-rte.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-report.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-dark.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/advsoft-custom-page.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-layout.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-dialog.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-list.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-form.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-menu.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-widgets.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-kanban.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-calendar.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-spreadsheet.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-views.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-inline-tree.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-security.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-menu-editor.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-view-builder.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-rte.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-report.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-dark.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-custom-page.css') }}?v={{ time() }}">
     @else
         <!-- Production Mode: Pre-Compiled Single Bundles -->
         @php
             if (!file_exists(public_path('js/app.bundle.js')) || !file_exists(public_path('css/app.bundle.css'))) {
                 \App\Advsoft\Core\Support\AssetCompiler::compileAll();
             }
-            $assetVer = file_exists(public_path('js/app.bundle.js')) ? filemtime(public_path('js/app.bundle.js')) : '1.0';
+            $assetVer = file_exists(public_path('js/app.bundle.js')) ? filemtime(public_path('js/app.bundle.js')) : time();
         @endphp
         <link rel="stylesheet" href="{{ asset('css/app.bundle.css') }}?v={{ $assetVer }}">
         <script src="{{ asset('js/app.bundle.js') }}?v={{ $assetVer }}" defer></script>
