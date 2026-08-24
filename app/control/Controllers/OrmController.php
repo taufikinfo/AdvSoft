@@ -852,11 +852,15 @@ class OrmController extends Controller
      */
     public function onchange(Request $request): JsonResponse
     {
-        $def = $this->resolveModel($request, 'write');
-        $field = $request->input('field');
-        $values = $request->input('values', []);
-        $result = $def->applyOnchange($field, $values);
-        return response()->json(['values' => $result]);
+        try {
+            $def = $this->resolveModel($request, 'write');
+            $field = $request->input('field');
+            $values = $request->input('values', []);
+            $result = $def->applyOnchange($field, $values);
+            return response()->json(['values' => $result]);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -864,23 +868,23 @@ class OrmController extends Controller
      */
     public function callButton(Request $request): JsonResponse
     {
-        $def = $this->resolveModel($request, 'write');
-        $method = $request->input('method');
-        $id = $request->input('id');
-
-        if (!method_exists($def, $method)) {
-            return response()->json(['error' => "Method $method not found on " . $def->_name], 400);
-        }
-
-        $record = $def->newQuery()->find($id);
-        if (!$record) {
-            return response()->json(['error' => "Record not found"], 404);
-        }
-
         try {
+            $def = $this->resolveModel($request, 'write');
+            $method = $request->input('method');
+            $id = $request->input('id');
+
+            if (!method_exists($def, $method)) {
+                return response()->json(['error' => "Method $method not found on " . $def->_name], 400);
+            }
+
+            $record = $def->newQuery()->find($id);
+            if (!$record) {
+                return response()->json(['error' => "Record not found"], 404);
+            }
+
             $result = $def->{$method}($record);
             return response()->json(['action' => $result]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }

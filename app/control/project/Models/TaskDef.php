@@ -258,7 +258,6 @@ class TaskDef extends ModelDefinition
                     'type'    => 'object',
                     'string'  => 'Mark Done',
                     'class'   => 'ls-btn-success',
-                    'confirm' => 'Mark this task as done?',
                     'invisible' => "progress >= 100",
                 ],
                 [

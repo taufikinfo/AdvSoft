@@ -1147,10 +1147,9 @@ class FormView extends Component {
     isStageActive(stg) {
         const sbField = this._formDef.statusbar;
         if (!sbField) return false;
-        if (this.isStatusbarSelection) {
-            return this.state.record[sbField] === stg.id;
-        }
-        return Array.isArray(this.state.record[sbField]) && this.state.record[sbField][0] === stg.id;
+        const val = this.state.record[sbField];
+        if (Array.isArray(val)) return val[0] == stg.id;
+        return val == stg.id;
     }
 
     setPriority(level) {
