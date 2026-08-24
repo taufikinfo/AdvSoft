@@ -8,6 +8,9 @@
 /database/*.sqlite
 /database/*.sqlite-wal
 /database/*.sqlite-shm
+/app/database/*.sqlite
+/app/database/*.sqlite-wal
+/app/database/*.sqlite-shm
 .DS_Store
 Thumbs.db
 app/storage/logs/adianti.log
