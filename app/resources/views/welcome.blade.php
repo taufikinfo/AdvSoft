@@ -133,24 +133,24 @@
             <script src="{{ asset($script) }}?v=adianti-1.0" defer></script>
         @endforeach
         <!-- Styles (Unbundled) -->
-        <link rel="stylesheet" href="{{ asset('css/odoo-layout.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-dialog.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-list.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-form.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-menu.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-widgets.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-kanban.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-calendar.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-spreadsheet.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-views.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-inline-tree.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-security.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-menu-editor.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-view-builder.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-rte.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-report.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-dark.css') }}?v=38">
-        <link rel="stylesheet" href="{{ asset('css/odoo-custom-page.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-layout.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-dialog.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-list.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-form.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-menu.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-widgets.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-kanban.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-calendar.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-spreadsheet.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-views.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-inline-tree.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-security.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-menu-editor.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-view-builder.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-rte.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-report.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-dark.css') }}?v=38">
+        <link rel="stylesheet" href="{{ asset('css/advsoft-custom-page.css') }}?v=38">
     @else
         <!-- Production Mode: Pre-Compiled Single Bundles -->
         @php

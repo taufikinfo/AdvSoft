@@ -229,7 +229,7 @@
     font-size: var(--ls-font-size, 13px);
 }
 
-/* Reuse spinner from odoo-report.css */
+/* Reuse spinner from advsoft-report.css */
 .ls-custom-loading .ls-report-spinner {
     width: 22px;
     height: 22px;

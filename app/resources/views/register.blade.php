@@ -7,7 +7,7 @@
     <title>Register · AdvSoft</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/odoo-menu.css?v=26">
+    <link rel="stylesheet" href="/css/advsoft-menu.css?v=26">
     <style>
         body {
             margin: 0;

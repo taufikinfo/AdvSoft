@@ -1,9 +1,9 @@
 /**
  * AdvSoft Compiled Production Stylesheet
- * Generated: 2026-08-24 02:34:58
+ * Generated: 2026-08-24 02:36:59
  */
 
-/* --- [FILE: css/odoo-layout.css] --- */
+/* --- [FILE: css/advsoft-layout.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    AdvSoft Enterprise Layout System — AdvSoft-style Presentation Layer
    Themes: Light / Dark / Custom brand
@@ -975,7 +975,7 @@ body {
 }
 
 
-/* --- [FILE: css/odoo-dialog.css] --- */
+/* --- [FILE: css/advsoft-dialog.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    AdvSoft Enterprise Dialog & Toast System
    High-end, modern, glassmorphic modal & notification alerts
@@ -1491,10 +1491,10 @@ html[data-theme="dark"] .ls-toast-message {
 }
 
 
-/* --- [FILE: css/odoo-list.css] --- */
+/* --- [FILE: css/advsoft-list.css] --- */
 /* ============================================================
    AdvSoft — AdvSoft-style ListView & Advanced Search CSS
-   (Design tokens are defined in odoo-layout.css)
+   (Design tokens are defined in advsoft-layout.css)
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1508,7 +1508,7 @@ html, body {
     overflow: hidden;
 }
 
-/* (Navbar styles are managed in odoo-layout.css) */
+/* (Navbar styles are managed in advsoft-layout.css) */
 .ls-avatar {
     width: 30px; height: 30px;
     border-radius: 50%;
@@ -2619,7 +2619,7 @@ html, body {
 
 
 
-/* --- [FILE: css/odoo-form.css] --- */
+/* --- [FILE: css/advsoft-form.css] --- */
 /* ============================================================
    AdvSoft — AdvSoft-style Form View CSS
    ============================================================ */
@@ -3593,7 +3593,7 @@ html, body {
 
 
 
-/* --- [FILE: css/odoo-menu.css] --- */
+/* --- [FILE: css/advsoft-menu.css] --- */
 /* ══════════════════════════════════════════════════════════
    AdvSoft Menu System CSS — AdvSoft-style navigation
    ══════════════════════════════════════════════════════════ */
@@ -4126,7 +4126,7 @@ html[data-theme="dark"] .ls-submenu-dropdown-item.active {
 }
 
 
-/* --- [FILE: css/odoo-widgets.css] --- */
+/* --- [FILE: css/advsoft-widgets.css] --- */
 /* ══════════════════════════════════════════════════════════
    AdvSoft Field Widgets CSS
    ══════════════════════════════════════════════════════════ */
@@ -4861,7 +4861,7 @@ textarea:focus-visible {
 
 
 
-/* --- [FILE: css/odoo-kanban.css] --- */
+/* --- [FILE: css/advsoft-kanban.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    Kanban View Styles — AdvSoft-style kanban board
    Features: columns, cards, drag-drop, fold, context menu, images
@@ -5384,7 +5384,7 @@ textarea:focus-visible {
 }
 
 
-/* --- [FILE: css/odoo-calendar.css] --- */
+/* --- [FILE: css/advsoft-calendar.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    Calendar View Styles — AdvSoft-style calendar
    Features: month/week(day) views, time grid, drag-drop, tooltips,
@@ -6002,7 +6002,7 @@ textarea:focus-visible {
 }
 
 
-/* --- [FILE: css/odoo-spreadsheet.css] --- */
+/* --- [FILE: css/advsoft-spreadsheet.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    Spreadsheet View — AdvSoft o-spreadsheet style
    ══════════════════════════════════════════════════════════════════ */
@@ -6844,7 +6844,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 
 
-/* --- [FILE: css/odoo-views.css] --- */
+/* --- [FILE: css/advsoft-views.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    Graph & Pivot View Styles — AdvSoft-style analytics views
    ══════════════════════════════════════════════════════════════════ */
@@ -7274,7 +7274,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-inline-tree.css] --- */
+/* --- [FILE: css/advsoft-inline-tree.css] --- */
 /* ══════════════════════════════════════════════════════════════
    INLINE TREE WIDGET — AdvSoft-style <list> editable
    Full parity: editable top/bottom, multi-edit, attrs, onchange,
@@ -8841,7 +8841,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-security.css] --- */
+/* --- [FILE: css/advsoft-security.css] --- */
 /* ══════════════════════════════════════════════════════════
    AdvSoft Security Management — UI Styles
    ══════════════════════════════════════════════════════════ */
@@ -9395,7 +9395,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-menu-editor.css] --- */
+/* --- [FILE: css/advsoft-menu-editor.css] --- */
 /* ══════════════════════════════════════════════════════════
    Menu Editor CSS — AdvSoft-style Menu Item Management UI
    Settings → Technical → User Interface → Menu Items
@@ -10074,7 +10074,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-view-builder.css] --- */
+/* --- [FILE: css/advsoft-view-builder.css] --- */
 /* ══════════════════════════════════════════════════════════════
    View Builder — AdvSoft Studio-style view configuration UI
    ══════════════════════════════════════════════════════════════ */
@@ -11035,10 +11035,10 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 .dark .ls-vb-code-block { background: #11111b; color: #cdd6f4; }
 
 
-/* --- [FILE: css/odoo-rte.css] --- */
+/* --- [FILE: css/advsoft-rte.css] --- */
 /* ═══════════════════════════════════════════════════════════════════
    AdvSoft Rich Text Editor (RTE) — AdvSoft-styled
-   Depends on odoo-form.css for shared form tokens.
+   Depends on advsoft-form.css for shared form tokens.
    ═══════════════════════════════════════════════════════════════════ */
 
 .ls-rte {
@@ -11591,7 +11591,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-report.css] --- */
+/* --- [FILE: css/advsoft-report.css] --- */
 /* ══════════════════════════════════════════════════════════════
    Accounting Reports — Styles
    Premium financial report layout with print support
@@ -12009,7 +12009,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 
-/* --- [FILE: css/odoo-dark.css] --- */
+/* --- [FILE: css/advsoft-dark.css] --- */
 /* ══════════════════════════════════════════════════════════════════
    AdvSoft Dark Theme Overrides
    Targets hardcoded light colors across various components
@@ -13160,7 +13160,7 @@ html[data-theme="dark"] .ls-me-action-chip.container {
 }
 
 
-/* --- [FILE: css/odoo-custom-page.css] --- */
+/* --- [FILE: css/advsoft-custom-page.css] --- */
 /* ══════════════════════════════════════════════════════════════
    MyCustomPage — Styles
    Menggunakan design token sistem AdvSoft (--ls-*).
@@ -13392,7 +13392,7 @@ html[data-theme="dark"] .ls-me-action-chip.container {
     font-size: var(--ls-font-size, 13px);
 }
 
-/* Reuse spinner from odoo-report.css */
+/* Reuse spinner from advsoft-report.css */
 .ls-custom-loading .ls-report-spinner {
     width: 22px;
     height: 22px;

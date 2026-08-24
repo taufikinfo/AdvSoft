@@ -1,6 +1,6 @@
 /* ============================================================
    AdvSoft — AdvSoft-style ListView & Advanced Search CSS
-   (Design tokens are defined in odoo-layout.css)
+   (Design tokens are defined in advsoft-layout.css)
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,7 +14,7 @@ html, body {
     overflow: hidden;
 }
 
-/* (Navbar styles are managed in odoo-layout.css) */
+/* (Navbar styles are managed in advsoft-layout.css) */
 .ls-avatar {
     width: 30px; height: 30px;
     border-radius: 50%;
