@@ -211,7 +211,7 @@ class ComposerStaticInit36793882908b6cbdd344b5a4840231db
         ),
         'Database\\Seeders\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/database/seeders',
+            0 => __DIR__ . '/../..' . '/app/database/seeders',
         ),
         'DASPRiD\\Enum\\' =>
         array (

@@ -21,7 +21,7 @@ return array(
     'FontLib\\' => array($vendorDir . '/dompdf/php-font-lib/src/FontLib'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
-    'Database\\Seeders\\' => array($baseDir . '/database/seeders'),
+    'Database\\Seeders\\' => array($baseDir . '/app/database/seeders'),
     'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),
     'BaconQrCode\\' => array($vendorDir . '/bacon/bacon-qr-code/src'),
     'App\\' => array($baseDir . '/app'),

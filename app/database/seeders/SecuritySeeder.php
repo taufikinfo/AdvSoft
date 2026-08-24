@@ -196,11 +196,19 @@ class SecuritySeeder extends Seeder
                         'active'       => true,
                     ]
                 );
-                $rule->groups()->syncWithoutDetaching([$gUser->id]);
+                try {
+                    \Adianti\Database\TTransaction::open('advsoft');
+                    $conn = \Adianti\Database\TTransaction::get();
+                    if ($conn instanceof \PDO) {
+                        $ins = $conn->prepare("INSERT INTO ir_rule_groups_rel (rule_id, group_id) VALUES (?, ?)");
+                        $ins->execute([$rule->id, $gUser->id]);
+                    }
+                    \Adianti\Database\TTransaction::close();
+                } catch (\Throwable $e) {}
             }
         }
 
-        if ($this->command) {
+        if (isset($this->command) && $this->command) {
             $this->command->info('Security seeded: ' . count($modelClasses) . ' models, 4 groups, 2 default users (admin/admin, demo/demo).');
         }
     }
@@ -212,7 +220,7 @@ class SecuritySeeder extends Seeder
     protected function discoverModels(): array
     {
         $map = [];
-        $dir = __DIR__ . '/../../app/Advsoft/Models';
+        $dir = is_dir(__DIR__ . '/../../Advsoft/Models') ? __DIR__ . '/../../Advsoft/Models' : __DIR__ . '/../../app/Advsoft/Models';
         if (!is_dir($dir)) return $map;
         $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
         foreach ($rii as $file) {

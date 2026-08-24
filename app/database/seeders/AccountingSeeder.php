@@ -33,11 +33,13 @@ class AccountingSeeder extends Seeder
         $this->seedTaxes($accounts);
         $this->seedSampleEntries($accounts, $journals);
 
-        $this->command?->info('Accounting data seeded: '
-            . AccountAccount::count() . ' accounts, '
-            . AccountJournal::count() . ' journals, '
-            . AccountTax::count() . ' taxes, '
-            . AccountMove::count() . ' entries');
+        if (isset($this->command) && $this->command) {
+            $this->command->info('Accounting data seeded: '
+                . AccountAccount::count() . ' accounts, '
+                . AccountJournal::count() . ' journals, '
+                . AccountTax::count() . ' taxes, '
+                . AccountMove::count() . ' entries');
+        }
     }
 
     /**

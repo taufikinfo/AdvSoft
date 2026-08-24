@@ -4,7 +4,7 @@ require_once __DIR__ . '/../bootstrap.php';
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-$dbPath = __DIR__ . '/../../database/database.sqlite';
+$dbPath = file_exists(__DIR__ . '/database.sqlite') ? __DIR__ . '/database.sqlite' : __DIR__ . '/../../database/database.sqlite';
 $container = app();
 
 if (!function_exists('app_path')) {
@@ -20,7 +20,8 @@ if (!function_exists('bcrypt')) {
 
 echo "Starting migrations on: $dbPath\n";
 
-$migrationFiles = glob(__DIR__ . '/../../database/migrations/*.php');
+$migrationDir = is_dir(__DIR__ . '/migrations') ? __DIR__ . '/migrations' : __DIR__ . '/../../database/migrations';
+$migrationFiles = glob($migrationDir . '/*.php');
 sort($migrationFiles);
 
 foreach ($migrationFiles as $file) {

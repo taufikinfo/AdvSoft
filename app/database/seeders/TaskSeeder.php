@@ -137,7 +137,19 @@ class TaskSeeder extends Seeder
             ]);
 
             $tagIds = array_map(fn($i) => $tags[$i]->id, $taskData['tags']);
-            $task->tags()->attach($tagIds);
+            try {
+                \Adianti\Database\TTransaction::open('advsoft');
+                $conn = \Adianti\Database\TTransaction::get();
+                if ($conn instanceof \PDO) {
+                    $stmt = $conn->prepare("INSERT INTO task_tag (task_id, tag_id) VALUES (?, ?)");
+                    foreach ($tagIds as $tagId) {
+                        try {
+                            $stmt->execute([$task->id, $tagId]);
+                        } catch (\Throwable $e) {}
+                    }
+                }
+                \Adianti\Database\TTransaction::close();
+            } catch (\Throwable $e) {}
         }
     }
 }

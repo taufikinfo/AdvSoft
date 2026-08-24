@@ -4,7 +4,7 @@
  * Usage: php app/database/migrate_to_mysql.php
  */
 
-$sqliteFile = __DIR__ . '/../../database/database.sqlite';
+$sqliteFile = file_exists(__DIR__ . '/database.sqlite') ? __DIR__ . '/database.sqlite' : __DIR__ . '/../../database/database.sqlite';
 $iniPath    = __DIR__ . '/../config/advsoft.ini';
 
 $ini = parse_ini_file($iniPath);

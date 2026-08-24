@@ -126,13 +126,9 @@ AdvSoft/
 │   ├── Advsoft/             # Core Engine (Registry, ModelDefinition, Field, Security, QWeb)
 │   ├── config/              # Database & Application Configs (advsoft.ini, application.php)
 │   ├── control/             # Addons & Controllers (app/control/Controllers/, project, account)
-│   ├── database/            # SQL dumps (advsoft.sql, advsoft-ddl.sql, advsoft-dml.sql)
+│   ├── database/            # Database assets (database.sqlite, migrations/, seeders/, advsoft.sql)
 │   ├── model/               # Active Record Models (BaseModel, Account, Project, Res, Ir)
 │   └── resources/           # Blade views, templates, and UI assets (views, css, js)
-├── database/
-│   ├── database.sqlite      # SQLite Database
-│   ├── migrations/          # Table schema definitions
-│   └── seeders/             # Initial fixtures & seeders
 ├── docs/
 │   └── screenshots/         # Application visual documentation
 ├── lib/

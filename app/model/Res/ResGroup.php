@@ -23,9 +23,11 @@ class ResGroup extends BaseModel
         $stmt = $conn->prepare("DELETE FROM res_groups_implied_rel WHERE group_id = :gid");
         $stmt->execute([':gid' => $this->id]);
 
-        $ins = $conn->prepare("INSERT OR IGNORE INTO res_groups_implied_rel (group_id, implied_id) VALUES (:gid, :iid)");
+        $ins = $conn->prepare("INSERT INTO res_groups_implied_rel (group_id, implied_id) VALUES (:gid, :iid)");
         foreach ($impliedIds as $iid) {
-            $ins->execute([':gid' => $this->id, ':iid' => $iid]);
+            try {
+                $ins->execute([':gid' => $this->id, ':iid' => $iid]);
+            } catch (\Throwable $e) {}
         }
     }
 }

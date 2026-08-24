@@ -234,6 +234,8 @@ class MenuSeeder extends Seeder
             ['model' => 'ir.model', 'view_type' => 'list', 'sequence' => 100, 'icon' => 'database']
         );
 
-        $this->command?->info('Menu tree seeded: ' . Menu::count() . ' items, ' . Action::count() . ' actions');
+        if (isset($this->command) && $this->command) {
+            $this->command->info('Menu tree seeded: ' . Menu::count() . ' items, ' . Action::count() . ' actions');
+        }
     }
 }
