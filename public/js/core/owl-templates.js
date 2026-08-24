@@ -190,13 +190,16 @@ window.TEMPLATES.App = xml`
                     </t>
                 </t>
 
-                <!-- Delete selected button in control panel -->
+                <!-- Delete selected and Deselect buttons in control panel -->
                 <t t-if="state.selectedIds.length > 0">
                     <button class="ls-btn" t-on-click="deleteSelected" style="color:var(--ls-danger, #ef4444);" title="Delete selected records">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg> Delete (<t t-esc="state.selectedIds.length"/>)
+                    </button>
+                    <button class="ls-btn" t-on-click="clearSelection" title="Clear selection">
+                        Deselect
                     </button>
                 </t>
             </div>
@@ -453,20 +456,6 @@ window.TEMPLATES.App = xml`
         </div>
     </t>
 
-    <!-- Selection bar with header actions -->
-    <t t-if="state.selectedIds.length > 0 and !state.editingNew and !state.editingId">
-        <div class="ls-selection-bar">
-            <span t-esc="state.selectedIds.length + ' selected'"/>
-            <t t-foreach="headerButtons" t-as="hb" t-key="'sel_' + hb.name">
-                <button class="ls-btn" t-on-click="() => this.onHeaderButton(hb)">
-                    <t t-if="hb.icon" t-out="window.lucideIcon ? window.lucideIcon(hb.icon, 14) : ''"/>
-                    <span t-esc="hb.string"/>
-                </button>
-            </t>
-            <button class="ls-btn" t-on-click="deleteSelected">Delete</button>
-            <button class="ls-btn" t-on-click="clearSelection">Deselect</button>
-        </div>
-    </t>
 </div>
 `;
 })();
