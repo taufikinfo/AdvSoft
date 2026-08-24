@@ -1,11 +1,11 @@
 /**
  * AdvSoft Compiled Production Stylesheet
- * Generated: 2026-08-24 01:39:39
+ * Generated: 2026-08-24 02:33:28
  */
 
 /* --- [FILE: css/odoo-layout.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Larasoft Enterprise Layout System — Odoo-style Presentation Layer
+   AdvSoft Enterprise Layout System — Odoo-style Presentation Layer
    Themes: Light / Dark / Custom brand
    Responsive: Desktop / Tablet / Mobile breakpoints
    ══════════════════════════════════════════════════════════════════ */
@@ -977,7 +977,7 @@ body {
 
 /* --- [FILE: css/odoo-dialog.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Larasoft Enterprise Dialog & Toast System
+   AdvSoft Enterprise Dialog & Toast System
    High-end, modern, glassmorphic modal & notification alerts
    ══════════════════════════════════════════════════════════════════ */
 
@@ -1282,7 +1282,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   Larasoft Toast Notification Stack
+   AdvSoft Toast Notification Stack
    ══════════════════════════════════════════════════════════════════ */
 #ls-toast-container {
     position: fixed;
@@ -1493,7 +1493,7 @@ html[data-theme="dark"] .ls-toast-message {
 
 /* --- [FILE: css/odoo-list.css] --- */
 /* ============================================================
-   Larasoft — Odoo-style ListView & Advanced Search CSS
+   AdvSoft — Odoo-style ListView & Advanced Search CSS
    (Design tokens are defined in odoo-layout.css)
    ============================================================ */
 
@@ -2621,7 +2621,7 @@ html, body {
 
 /* --- [FILE: css/odoo-form.css] --- */
 /* ============================================================
-   Larasoft — Odoo-style Form View CSS
+   AdvSoft — Odoo-style Form View CSS
    ============================================================ */
 
 /* ── Status Bar ───────────────────────────── */
@@ -3595,7 +3595,7 @@ html, body {
 
 /* --- [FILE: css/odoo-menu.css] --- */
 /* ══════════════════════════════════════════════════════════
-   Larasoft Menu System CSS — Odoo-style navigation
+   AdvSoft Menu System CSS — Odoo-style navigation
    ══════════════════════════════════════════════════════════ */
 
 /* ── AppSwitcher (Home screen) ────────────────────── */
@@ -8843,7 +8843,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-security.css] --- */
 /* ══════════════════════════════════════════════════════════
-   Larasoft Security Management — UI Styles
+   AdvSoft Security Management — UI Styles
    ══════════════════════════════════════════════════════════ */
 
 
@@ -11037,7 +11037,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-rte.css] --- */
 /* ═══════════════════════════════════════════════════════════════════
-   Larasoft Rich Text Editor (RTE) — Odoo-styled
+   AdvSoft Rich Text Editor (RTE) — Odoo-styled
    Depends on odoo-form.css for shared form tokens.
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -12011,7 +12011,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-dark.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Larasoft Dark Theme Overrides
+   AdvSoft Dark Theme Overrides
    Targets hardcoded light colors across various components
    ══════════════════════════════════════════════════════════════════ */
 
@@ -13163,7 +13163,7 @@ html[data-theme="dark"] .ls-me-action-chip.container {
 /* --- [FILE: css/odoo-custom-page.css] --- */
 /* ══════════════════════════════════════════════════════════════
    MyCustomPage — Styles
-   Menggunakan design token sistem Larasoft (--ls-*).
+   Menggunakan design token sistem AdvSoft (--ls-*).
    Mendukung light/dark theme, responsive, dan print.
    ══════════════════════════════════════════════════════════════ */
 

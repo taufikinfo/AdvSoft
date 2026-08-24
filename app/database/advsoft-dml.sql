@@ -160,35 +160,35 @@ INSERT INTO `actions` (`id`, `name`, `type`, `res_model`, `view_mode`, `domain`,
 -- Dumping data for table `ir_model` (29 rows)
 -- --------------------------------------------------------
 INSERT INTO `ir_model` (`id`, `model`, `name`, `module`, `description`, `transient`, `created_at`, `updated_at`) VALUES
-  (1, 'account.account', 'Chart of Accounts', 'larasoft', NULL, 0, NULL, NULL),
-  (2, 'account.journal', 'Jurnal Akuntansi', 'larasoft', NULL, 0, NULL, NULL),
-  (3, 'account.move', 'Jurnal Entry', 'larasoft', NULL, 0, NULL, NULL),
-  (4, 'account.move.line', 'Baris Jurnal', 'larasoft', NULL, 0, NULL, NULL),
-  (5, 'account.payment', 'Pembayaran', 'larasoft', NULL, 0, NULL, NULL),
-  (6, 'account.tax', 'Pajak', 'larasoft', NULL, 0, NULL, NULL),
-  (7, 'ir.action', 'Window Actions', 'larasoft', NULL, 0, NULL, NULL),
-  (8, 'ir.actions.report', 'Report Action', 'larasoft', NULL, 0, NULL, NULL),
-  (9, 'ir.config_parameter', 'System Parameters', 'larasoft', NULL, 0, NULL, NULL),
-  (10, 'ir.model.access', 'Model Access (ACL)', 'larasoft', NULL, 0, NULL, NULL),
-  (11, 'ir.model', 'Models Registry', 'larasoft', NULL, 0, NULL, NULL),
-  (12, 'ir.module.module', 'Modules', 'larasoft', NULL, 0, NULL, NULL),
-  (13, 'ir.rule', 'Record Rules', 'larasoft', NULL, 0, NULL, NULL),
-  (14, 'ir.sequence', 'Sequences', 'larasoft', NULL, 0, NULL, NULL),
-  (15, 'ir.ui.menu', 'Menu Items', 'larasoft', NULL, 0, NULL, NULL),
-  (16, 'ir.ui.view', 'View Definitions', 'larasoft', NULL, 0, NULL, NULL),
-  (17, 'res.company', 'Company', 'larasoft', NULL, 0, NULL, NULL),
-  (18, 'res.groups', 'Security Groups', 'larasoft', NULL, 0, NULL, NULL),
-  (19, 'res.groups.category', 'Security Group Category', 'larasoft', NULL, 0, NULL, NULL),
-  (20, 'res.partner', 'Contact / Partner', 'larasoft', NULL, 0, NULL, NULL),
-  (21, 'res.users', 'Users', 'larasoft', NULL, 0, NULL, NULL),
-  (22, 'saved_filter', 'Saved Filter', 'larasoft', NULL, 0, NULL, NULL),
-  (23, 'project.project', 'Project', 'larasoft', NULL, 0, NULL, NULL),
-  (24, 'stage', 'Pipeline Stage', 'larasoft', NULL, 0, NULL, NULL),
-  (25, 'project.tag', 'Tag', 'larasoft', NULL, 0, NULL, NULL),
-  (26, 'task', 'Task', 'larasoft', NULL, 0, NULL, NULL),
-  (27, 'task.timesheet', 'Timesheet', 'larasoft', NULL, 0, NULL, NULL),
-  (28, 'showcase.model', 'Widgets Showcase — All Fields & Widgets', 'larasoft', NULL, 0, NULL, NULL),
-  (29, 'spreadsheet.document', 'Spreadsheet Document', 'larasoft', NULL, 0, NULL, NULL);
+  (1, 'account.account', 'Chart of Accounts', 'advsoft', NULL, 0, NULL, NULL),
+  (2, 'account.journal', 'Jurnal Akuntansi', 'advsoft', NULL, 0, NULL, NULL),
+  (3, 'account.move', 'Jurnal Entry', 'advsoft', NULL, 0, NULL, NULL),
+  (4, 'account.move.line', 'Baris Jurnal', 'advsoft', NULL, 0, NULL, NULL),
+  (5, 'account.payment', 'Pembayaran', 'advsoft', NULL, 0, NULL, NULL),
+  (6, 'account.tax', 'Pajak', 'advsoft', NULL, 0, NULL, NULL),
+  (7, 'ir.action', 'Window Actions', 'advsoft', NULL, 0, NULL, NULL),
+  (8, 'ir.actions.report', 'Report Action', 'advsoft', NULL, 0, NULL, NULL),
+  (9, 'ir.config_parameter', 'System Parameters', 'advsoft', NULL, 0, NULL, NULL),
+  (10, 'ir.model.access', 'Model Access (ACL)', 'advsoft', NULL, 0, NULL, NULL),
+  (11, 'ir.model', 'Models Registry', 'advsoft', NULL, 0, NULL, NULL),
+  (12, 'ir.module.module', 'Modules', 'advsoft', NULL, 0, NULL, NULL),
+  (13, 'ir.rule', 'Record Rules', 'advsoft', NULL, 0, NULL, NULL),
+  (14, 'ir.sequence', 'Sequences', 'advsoft', NULL, 0, NULL, NULL),
+  (15, 'ir.ui.menu', 'Menu Items', 'advsoft', NULL, 0, NULL, NULL),
+  (16, 'ir.ui.view', 'View Definitions', 'advsoft', NULL, 0, NULL, NULL),
+  (17, 'res.company', 'Company', 'advsoft', NULL, 0, NULL, NULL),
+  (18, 'res.groups', 'Security Groups', 'advsoft', NULL, 0, NULL, NULL),
+  (19, 'res.groups.category', 'Security Group Category', 'advsoft', NULL, 0, NULL, NULL),
+  (20, 'res.partner', 'Contact / Partner', 'advsoft', NULL, 0, NULL, NULL),
+  (21, 'res.users', 'Users', 'advsoft', NULL, 0, NULL, NULL),
+  (22, 'saved_filter', 'Saved Filter', 'advsoft', NULL, 0, NULL, NULL),
+  (23, 'project.project', 'Project', 'advsoft', NULL, 0, NULL, NULL),
+  (24, 'stage', 'Pipeline Stage', 'advsoft', NULL, 0, NULL, NULL),
+  (25, 'project.tag', 'Tag', 'advsoft', NULL, 0, NULL, NULL),
+  (26, 'task', 'Task', 'advsoft', NULL, 0, NULL, NULL),
+  (27, 'task.timesheet', 'Timesheet', 'advsoft', NULL, 0, NULL, NULL),
+  (28, 'showcase.model', 'Widgets Showcase — All Fields & Widgets', 'advsoft', NULL, 0, NULL, NULL),
+  (29, 'spreadsheet.document', 'Spreadsheet Document', 'advsoft', NULL, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 -- Dumping data for table `ir_model_access` (116 rows)
@@ -384,15 +384,15 @@ INSERT INTO `res_groups_implied_rel` (`group_id`, `implied_id`) VALUES
 -- Dumping data for table `res_partner` (2 rows)
 -- --------------------------------------------------------
 INSERT INTO `res_partner` (`id`, `name`, `email`, `phone`, `image`, `active`, `is_company`, `company_id`, `type`, `parent_path`, `created_at`, `updated_at`, `property_account_receivable_id`, `property_account_payable_id`) VALUES
-  (1, 'Administrator', 'admin@larasoft.local', NULL, NULL, 1, 0, NULL, 'contact', NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, NULL),
-  (2, 'Demo User', 'demo@larasoft.local', NULL, NULL, 1, 0, NULL, 'contact', NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26', NULL, NULL);
+  (1, 'Administrator', 'admin@advsoft.local', NULL, NULL, 1, 0, NULL, 'contact', NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, NULL),
+  (2, 'Demo User', 'demo@advsoft.local', NULL, NULL, 1, 0, NULL, 'contact', NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26', NULL, NULL);
 
 -- --------------------------------------------------------
 -- Dumping data for table `res_users` (2 rows)
 -- --------------------------------------------------------
 INSERT INTO `res_users` (`id`, `login`, `password`, `name`, `email`, `partner_id`, `company_id`, `active`, `share`, `signature`, `last_login_at`, `last_login_ip`, `remember_token`, `created_at`, `updated_at`) VALUES
-  (1, 'admin', '$2y$12$x4eM4BZoEWeSTjZwTCyE7.vgdH7ENT1IBtxpf47WShBTO6Q0o2rtC', 'Administrator', 'admin@larasoft.local', 1, 1, 1, 0, NULL, NULL, NULL, NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26'),
-  (2, 'demo', '$2y$12$uq9p4vYKbgud/iT5kSNQpuKOJYW68z1n3BEYQ7f7w2RDS4qsx/mH.', 'Demo User', 'demo@larasoft.local', 2, 1, 1, 0, NULL, NULL, NULL, NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26');
+  (1, 'admin', '$2y$12$x4eM4BZoEWeSTjZwTCyE7.vgdH7ENT1IBtxpf47WShBTO6Q0o2rtC', 'Administrator', 'admin@advsoft.local', 1, 1, 1, 0, NULL, NULL, NULL, NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26'),
+  (2, 'demo', '$2y$12$uq9p4vYKbgud/iT5kSNQpuKOJYW68z1n3BEYQ7f7w2RDS4qsx/mH.', 'Demo User', 'demo@advsoft.local', 2, 1, 1, 0, NULL, NULL, NULL, NULL, '2026-08-19 00:34:26', '2026-08-19 00:34:26');
 
 -- --------------------------------------------------------
 -- Dumping data for table `res_users_groups_rel` (4 rows)
@@ -407,7 +407,7 @@ INSERT INTO `res_users_groups_rel` (`user_id`, `group_id`) VALUES
 -- Dumping data for table `showcases` (3 rows)
 -- --------------------------------------------------------
 INSERT INTO `showcases` (`id`, `name`, `email`, `website`, `phone`, `description`, `html_content`, `age`, `score`, `price`, `progress`, `is_active`, `is_favorite`, `start_date`, `end_date`, `deadline`, `status`, `priority`, `user_id`, `image_data`, `document_data`, `signature_data`, `color`, `image_url`, `domain_data`, `code_snippet`, `created_at`, `updated_at`, `ref_model`, `color_idx`, `json_data`, `countdown_time`, `note_section`, `stat_value`, `currency_code`, `monetary_full`, `barcode_user`, `sel_badge`, `factor_float`, `toggle_float`, `int_badge`, `lbl_sel`, `clipboard_text`, `emoji_text`, `percent_val`, `time_val`, `handle_val`, `bool_btn`, `date_range`, `radio_sel`, `badge_sel`, `datetime_val`, `binary_val`, `manager_id`, `char_badge_demo`, `is_checked`, `pct_pie`, `state_selection_demo`, `image_binary_demo`, `date_date`, `handle_sort`) VALUES
-  (1, 'Demo Showcase A', 'admin@larasoft.com', NULL, NULL, NULL, NULL, 30, NULL, '199.99', 75, 1, 1, NULL, NULL, NULL, 'published', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, 3, '{\"theme\": \"dark\", \"layout\": \"fluid\"}', '2026-08-24 00:34:25', '[SECTION]Primary Configuration', 42, 'USD', '1500.50', NULL, '1', 4.5, 0.5, 10, 'a', NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0),
+  (1, 'Demo Showcase A', 'admin@advsoft.com', NULL, NULL, NULL, NULL, 30, NULL, '199.99', 75, 1, 1, NULL, NULL, NULL, 'published', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, 3, '{\"theme\": \"dark\", \"layout\": \"fluid\"}', '2026-08-24 00:34:25', '[SECTION]Primary Configuration', 42, 'USD', '1500.50', NULL, '1', 4.5, 0.5, 10, 'a', NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0),
   (2, 'Legacy Module B', 'demo@example.com', NULL, NULL, NULL, NULL, 45, NULL, '49.50', 20, 1, 0, NULL, NULL, NULL, 'draft', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, 8, '{\"enabled\": false}', '2026-08-17 00:34:25', NULL, 42, 'EUR', '300.00', NULL, '0', 2.1, 1, 3, 'b', NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0),
   (3, 'Upcoming Feature C', 'contact@test.net', NULL, NULL, NULL, NULL, 28, NULL, '0.00', 0, 1, 1, NULL, NULL, NULL, 'review', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-08-19 00:34:25', '2026-08-19 00:34:25', NULL, 10, '{\"beta\": true, \"users\": 50}', '2026-09-02 00:34:25', NULL, 42, 'GBP', '999.99', NULL, '1', 8, 0, 42, 'a', NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0);
 

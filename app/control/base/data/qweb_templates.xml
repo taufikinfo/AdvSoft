@@ -42,7 +42,7 @@
     <body>
         <t t-out="0"/>
         <div class="report-footer">
-            <t t-out="company.name or 'Larasoft ERP'"/>
+            <t t-out="company.name or 'AdvSoft ERP'"/>
             &#8212;
             Generated on <t t-out="date('Y-m-d H:i')"/>
         </div>

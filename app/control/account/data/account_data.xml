@@ -94,7 +94,7 @@
                             <span style="font-size: 16px; color: #555;" t-out="o.name"/>
                         </div>
                         <div class="company-info">
-                            <strong><t t-out="company.name or 'Larasoft ERP'"/></strong><br/>
+                            <strong><t t-out="company.name or 'AdvSoft ERP'"/></strong><br/>
                             <span>Date: <t t-out="o.date"/></span>
                         </div>
                     </div>

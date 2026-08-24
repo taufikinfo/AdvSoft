@@ -58,14 +58,14 @@ class SecuritySeeder extends Seeder
         //  4. Default users
         // ─────────────────────────────────────────────
         $adminPartner = ResPartner::firstOrCreate(
-            ['email' => 'admin@larasoft.local'],
+            ['email' => 'admin@advsoft.local'],
             ['name' => 'Administrator', 'is_company' => false, 'active' => true]
         );
         $admin = ResUser::firstOrCreate(
             ['login' => 'admin'],
             [
                 'name'      => 'Administrator',
-                'email'     => 'admin@larasoft.local',
+                'email'     => 'admin@advsoft.local',
                 'password'  => password_hash('admin', PASSWORD_DEFAULT),
                 'partner_id' => $adminPartner->id,
                 'company_id' => $company->id,
@@ -76,14 +76,14 @@ class SecuritySeeder extends Seeder
         $admin->syncGroups([$gAdmin->id, $gManager->id, $gUser->id]);
 
         $demoPartner = ResPartner::firstOrCreate(
-            ['email' => 'demo@larasoft.local'],
+            ['email' => 'demo@advsoft.local'],
             ['name' => 'Demo User', 'is_company' => false, 'active' => true]
         );
         $demo = ResUser::firstOrCreate(
             ['login' => 'demo'],
             [
                 'name'      => 'Demo User',
-                'email'     => 'demo@larasoft.local',
+                'email'     => 'demo@advsoft.local',
                 'password'  => password_hash('demo', PASSWORD_DEFAULT),
                 'partner_id' => $demoPartner->id,
                 'company_id' => $company->id,
@@ -94,12 +94,12 @@ class SecuritySeeder extends Seeder
         $demo->syncGroups([$gUser->id]);
 
         // ─────────────────────────────────────────────
-        //  5. Register every Larasoft model in ir_model
+        //  5. Register every AdvSoft model in ir_model
         // ─────────────────────────────────────────────
         $models = \App\Advsoft\Registry::all();
         foreach ($models as $name => $def) {
             $desc = $def->_description ?: class_basename($def);
-            $module = method_exists($def, 'getModule') ? ($def->getModule() ?: 'larasoft') : 'larasoft';
+            $module = method_exists($def, 'getModule') ? ($def->getModule() ?: 'advsoft') : 'advsoft';
             IrModel::firstOrCreate(
                 ['model' => $name],
                 ['name' => $desc, 'module' => $module]
@@ -206,7 +206,7 @@ class SecuritySeeder extends Seeder
     }
 
     /**
-     * Discover all Larasoft *Def model classes.
+     * Discover all AdvSoft *Def model classes.
      * Mirrors Registry::boot() but reads from filesystem to avoid bootstrap order.
      */
     protected function discoverModels(): array
@@ -218,7 +218,7 @@ class SecuritySeeder extends Seeder
         foreach ($rii as $file) {
             if ($file->getExtension() !== 'php') continue;
             $rel = str_replace([$dir, '/', '.php'], ['', '\\', ''], $file->getPathname());
-            $cls = 'App\\Odoo\\Models\\' . ltrim($rel, '\\');
+            $cls = 'App\\Advsoft\\Models\\' . ltrim($rel, '\\');
             if (!class_exists($cls)) continue;
             $ref = new \ReflectionClass($cls);
             if ($ref->isAbstract()) continue;

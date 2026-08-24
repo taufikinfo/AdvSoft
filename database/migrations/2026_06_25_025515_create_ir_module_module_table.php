@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('ir_module_module', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();          // addon directory name (e.g. 'account')
-            $table->string('display_name');             // from larasoft.json → name
+            $table->string('display_name');             // from advsoft.json → name
             $table->string('version')->default('1.0.0');
             $table->string('category')->nullable();
             $table->string('state')->default('uninstalled'); // uninstalled, installed, to_upgrade

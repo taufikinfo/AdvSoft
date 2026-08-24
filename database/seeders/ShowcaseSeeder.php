@@ -14,7 +14,7 @@ class ShowcaseSeeder extends Seeder
     {
         Showcase::create([
             'name' => 'Demo Showcase A',
-            'email' => 'admin@larasoft.com',
+            'email' => 'admin@advsoft.com',
             'age' => 30,
             'price' => 199.99,
             'progress' => 75,
