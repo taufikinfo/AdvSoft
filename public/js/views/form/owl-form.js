@@ -1596,7 +1596,7 @@ class FormView extends Component {
     }
 
     goBack() {
-        if (this.props.onBack) {
+        if (typeof this.props.onBack === 'function') {
             this.props.onBack();
         } else {
             const cls = window.AdvSoftLayout ? window.AdvSoftLayout._modelViewToClass(this._model, 'list') : 'HomeView';

@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 04:05:11
+ * Generated: 2026-08-24 04:08:01
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -3781,17 +3781,17 @@ window.TEMPLATES.App = xml`
 <div class="ls-webclient">
     <t t-if="!state.clientError">
         <NavBar apps="state.apps" activeAppId="state.activeAppId"
-                onAppClick.bind="onAppClick" onHome.bind="goHome"
-                onOpenProfile.bind="openProfile"
+                onAppClick="(app) => this.onAppClick(app)" onHome="() => this.goHome()"
+                onOpenProfile="(uid) => this.openProfile(uid)"
                 isHome="state.currentView === 'home'"/>
 
     <t t-if="state.currentView === 'home'">
-        <AppSwitcher apps="state.apps" onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"/>
+        <AppSwitcher apps="state.apps" onAppClick="(app) => this.onAppClick(app)" onMenuClick="(item) => this.onMenuClick(item)"/>
     </t>
 
     <t t-if="state.currentView !== 'home'">
         <SubMenu items="currentSubMenus" activeMenuId="state.activeMenuId"
-                 onMenuClick.bind="onMenuClick"/>
+                 onMenuClick="(item) => this.onMenuClick(item)"/>
     </t>
 
     <t t-if="state.currentView === 'action'">
@@ -3799,7 +3799,7 @@ window.TEMPLATES.App = xml`
             <t t-if="state.actionView === 'list'">
                 <ListView
                     t-key="state.currentModel + '_' + (state.currentAction ? state.currentAction.id : '')"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     model="state.currentModel"
                     stages="state.stages"
                     projects="state.projects"
@@ -3811,7 +3811,7 @@ window.TEMPLATES.App = xml`
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'form'">
                 <FormView
@@ -3826,9 +3826,9 @@ window.TEMPLATES.App = xml`
                     formViewDef="state.formViewDef"
                     actionTitle="state.actionTitle"
                     actionContext="state.actionContext"
-                    onBack.bind="backToList"
-                    onNavigate.bind="navigateRecord"
-                    onSaved.bind="recordSaved"/>
+                    onBack="() => this.backToList()"
+                    onNavigate="(dir) => this.navigateRecord(dir)"
+                    onSaved="(rec) => this.recordSaved(rec)"/>
             </t>
             <t t-if="state.actionView === 'kanban'">
                 <KanbanView
@@ -3838,10 +3838,10 @@ window.TEMPLATES.App = xml`
                     actionTitle="state.actionTitle"
                     actionDomain="state.actionDomain"
                     actionContext="state.actionContext"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'calendar'">
                 <CalendarView
@@ -3851,10 +3851,10 @@ window.TEMPLATES.App = xml`
                     actionTitle="state.actionTitle"
                     actionDomain="state.actionDomain"
                     actionContext="state.actionContext"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'graph'">
                 <GraphView
@@ -3866,7 +3866,7 @@ window.TEMPLATES.App = xml`
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'pivot'">
                 <PivotView
@@ -3878,7 +3878,7 @@ window.TEMPLATES.App = xml`
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'spreadsheet'">
                 <SpreadsheetView
@@ -3890,7 +3890,7 @@ window.TEMPLATES.App = xml`
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
         </div>
     </t>
@@ -13743,7 +13743,7 @@ class FormView extends Component {
     }
 
     goBack() {
-        if (this.props.onBack) {
+        if (typeof this.props.onBack === 'function') {
             this.props.onBack();
         } else {
             const cls = window.AdvSoftLayout ? window.AdvSoftLayout._modelViewToClass(this._model, 'list') : 'HomeView';

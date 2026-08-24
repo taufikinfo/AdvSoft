@@ -201,17 +201,17 @@
 <div class="ls-webclient">
     <t t-if="!state.clientError">
         <NavBar apps="state.apps" activeAppId="state.activeAppId"
-                onAppClick.bind="onAppClick" onHome.bind="goHome"
-                onOpenProfile.bind="openProfile"
+                onAppClick="(app) => this.onAppClick(app)" onHome="() => this.goHome()"
+                onOpenProfile="(uid) => this.openProfile(uid)"
                 isHome="state.currentView === 'home'"/>
 
     <t t-if="state.currentView === 'home'">
-        <AppSwitcher apps="state.apps" onAppClick.bind="onAppClick" onMenuClick.bind="onMenuClick"/>
+        <AppSwitcher apps="state.apps" onAppClick="(app) => this.onAppClick(app)" onMenuClick="(item) => this.onMenuClick(item)"/>
     </t>
 
     <t t-if="state.currentView !== 'home'">
         <SubMenu items="currentSubMenus" activeMenuId="state.activeMenuId"
-                 onMenuClick.bind="onMenuClick"/>
+                 onMenuClick="(item) => this.onMenuClick(item)"/>
     </t>
 
     <t t-if="state.currentView === 'action'">
@@ -219,7 +219,7 @@
             <t t-if="state.actionView === 'list'">
                 <ListView
                     t-key="state.currentModel + '_' + (state.currentAction ? state.currentAction.id : '')"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     model="state.currentModel"
                     stages="state.stages"
                     projects="state.projects"
@@ -231,7 +231,7 @@
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'form'">
                 <FormView
@@ -246,9 +246,9 @@
                     formViewDef="state.formViewDef"
                     actionTitle="state.actionTitle"
                     actionContext="state.actionContext"
-                    onBack.bind="backToList"
-                    onNavigate.bind="navigateRecord"
-                    onSaved.bind="recordSaved"/>
+                    onBack="() => this.backToList()"
+                    onNavigate="(dir) => this.navigateRecord(dir)"
+                    onSaved="(rec) => this.recordSaved(rec)"/>
             </t>
             <t t-if="state.actionView === 'kanban'">
                 <KanbanView
@@ -258,10 +258,10 @@
                     actionTitle="state.actionTitle"
                     actionDomain="state.actionDomain"
                     actionContext="state.actionContext"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'calendar'">
                 <CalendarView
@@ -271,10 +271,10 @@
                     actionTitle="state.actionTitle"
                     actionDomain="state.actionDomain"
                     actionContext="state.actionContext"
-                    onOpenRecord.bind="openRecord"
+                    onOpenRecord="(recId, idx, total) => this.openRecord(recId, idx, total)"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'graph'">
                 <GraphView
@@ -286,7 +286,7 @@
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'pivot'">
                 <PivotView
@@ -298,7 +298,7 @@
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
             <t t-if="state.actionView === 'spreadsheet'">
                 <SpreadsheetView
@@ -310,7 +310,7 @@
                     actionContext="state.actionContext"
                     viewModes="availableViewModes"
                     activeViewType="state.actionView"
-                    onSwitchView.bind="switchView"/>
+                    onSwitchView="(v) => this.switchView(v)"/>
             </t>
         </div>
     </t>
