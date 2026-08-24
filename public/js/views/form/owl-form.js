@@ -1616,17 +1616,20 @@ class FormView extends Component {
         }, 3000);
     }
 
-    toggleActionMenu() {
+    toggleActionMenu(ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
         this.state.showActionMenu = !this.state.showActionMenu;
     }
 
-    async deleteCurrentRecord() {
+    async deleteCurrentRecord(ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
         this.state.showActionMenu = false;
+        const model = this._model || this.props.model || 'task';
         const recId = this.state.record.id || this.props.recordId;
         if (!recId) return;
-        if (!confirm('Are you sure you want to delete this record?')) return;
+
         try {
-            await RPC.unlink(this._model, [recId]);
+            await RPC.unlink(model, [Number(recId)]);
             this.showToast('Record deleted successfully');
             this.goBack();
         } catch (e) {

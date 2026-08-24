@@ -67,15 +67,19 @@ window.TEMPLATES.FormView = xml`
                 </div>
 
                 <div class="ls-action-menu" style="position:relative; display:inline-block;" t-if="!state.dirty and state.record.id">
-                    <button class="ls-btn" t-on-click="toggleActionMenu" title="Actions">
+                    <button class="ls-btn" t-on-click="(ev) => this.toggleActionMenu(ev)" title="Actions">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
                             <circle cx="12" cy="12" r="3"></circle>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                         </svg> Action
                         <span class="ls-submenu-caret" style="margin-left:4px;">▾</span>
                     </button>
-                    <div class="ls-submenu-dropdown" t-if="state.showActionMenu" style="position:absolute; top:100%; left:0; z-index:1000; display:flex; flex-direction:column; min-width:140px; text-align:left;">
-                        <div class="ls-submenu-dropdown-item" t-on-click="deleteCurrentRecord" style="color:var(--ls-danger, #ef4444);">
+                    <div class="ls-submenu-dropdown" t-if="state.showActionMenu" t-on-click="(ev) => ev.stopPropagation()" style="position:absolute; top:100%; left:0; z-index:1000; display:flex; flex-direction:column; min-width:140px; text-align:left; background:var(--ls-card-bg, #fff); border:1px solid var(--ls-border, #e5e7eb); border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:4px 0;">
+                        <div class="ls-submenu-dropdown-item" t-on-click="(ev) => this.deleteCurrentRecord(ev)" style="cursor:pointer; color:var(--ls-danger, #ef4444); padding:8px 16px; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
                             <span>Delete</span>
                         </div>
                     </div>
