@@ -565,6 +565,8 @@ class AccountMoveDef extends ModelDefinition
         if ($record->state === 'posted') {
             return 'Tidak bisa menghapus entry yang sudah diposting. Batalkan (Cancel) terlebih dahulu.';
         }
+        // Cascade delete child lines (line_ids)
+        \App\Model\Account\AccountMoveLine::where('move_id', '=', $record->id)->delete();
         return null;
     }
 

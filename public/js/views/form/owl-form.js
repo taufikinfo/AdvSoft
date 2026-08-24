@@ -43,6 +43,7 @@ class FormView extends Component {
             composerType: 'message', // 'message' or 'note'
             printActions: [],
             showPrintMenu: false,
+            showActionMenu: false,
         });
 
         onWillStart(async () => {
@@ -84,10 +85,13 @@ class FormView extends Component {
             Object.values(this._debounceTimers).forEach(t => clearTimeout(t));
         });
 
-        // Global click to close print menu
+        // Global click to close print & action menus
         this._onClickOutside = (e) => {
             if (!e.target.closest('.ls-print-menu')) {
                 this.state.showPrintMenu = false;
+            }
+            if (!e.target.closest('.ls-action-menu')) {
+                this.state.showActionMenu = false;
             }
         };
         document.addEventListener('click', this._onClickOutside);
@@ -1589,6 +1593,24 @@ class FormView extends Component {
 
     async discardChanges() {
         await this.loadRecord();
+    }
+
+    toggleActionMenu() {
+        this.state.showActionMenu = !this.state.showActionMenu;
+    }
+
+    async deleteCurrentRecord() {
+        this.state.showActionMenu = false;
+        const recId = this.state.record.id || this.props.recordId;
+        if (!recId) return;
+        if (!confirm('Are you sure you want to delete this record?')) return;
+        try {
+            await RPC.unlink(this._model, [recId]);
+            this.showToast('Record deleted successfully');
+            this.goBack();
+        } catch (e) {
+            alert('Error: ' + (e.message || e));
+        }
     }
 
     // ── Chatter (oe_chatter) ─────────────────

@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 03:40:52
+ * Generated: 2026-08-24 03:49:02
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -3293,6 +3293,16 @@ window.TEMPLATES.App = xml`
                             <span t-esc="hb.string"/>
                         </button>
                     </t>
+                </t>
+
+                <!-- Delete selected button in control panel -->
+                <t t-if="state.selectedIds.length > 0">
+                    <button class="ls-btn" t-on-click="deleteSelected" style="color:var(--ls-danger, #ef4444);" title="Delete selected records">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg> Delete (<t t-esc="state.selectedIds.length"/>)
+                    </button>
                 </t>
             </div>
             <div class="ls-cp-pager-switchers">
@@ -11885,6 +11895,21 @@ window.TEMPLATES.FormView = xml`
                         </t>
                     </div>
                 </div>
+
+                <div class="ls-action-menu" style="position:relative; display:inline-block;" t-if="!state.dirty and state.record.id">
+                    <button class="ls-btn" t-on-click="toggleActionMenu" title="Actions">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg> Action
+                        <span class="ls-submenu-caret" style="margin-left:4px;">▾</span>
+                    </button>
+                    <div class="ls-submenu-dropdown" t-if="state.showActionMenu" style="position:absolute; top:100%; left:0; z-index:1000; display:flex; flex-direction:column; min-width:140px; text-align:left;">
+                        <div class="ls-submenu-dropdown-item" t-on-click="deleteCurrentRecord" style="color:var(--ls-danger, #ef4444);">
+                            <span>Delete</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="ls-cp-pager-switchers">
                 <div class="ls-pager">
@@ -12165,6 +12190,7 @@ class FormView extends Component {
             composerType: 'message', // 'message' or 'note'
             printActions: [],
             showPrintMenu: false,
+            showActionMenu: false,
         });
 
         onWillStart(async () => {
@@ -12206,10 +12232,13 @@ class FormView extends Component {
             Object.values(this._debounceTimers).forEach(t => clearTimeout(t));
         });
 
-        // Global click to close print menu
+        // Global click to close print & action menus
         this._onClickOutside = (e) => {
             if (!e.target.closest('.ls-print-menu')) {
                 this.state.showPrintMenu = false;
+            }
+            if (!e.target.closest('.ls-action-menu')) {
+                this.state.showActionMenu = false;
             }
         };
         document.addEventListener('click', this._onClickOutside);
@@ -13711,6 +13740,24 @@ class FormView extends Component {
 
     async discardChanges() {
         await this.loadRecord();
+    }
+
+    toggleActionMenu() {
+        this.state.showActionMenu = !this.state.showActionMenu;
+    }
+
+    async deleteCurrentRecord() {
+        this.state.showActionMenu = false;
+        const recId = this.state.record.id || this.props.recordId;
+        if (!recId) return;
+        if (!confirm('Are you sure you want to delete this record?')) return;
+        try {
+            await RPC.unlink(this._model, [recId]);
+            this.showToast('Record deleted successfully');
+            this.goBack();
+        } catch (e) {
+            alert('Error: ' + (e.message || e));
+        }
     }
 
     // ── Chatter (oe_chatter) ─────────────────

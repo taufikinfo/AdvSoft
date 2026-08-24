@@ -624,6 +624,7 @@ class TaskDef extends ModelDefinition
     /** Hook: before unlink — check if task can be deleted */
     protected function beforeUnlink(object $record): ?string
     {
+        \App\Model\Project\TaskTimesheet::where('task_id', '=', $record->id)->delete();
         return null;
     }
 
