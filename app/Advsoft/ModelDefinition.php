@@ -12,7 +12,7 @@ use App\Advsoft\Concerns\HasInheritance;
 use App\Advsoft\Concerns\HasAccessControl;
 
 /**
- * ModelDefinition – Odoo-style model configuration + business logic.
+ * ModelDefinition – AdvSoft-style model configuration + business logic.
  *
  * ╔══════════════════════════════════════════════════════════════╗
  * ║  models.Model — definisi tabel + logika bisnis              ║
@@ -20,7 +20,7 @@ use App\Advsoft\Concerns\HasAccessControl;
  * ║  _inherit · _inherits                                        ║
  * ╚══════════════════════════════════════════════════════════════╝
  *
- * Integrates all four concerns from Odoo's model architecture:
+ * Integrates all four concerns from AdvSoft's model architecture:
  *   - HasLifecycleHooks:  create() / write() / unlink() / name_get()
  *   - HasApiDecorators:   @api.depends / @api.constrains / @api.onchange / @api.model
  *   - HasInheritance:     _inherit / _inherits / _inherit + _name
@@ -34,7 +34,7 @@ abstract class ModelDefinition
     use HasAccessControl;
 
     // ══════════════════════════════════════════════════════
-    //  Odoo-style class attributes
+    //  AdvSoft-style class attributes
     // ══════════════════════════════════════════════════════
     public string $_name;                    // e.g. 'project.task'
     public string $_description = '';        // Human-readable name
@@ -253,11 +253,11 @@ abstract class ModelDefinition
     }
 
     // ══════════════════════════════════════════════════════
-    //  List View Definition Builder (Full Odoo <tree> arch)
+    //  List View Definition Builder (Full AdvSoft <tree> arch)
     // ══════════════════════════════════════════════════════
 
     /**
-     * Build the full list view definition matching Odoo's <tree> architecture.
+     * Build the full list view definition matching AdvSoft's <tree> architecture.
      *
      * Supports:
      *   - <tree> root attrs: string, editable, default_order, limit
@@ -346,11 +346,11 @@ abstract class ModelDefinition
     }
 
     // ══════════════════════════════════════════════════════
-    //  Form View Definition Builder (Full Odoo <form> arch)
+    //  Form View Definition Builder (Full AdvSoft <form> arch)
     // ══════════════════════════════════════════════════════
 
     /**
-     * Build the full form view definition matching Odoo's <form> architecture.
+     * Build the full form view definition matching AdvSoft's <form> architecture.
      *
      * Hierarchy:
      *   <form> → <header> → <button> + statusbar
@@ -525,7 +525,7 @@ abstract class ModelDefinition
                 $tabDef['default_group_by'] = $tab['default_group_by'] ?? null;
                 $tabDef['group_expand'] = $tab['group_expand'] ?? false;
                 $tabDef['group_limit'] = $tab['group_limit'] ?? 10;
-                // ── Odoo parity extensions ──
+                // ── AdvSoft parity extensions ──
                 // Exclusive fields: groups of fields where setting one zeroes the others
                 $tabDef['exclusive_fields'] = $tab['exclusive_fields'] ?? [];
                 // Dynamic readonly: expression evaluated against parent record
@@ -677,7 +677,7 @@ abstract class ModelDefinition
     }
 
     /**
-     * Transform a single Eloquent record to Odoo-style read format.
+     * Transform a single Eloquent record to AdvSoft-style read format.
      */
     public function transformRecord(object $record, ?array $fieldNames = null): array
     {
@@ -1096,9 +1096,9 @@ abstract class ModelDefinition
     }
 
     /**
-     * Sanitize HTML content (B2 — Odoo parity).
+     * Sanitize HTML content (B2 — AdvSoft parity).
      * Removes dangerous tags/attributes while preserving formatting.
-     * Uses the full Odoo-style HtmlSanitizer if available; otherwise
+     * Uses the full AdvSoft-style HtmlSanitizer if available; otherwise
      * falls back to the legacy strip_tags pipeline.
      */
     protected function sanitizeHtml(string $html, ?Field $field = null): string

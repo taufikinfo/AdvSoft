@@ -6,7 +6,7 @@ use App\Model\Ir\IrModuleModule;
 use App\Advsoft\Core\Support\Log;
 
 /**
- * ModuleInstaller — Odoo-style addon lifecycle manager.
+ * ModuleInstaller — AdvSoft-style addon lifecycle manager.
  *
  * Handles:
  *   1. Discovery: scan addons/ directory for AdvSoft.json manifests
@@ -31,7 +31,7 @@ class ModuleInstaller
 
     /**
      * Discover all addon modules from filesystem and sync to database.
-     * This is like Odoo's "Update App List" button.
+     * This is like AdvSoft's "Update App List" button.
      */
     public function discoverAll(): array
     {

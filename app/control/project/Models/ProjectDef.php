@@ -6,7 +6,7 @@ use App\Model\Project;
 use App\Advsoft\{ModelDefinition, Field, Registry};
 
 /**
- * ProjectDef – Project model with Odoo-style Computed Fields & Onchanges.
+ * ProjectDef – Project model with AdvSoft-style Computed Fields & Onchanges.
  *
  * Demonstrates:
  * - @api.depends computed fields (stored & non-stored)

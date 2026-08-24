@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-//  MenuEditorView — Odoo-style Menu Item Editor Component
+//  MenuEditorView — AdvSoft-style Menu Item Editor Component
 //  Features: tree CRUD, drag-drop, action binding, search
 // ══════════════════════════════════════════════════════════════
 (function () {

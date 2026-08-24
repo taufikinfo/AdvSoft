@@ -8,7 +8,7 @@ use App\Advsoft\{ModelDefinition, Field};
 /**
  * IrConfigParameterDef — System Parameters (key-value store).
  * 
- * Odoo equivalent: ir.config_parameter
+ * AdvSoft equivalent: ir.config_parameter
  * Provides centralized configuration accessible from:
  *   - Backend: IrConfigParameter::getParam('key')
  *   - Frontend: via Settings page

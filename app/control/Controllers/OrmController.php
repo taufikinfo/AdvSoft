@@ -14,7 +14,7 @@ use Adianti\Database\TTransaction;
  *
  * ALL model knowledge comes from the Registry (ModelDefinition classes).
  * No field names, no model classes, no view layouts are hardcoded here.
- * This controller can serve ANY model registered in the Odoo Registry.
+ * This controller can serve ANY model registered in the AdvSoft Registry.
  *
  * Security layers enforced (per odoo2.png):
  *   - L1 res.users identification      → SecurityContext auto-restored from session
@@ -32,7 +32,7 @@ class OrmController extends Controller
 
     /**
      * Resolve model definition from request, enforcing security.
-     * Order of checks (Odoo parity):
+     * Order of checks (AdvSoft parity):
      *   1. Resolve model
      *   2. check_access_rights(operation)  → ir.model.access
      *   3. Set context flags (sudo, with_user, company)
@@ -48,7 +48,7 @@ class OrmController extends Controller
             abort(404, "Model '$modelName' not found in registry.");
         }
 
-        // Honor ?sudo=1 to bypass ACL (Odoo's recordset.sudo())
+        // Honor ?sudo=1 to bypass ACL (AdvSoft's recordset.sudo())
         if ($request->boolean('sudo')) {
             $def = $def->sudo();
         }
@@ -1255,7 +1255,7 @@ class OrmController extends Controller
      * Body: { parent_model, field, parent_id, group_by, aggregate_fields, domain }
      *
      * Returns groups with aggregate values and optionally the child records per group.
-     * This powers the Odoo-style "default_group_by" for <tree> inside <form>.
+     * This powers the AdvSoft-style "default_group_by" for <tree> inside <form>.
      */
     public function loadO2mGrouped(Request $request): JsonResponse
     {
@@ -1610,7 +1610,7 @@ class OrmController extends Controller
 
     /**
      * load_menus – Return the full menu tree with actions (cached at login).
-     * Like Odoo's /web/webclient/load_menus.
+     * Like AdvSoft's /web/webclient/load_menus.
      * Filters menus based on user group membership.
      */
     public function loadMenus(): JsonResponse

@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════
-   AdvSoft Menu System CSS — Odoo-style navigation
+   AdvSoft Menu System CSS — AdvSoft-style navigation
    ══════════════════════════════════════════════════════════ */
 
 /* ── AppSwitcher (Home screen) ────────────────────── */
@@ -265,7 +265,7 @@
     color: #64748b;
 }
 
-/* ── NavBar Enhancements (Odoo Enterprise Single Bar) ─ */
+/* ── NavBar Enhancements (AdvSoft Enterprise Single Bar) ─ */
 .ls-nav-item {
     position: relative;
     display: flex;

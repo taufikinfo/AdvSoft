@@ -355,7 +355,7 @@ class AccountMoveDef extends ModelDefinition
                     'decoration' => [
                         'decoration-info' => "debit > 0",
                     ],
-                    // ── Odoo parity: debit/credit mutual exclusion ──
+                    // ── AdvSoft parity: debit/credit mutual exclusion ──
                     'exclusive_fields' => [
                         ['debit', 'credit'],
                     ],

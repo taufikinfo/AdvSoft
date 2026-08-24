@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   INLINE TREE WIDGET — Odoo-style <list> editable
+   INLINE TREE WIDGET — AdvSoft-style <list> editable
    Full parity: editable top/bottom, multi-edit, attrs, onchange,
    drag-drop, decoration, optional columns, bulk, picker, etc.
 
@@ -330,7 +330,7 @@
 .ls-it-td.ls-it-required.ls-it-readonly {
     /* For readonly, we could add it back, or just rely on form view */
 }
-/* Odoo-style required indicator for list view */
+/* AdvSoft-style required indicator for list view */
 .ls-it-td.ls-it-required {
     /* No visual clutter in list view, or just a bold column header */
 }
@@ -1333,7 +1333,7 @@
 }
 
 /* ── Decoration: "decoration-*" prefix keys ─────
-   Odoo 17 uses "decoration-danger" etc. in tree arch.
+   AdvSoft 17 uses "decoration-danger" etc. in tree arch.
    Mirror the short keys already in CSS but add the
    prefixed variants so both work.                ── */
 .ls-it-row.ls-it-decoration-danger  { background: rgba(239, 68,  68, .06); }
@@ -1367,7 +1367,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SECTION GROUPING — Odoo-style group-by headers in inline tree
+   SECTION GROUPING — AdvSoft-style group-by headers in inline tree
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Group-by dropdown control ── */

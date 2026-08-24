@@ -1,4 +1,4 @@
-// AdvSoft RPC Service – Odoo-style JSON-RPC communication layer
+// AdvSoft RPC Service – AdvSoft-style JSON-RPC communication layer
 (function () {
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content
         || window.__CSRF_TOKEN__ || '';

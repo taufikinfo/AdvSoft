@@ -1,4 +1,4 @@
-// Dynamic Form View Template — Full Odoo <form> Architecture
+// Dynamic Form View Template — Full AdvSoft <form> Architecture
 // <form> → <header>(buttons+statusbar) → <sheet>(groups+notebook) → <div.oe_chatter>
 (function(){
 const { xml } = owl;
@@ -123,7 +123,7 @@ window.TEMPLATES.FormView = xml`
                     </t>
                 </div>
 
-                <!-- ══ oe_title — Odoo-style title + priority inline ══ -->
+                <!-- ══ oe_title — AdvSoft-style title + priority inline ══ -->
                 <div class="oe_title" t-if="titleField">
                     <h1>
                         <input class="ls-form-title-text" t-att-value="state.record[titleField]"
@@ -145,7 +145,7 @@ window.TEMPLATES.FormView = xml`
                 <div class="ls-form-groups" t-ref="formFields">
                     <t t-foreach="formGroups" t-as="group" t-key="group_index">
                         <div class="ls-form-group" t-att-style="group.col ? 'grid-template-columns: repeat(' + group.col + ', 1fr)' : ''">
-                            <!-- Group title — Odoo-style bold header -->
+                            <!-- Group title — AdvSoft-style bold header -->
                             <div class="ls-form-group-title" t-if="group.string">
                                 <span t-esc="group.string"/>
                             </div>

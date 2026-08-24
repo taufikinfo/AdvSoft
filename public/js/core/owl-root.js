@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  WebClient — Odoo-style menu-driven SPA with multi-view support
+//  WebClient — AdvSoft-style menu-driven SPA with multi-view support
 //  Components: AppSwitcher, NavBar, SubMenu, Breadcrumb, WebClient
 (function () {
     const { Component, useState, useRef, onWillStart, onMounted, onError } = owl;

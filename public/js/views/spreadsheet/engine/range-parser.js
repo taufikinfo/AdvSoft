@@ -1,6 +1,6 @@
 /**
  * Range Parser - A1/R1C1 notation, named ranges, range expansion
- * Follows Odoo o-spreadsheet range model pattern
+ * Follows Odoo advsoft-spreadsheet range model pattern
  */
 (function() {
     'use strict';

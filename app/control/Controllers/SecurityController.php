@@ -17,7 +17,7 @@ use App\Advsoft\Core\Http\JsonResponse;
 use Adianti\Database\TTransaction;
 
 /**
- * SecurityController — admin UI for Odoo-style access rights management.
+ * SecurityController — admin UI for AdvSoft-style access rights management.
  */
 class SecurityController extends Controller
 {

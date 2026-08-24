@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 02:33:28
+ * Generated: 2026-08-24 02:34:58
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -492,7 +492,7 @@
 
 
 /* --- [FILE: js/core/owl-rpc.js] --- */
-// AdvSoft RPC Service – Odoo-style JSON-RPC communication layer
+// AdvSoft RPC Service – AdvSoft-style JSON-RPC communication layer
 (function () {
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content
         || window.__CSRF_TOKEN__ || '';
@@ -3568,7 +3568,7 @@ window.TEMPLATES.App = xml`
 
 
 /* --- [FILE: js/core/owl-root-tpl.js] --- */
-// WebClient Root Template — Odoo-style menu system + View Switcher
+// WebClient Root Template — AdvSoft-style menu system + View Switcher
 (function () {
     const { xml } = owl;
 
@@ -4033,7 +4033,7 @@ window.TEMPLATES.App = xml`
 
 /* --- [FILE: js/widgets/fields/owl-field-widgets.js] --- */
 // ══════════════════════════════════════════════════════════
-//  Field Widget Registry — Odoo-style configurable rendering
+//  Field Widget Registry — AdvSoft-style configurable rendering
 //  Each widget is a render function: (fieldDef, value, onChange, record) => HTML string
 // ══════════════════════════════════════════════════════════
 (function () {
@@ -4288,11 +4288,11 @@ W.percentage_pie = (f) => {
 };
 
 // ════════════════════════════════════════════════════
-//  MANY2ONE WIDGETS — Odoo-style autocomplete
+//  MANY2ONE WIDGETS — AdvSoft-style autocomplete
 //  Full: autocomplete dropdown → quick_create → create & edit → search more
 //  Options: no_create, no_quick_create, no_create_edit, no_open
 // ════════════════════════════════════════════════════
-// many2one: Inline autocomplete input (Odoo-style).
+// many2one: Inline autocomplete input (AdvSoft-style).
 // The input gets bound by FormView._bindM2OAutocompletes() to an
 // M2OAutocomplete instance for Search, Quick Create, Create & Edit, Search More.
 W._many2one_display = (f) => {
@@ -4610,7 +4610,7 @@ W.ace = (f) => `<textarea class="ls-ace-widget" style="font-family:monospace; ba
 //  MISSING WIDGETS — percentage_pie, char_badge, char_image
 // ════════════════════════════════════════════════════
 
-// Percentage Pie — SVG circular progress indicator (Odoo style)
+// Percentage Pie — SVG circular progress indicator (AdvSoft style)
 W.percentage_pie = (f) => {
     const pct = Math.min(100, Math.max(0, Number(f._val) || 0));
     const r = 18, circ = 2 * Math.PI * r, offset = circ * (1 - pct / 100);
@@ -5633,7 +5633,7 @@ window.addEventListener('load', () => {
 
 /* --- [FILE: js/widgets/fields/owl-rte.js] --- */
 // ═══════════════════════════════════════════════════════════════════════════
-//  AdvSoft RTE — Odoo-style Rich Text Editor
+//  AdvSoft RTE — AdvSoft-style Rich Text Editor
 //
 //  Single-file implementation that mirrors Odoo's HTML field widget:
 //    - Configurable toolbar (from field's HtmlFieldConfig)
@@ -6855,7 +6855,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* --- [FILE: js/widgets/fields/owl-m2o-dialog.js] --- */
 // ══════════════════════════════════════════════════════════
 //  Many2one Autocomplete & Search More Dialog
-//  Odoo-style: input → dropdown → "Search More..." → modal
+//  AdvSoft-style: input → dropdown → "Search More..." → modal
 //
 //  Full widget options support:
 //    no_create       — hide all create options
@@ -7328,7 +7328,7 @@ class M2OCreateDialog {
 }
 
 /**
- * M2OSearchDialog – Odoo-style "Search: Model" modal.
+ * M2OSearchDialog – AdvSoft-style "Search: Model" modal.
  * Full search with paginated table, columns from model fields.
  */
 class M2OSearchDialog {
@@ -7816,14 +7816,14 @@ window.M2OCreateDialog = M2OCreateDialog;
 /* --- [FILE: js/widgets/inline-tree/owl-inline-tree-attrs.js] --- */
 // ══════════════════════════════════════════════════════════════
 //  InlineTree — Attribute Expression Evaluator
-//  Evaluates Odoo-style attrs expressions safely
+//  Evaluates AdvSoft-style attrs expressions safely
 //  Supports: 'state != "draft"', 'parent.state == "posted"',
 //            'debit > 0 and credit == 0', boolean values
 // ══════════════════════════════════════════════════════════════
 (function () {
 
 /**
- * Evaluate an Odoo-style expression string against a context object.
+ * Evaluate an AdvSoft-style expression string against a context object.
  * Supports:
  *   - Python-like `and`, `or`, `not`
  *   - Comparison operators: ==, !=, <, >, <=, >=
@@ -9475,7 +9475,7 @@ class InlineTreeRow extends Component {
                 }
             }
         } else if (ev.key === 'Enter') {
-            // Commit current cell and exit edit mode (Odoo behaviour)
+            // Commit current cell and exit edit mode (AdvSoft behaviour)
             ev.preventDefault();
             if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
             this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);
@@ -10116,7 +10116,7 @@ class InlineTreeWidget extends Component {
                 }
             }, 0);
         } else if (this._tab.editable && this.canCreate && this._tab.editable !== false) {
-            // At the last row: Tab-out creates a new line (Odoo behaviour)
+            // At the last row: Tab-out creates a new line (AdvSoft behaviour)
             this.addLine();
         }
     }
@@ -10263,7 +10263,7 @@ class InlineTreeWidget extends Component {
         const defaults = {};
         if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
 
-        // ── Server-side default_get (Odoo parity) ──────────
+        // ── Server-side default_get (AdvSoft parity) ──────────
         // Try to fetch defaults from the child model's _default_get handler
         const childModel = (this._tab.child_model || this._tab.relation);
         if (childModel && RPC.defaultGet) {
@@ -10292,7 +10292,7 @@ class InlineTreeWidget extends Component {
         }
 
         // ── Propagate parent context fields to child ──────
-        // Common Odoo pattern: inherit partner_id, date, currency from parent
+        // Common AdvSoft pattern: inherit partner_id, date, currency from parent
         const propagateFields = this._tab.propagate_fields || [];
         const parentRec = this.props.parentRecord || {};
         for (const pf of propagateFields) {
@@ -10833,7 +10833,7 @@ window.InlineTreeWidget = InlineTreeWidget;
 
 
 /* --- [FILE: js/views/list/owl-list.js] --- */
-// Owl App — Full Odoo <tree> ListView Architecture
+// Owl App — Full AdvSoft <tree> ListView Architecture
 (function () {
 const { Component, useState, useRef, onMounted, onWillStart } = owl;
 const RPC = window.AdvSoftRPC;
@@ -11818,7 +11818,7 @@ window.ListView = ListView;
 
 
 /* --- [FILE: js/views/form/owl-form-tpl.js] --- */
-// Dynamic Form View Template — Full Odoo <form> Architecture
+// Dynamic Form View Template — Full AdvSoft <form> Architecture
 // <form> → <header>(buttons+statusbar) → <sheet>(groups+notebook) → <div.oe_chatter>
 (function(){
 const { xml } = owl;
@@ -11943,7 +11943,7 @@ window.TEMPLATES.FormView = xml`
                     </t>
                 </div>
 
-                <!-- ══ oe_title — Odoo-style title + priority inline ══ -->
+                <!-- ══ oe_title — AdvSoft-style title + priority inline ══ -->
                 <div class="oe_title" t-if="titleField">
                     <h1>
                         <input class="ls-form-title-text" t-att-value="state.record[titleField]"
@@ -11965,7 +11965,7 @@ window.TEMPLATES.FormView = xml`
                 <div class="ls-form-groups" t-ref="formFields">
                     <t t-foreach="formGroups" t-as="group" t-key="group_index">
                         <div class="ls-form-group" t-att-style="group.col ? 'grid-template-columns: repeat(' + group.col + ', 1fr)' : ''">
-                            <!-- Group title — Odoo-style bold header -->
+                            <!-- Group title — AdvSoft-style bold header -->
                             <div class="ls-form-group-title" t-if="group.string">
                                 <span t-esc="group.string"/>
                             </div>
@@ -13949,7 +13949,7 @@ window.FormViewDialog = FormViewDialog;
 
 /* --- [FILE: js/views/kanban/owl-kanban.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  KanbanView — Odoo-style kanban board with drag-and-drop
+//  KanbanView — AdvSoft-style kanban board with drag-and-drop
 //  Features: grouped columns, card template, quick_create, progress,
 //  color_field, card_image, fold, decoration, aggregates, load more
 // ══════════════════════════════════════════════════════════════════
@@ -14732,7 +14732,7 @@ window.KanbanView = KanbanView;
 
 /* --- [FILE: js/views/calendar/owl-calendar.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  CalendarView — Odoo-style calendar with day/week/month modes
+//  CalendarView — AdvSoft-style calendar with day/week/month modes
 //  Features: drag-drop reschedule, time grid, create-by-selection,
 //  multi-day spanning, tooltips, color legend, quick create
 // ══════════════════════════════════════════════════════════════════
@@ -15708,7 +15708,7 @@ window.CalendarView = CalendarView;
 
 /* --- [FILE: js/views/graph/owl-graph.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  GraphView — Odoo-style chart visualization (bar, line, pie)
+//  GraphView — AdvSoft-style chart visualization (bar, line, pie)
 //  Uses Chart.js CDN for rendering
 // ══════════════════════════════════════════════════════════════════
 (function () {
@@ -16016,7 +16016,7 @@ window.GraphView = GraphView;
 
 /* --- [FILE: js/views/pivot/owl-pivot.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  PivotView — Odoo-style interactive cross-table
+//  PivotView — AdvSoft-style interactive cross-table
 //  Features: multi-level row/col groupBy, multiple measures,
 //  expandable/collapsible tree, drill-down, context config, export
 // ══════════════════════════════════════════════════════════════════
@@ -16533,7 +16533,7 @@ class PivotView extends Component {
         // Support both 'domain' and 'actionDomain' prop names
         this._domain = this.props.domain || [];
 
-        // Context-driven config (Odoo pattern)
+        // Context-driven config (AdvSoft pattern)
         const ctxRow = ctx.pivot_row_groupby || [];
         const ctxCol = ctx.pivot_col_groupby || [];
         const ctxMeasures = ctx.pivot_measures || [];
@@ -16845,7 +16845,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/cell-model.js] --- */
 /**
  * Cell Model - Typed cells with format and style
- * Follows Odoo o-spreadsheet cell model pattern
+ * Follows Odoo advsoft-spreadsheet cell model pattern
  */
 (function() {
     'use strict';
@@ -17114,7 +17114,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/range-parser.js] --- */
 /**
  * Range Parser - A1/R1C1 notation, named ranges, range expansion
- * Follows Odoo o-spreadsheet range model pattern
+ * Follows Odoo advsoft-spreadsheet range model pattern
  */
 (function() {
     'use strict';
@@ -17374,7 +17374,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/formula-engine.js] --- */
 /**
  * Formula Engine - Full Lexer/Parser with 40+ functions
- * Follows Odoo o-spreadsheet formula engine pattern
+ * Follows Odoo advsoft-spreadsheet formula engine pattern
  */
 (function() {
     'use strict';
@@ -18575,7 +18575,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/command-history.js] --- */
 /**
  * Command History - Granular undo/redo system
- * Follows Odoo o-spreadsheet command pattern
+ * Follows Odoo advsoft-spreadsheet command pattern
  */
 (function() {
     'use strict';
@@ -18750,7 +18750,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/spreadsheet-model.js] --- */
 /**
  * SpreadsheetModel - Core model with reactive state
- * Follows Odoo o-spreadsheet model pattern
+ * Follows Odoo advsoft-spreadsheet model pattern
  */
 (function() {
     'use strict';
@@ -19569,7 +19569,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/plugin-system.js] --- */
 /**
  * Plugin System - CorePlugin + UIPlugin base classes
- * Follows Odoo o-spreadsheet plugin architecture
+ * Follows Odoo advsoft-spreadsheet plugin architecture
  */
 (function() {
     'use strict';
@@ -19848,7 +19848,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/chart-plugin.js] --- */
 /**
  * Chart Plugin - Bar, Line, Pie, Doughnut, KPI Card, Gauge
- * Follows Odoo o-spreadsheet chart plugin pattern
+ * Follows Odoo advsoft-spreadsheet chart plugin pattern
  */
 (function() {
     'use strict';
@@ -20406,7 +20406,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/pivot-plugin.js] --- */
 /**
  * Pivot Plugin - PIVOT() formula, inline pivot tables
- * Follows Odoo o-spreadsheet pivot plugin pattern
+ * Follows Odoo advsoft-spreadsheet pivot plugin pattern
  */
 (function() {
     'use strict';
@@ -20627,7 +20627,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/list-plugin.js] --- */
 /**
  * List Plugin - ODOO.LIST() formula, linked lists within cells
- * Follows Odoo o-spreadsheet list plugin pattern
+ * Follows Odoo advsoft-spreadsheet list plugin pattern
  */
 (function() {
     'use strict';
@@ -20789,7 +20789,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/filter-plugin.js] --- */
 /**
  * Filter Plugin - Auto-filters on columns, filter by value/date
- * Follows Odoo o-spreadsheet filter plugin pattern
+ * Follows Odoo advsoft-spreadsheet filter plugin pattern
  */
 (function() {
     'use strict';
@@ -21749,7 +21749,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/conditional-formatting.js] --- */
 /**
  * Conditional Formatting - Rule-based system (cell value, formula, color scale)
- * Follows Odoo o-spreadsheet conditional formatting pattern
+ * Follows Odoo advsoft-spreadsheet conditional formatting pattern
  */
 (function() {
     'use strict';
@@ -22154,7 +22154,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/data-validation.js] --- */
 /**
  * Data Validation - Dropdown lists, custom formulas, error messages
- * Follows Odoo o-spreadsheet data validation pattern
+ * Follows Odoo advsoft-spreadsheet data validation pattern
  */
 (function() {
     'use strict';
@@ -22722,7 +22722,7 @@ window.PivotView = PivotView;
 /* --- [FILE: js/views/spreadsheet/engine/keyboard-navigation.js] --- */
 /**
  * Keyboard Navigation - Full arrow keys, Tab, Ctrl+Enter, multi-select
- * Follows Odoo o-spreadsheet keyboard navigation pattern
+ * Follows Odoo advsoft-spreadsheet keyboard navigation pattern
  */
 (function() {
     'use strict';
@@ -24778,7 +24778,7 @@ window.PivotView = PivotView;
 
 /* --- [FILE: js/views/spreadsheet/owl-spreadsheet.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  SpreadsheetView — Odoo o-spreadsheet style
+//  SpreadsheetView — Odoo advsoft-spreadsheet style
 //  Features: Menu bar, Toolbar, Formulas, Cell editing, Charts,
 //  Conditional formatting, Merge cells, Hyperlinks, Export CSV/XLSX,
 //  Multiple sheets, Column resize, Context menu, Copy/Paste,
@@ -27934,7 +27934,7 @@ window.TEMPLATES.AdiantiPageView = xml`
 
 /* --- [FILE: js/pages/admin/owl-menu-editor-tpl.js] --- */
 // ══════════════════════════════════════════════════════════════
-//  MenuEditorView Template — Odoo-style Menu Item Editor
+//  MenuEditorView Template — AdvSoft-style Menu Item Editor
 //  Settings → Technical → User Interface → Menu Items
 // ══════════════════════════════════════════════════════════════
 (function(){
@@ -30522,7 +30522,7 @@ window.AccountingReports = AccountingReports;
 
 /* --- [FILE: js/pages/admin/owl-menu-editor.js] --- */
 // ══════════════════════════════════════════════════════════════
-//  MenuEditorView — Odoo-style Menu Item Editor Component
+//  MenuEditorView — AdvSoft-style Menu Item Editor Component
 //  Features: tree CRUD, drag-drop, action binding, search
 // ══════════════════════════════════════════════════════════════
 (function () {
@@ -31017,7 +31017,7 @@ window.MenuEditorView = MenuEditorView;
 // ══════════════════════════════════════════════════════════════════
 //  AdvSoft Security Management UI
 //  4 components: AccessRights (matrix), RecordRules, Groups, Users
-//  Each is a full Odoo-style view with list+form switching.
+//  Each is a full AdvSoft-style view with list+form switching.
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, useRef, onWillStart, onMounted } = owl;
@@ -32963,7 +32963,7 @@ window.ViewBuilderView = ViewBuilderView;
 
 /* --- [FILE: js/core/owl-root.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  WebClient — Odoo-style menu-driven SPA with multi-view support
+//  WebClient — AdvSoft-style menu-driven SPA with multi-view support
 //  Components: AppSwitcher, NavBar, SubMenu, Breadcrumb, WebClient
 (function () {
     const { Component, useState, useRef, onWillStart, onMounted, onError } = owl;

@@ -7,7 +7,7 @@ use DOMElement;
 use DOMXPath;
 
 /**
- * MentionParser – Odoo-style @mention parser/extractor.
+ * MentionParser – AdvSoft-style @mention parser/extractor.
  *
  *  Mention link shape (in HTML):
  *      <a href="#" data-mention-id="42" data-mention-model="res.partner"

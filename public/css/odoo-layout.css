@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════
-   AdvSoft Enterprise Layout System — Odoo-style Presentation Layer
+   AdvSoft Enterprise Layout System — AdvSoft-style Presentation Layer
    Themes: Light / Dark / Custom brand
    Responsive: Desktop / Tablet / Mobile breakpoints
    ══════════════════════════════════════════════════════════════════ */
@@ -94,7 +94,7 @@
     --ls-transition-slow: 0.3s ease;
     --ls-transition-slower: 0.5s ease;
 
-    /* ══ Spacing Scale (4px base, like Odoo) ══ */
+    /* ══ Spacing Scale (4px base, like AdvSoft) ══ */
     --ls-space-0: 0;
     --ls-space-1: 4px;
     --ls-space-2: 8px;
@@ -306,7 +306,7 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Waffle 9-dots button (Odoo Enterprise signature) */
+/* Waffle 9-dots button (AdvSoft Enterprise signature) */
 .ls-waffle-btn {
     display: flex;
     align-items: center;

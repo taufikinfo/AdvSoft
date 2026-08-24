@@ -5,7 +5,7 @@ namespace App\Advsoft\Concerns;
 use App\Advsoft\{Registry, Field};
 
 /**
- * HasInheritance — Odoo-style model inheritance engine.
+ * HasInheritance — AdvSoft-style model inheritance engine.
  *
  * Three types of inheritance (matching Odoo exactly):
  *
@@ -112,7 +112,7 @@ trait HasInheritance
 
     /**
      * Setup delegation inheritance: auto-add FK field + proxy fields.
-     * Like Odoo's _inherits = { 'res.partner': 'partner_id' }.
+     * Like AdvSoft's _inherits = { 'res.partner': 'partner_id' }.
      */
     protected function setupDelegation(string $delegateModel, string $fkField): void
     {

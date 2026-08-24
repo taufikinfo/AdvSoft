@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-//  AdvSoft RTE — Odoo-style Rich Text Editor
+//  AdvSoft RTE — AdvSoft-style Rich Text Editor
 //
 //  Single-file implementation that mirrors Odoo's HTML field widget:
 //    - Configurable toolbar (from field's HtmlFieldConfig)

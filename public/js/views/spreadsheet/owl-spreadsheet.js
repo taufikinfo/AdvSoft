@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  SpreadsheetView — Odoo o-spreadsheet style
+//  SpreadsheetView — Odoo advsoft-spreadsheet style
 //  Features: Menu bar, Toolbar, Formulas, Cell editing, Charts,
 //  Conditional formatting, Merge cells, Hyperlinks, Export CSV/XLSX,
 //  Multiple sheets, Column resize, Context menu, Copy/Paste,

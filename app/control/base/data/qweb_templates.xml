@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
+<advsoft>
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!--  QWeb Report Templates                                    -->
     <!--  These templates are stored in ir_ui_views (type='qweb')  -->
@@ -224,4 +224,4 @@
 </template>
         ]]></field>
     </record>
-</odoo>
+</advsoft>

@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════
 //  Many2one Autocomplete & Search More Dialog
-//  Odoo-style: input → dropdown → "Search More..." → modal
+//  AdvSoft-style: input → dropdown → "Search More..." → modal
 //
 //  Full widget options support:
 //    no_create       — hide all create options
@@ -473,7 +473,7 @@ class M2OCreateDialog {
 }
 
 /**
- * M2OSearchDialog – Odoo-style "Search: Model" modal.
+ * M2OSearchDialog – AdvSoft-style "Search: Model" modal.
  * Full search with paginated table, columns from model fields.
  */
 class M2OSearchDialog {

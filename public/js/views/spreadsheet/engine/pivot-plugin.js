@@ -1,6 +1,6 @@
 /**
  * Pivot Plugin - PIVOT() formula, inline pivot tables
- * Follows Odoo o-spreadsheet pivot plugin pattern
+ * Follows Odoo advsoft-spreadsheet pivot plugin pattern
  */
 (function() {
     'use strict';

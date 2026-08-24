@@ -8,7 +8,7 @@ use App\Advsoft\{ModelDefinition, Field};
 /**
  * IrSequenceDef — Sequence Generator (auto-incrementing codes).
  * 
- * Odoo equivalent: ir.sequence
+ * AdvSoft equivalent: ir.sequence
  * Configurable from the UI — generates: INV/2026/0001, SO0001, PO0001, etc.
  * 
  * Usage in code:

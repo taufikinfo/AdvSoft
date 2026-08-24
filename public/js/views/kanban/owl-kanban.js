@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  KanbanView — Odoo-style kanban board with drag-and-drop
+//  KanbanView — AdvSoft-style kanban board with drag-and-drop
 //  Features: grouped columns, card template, quick_create, progress,
 //  color_field, card_image, fold, decoration, aggregates, load more
 // ══════════════════════════════════════════════════════════════════

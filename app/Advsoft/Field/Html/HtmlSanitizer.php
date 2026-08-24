@@ -8,9 +8,9 @@ use DOMNode;
 use DOMXPath;
 
 /**
- * HtmlSanitizer – Odoo-style HTML sanitizer.
+ * HtmlSanitizer – AdvSoft-style HTML sanitizer.
  *
- * Mirrors Odoo's `odoo.tools.html_sanitize()` pipeline:
+ * Mirrors AdvSoft's `odoo.tools.html_sanitize()` pipeline:
  *   1.  Parse HTML with DOMDocument (libxml)
  *   2.  Walk the tree, dropping disallowed tags
  *   3.  For allowed tags, strip disallowed attributes

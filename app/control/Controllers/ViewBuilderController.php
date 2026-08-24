@@ -8,7 +8,7 @@ use App\Advsoft\Core\Http\Request;
 use App\Advsoft\Core\Http\JsonResponse;
 
 /**
- * ViewBuilderController — API for the Odoo-style View Builder.
+ * ViewBuilderController — API for the AdvSoft-style View Builder.
  *
  * Provides endpoints to:
  *  - Load model fields metadata for the builder palette
@@ -331,7 +331,7 @@ class ViewBuilderController extends Controller
 
     /**
      * POST /api/view-builder/preview-xml
-     * Generate Odoo-style XML arch string from a builder config.
+     * Generate AdvSoft-style XML arch string from a builder config.
      */
     public function previewXml(Request $req)
     {

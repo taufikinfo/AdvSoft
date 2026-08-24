@@ -1,6 +1,6 @@
 /**
  * Formula Engine - Full Lexer/Parser with 40+ functions
- * Follows Odoo o-spreadsheet formula engine pattern
+ * Follows Odoo advsoft-spreadsheet formula engine pattern
  */
 (function() {
     'use strict';

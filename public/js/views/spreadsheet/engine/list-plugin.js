@@ -1,6 +1,6 @@
 /**
  * List Plugin - ODOO.LIST() formula, linked lists within cells
- * Follows Odoo o-spreadsheet list plugin pattern
+ * Follows Odoo advsoft-spreadsheet list plugin pattern
  */
 (function() {
     'use strict';

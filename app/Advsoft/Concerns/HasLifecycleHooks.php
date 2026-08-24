@@ -5,7 +5,7 @@ namespace App\Advsoft\Concerns;
 use Adianti\Database\TTransaction;
 
 /**
- * Trait HasLifecycleHooks — Odoo-style Model Lifecycle Hooks.
+ * Trait HasLifecycleHooks — AdvSoft-style Model Lifecycle Hooks.
  *
  * Provides:
  *   - beforeCreate(&$values)   — Validate or transform values before insert

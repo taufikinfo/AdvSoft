@@ -8,7 +8,7 @@ use App\Advsoft\Core\Support\Log;
 /**
  * DataFileLoader — Loads XML and CSV data files from addon modules.
  *
- * Odoo equivalent: The data file loading pipeline triggered on module install/upgrade.
+ * AdvSoft equivalent: The data file loading pipeline triggered on module install/upgrade.
  *
  * Supports:
  *   - <record model="ir.ui.menu"> — Create/update any ORM record

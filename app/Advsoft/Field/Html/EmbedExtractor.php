@@ -3,7 +3,7 @@
 namespace App\Advsoft\Field\Html;
 
 /**
- * EmbedExtractor – Odoo-style URL metadata / oEmbed extraction.
+ * EmbedExtractor – AdvSoft-style URL metadata / oEmbed extraction.
  *
  *  Used by the RTE to render link previews (cards) for:
  *   - YouTube / Vimeo  → rich player embed

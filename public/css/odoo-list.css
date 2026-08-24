@@ -1,5 +1,5 @@
 /* ============================================================
-   AdvSoft — Odoo-style ListView & Advanced Search CSS
+   AdvSoft — AdvSoft-style ListView & Advanced Search CSS
    (Design tokens are defined in odoo-layout.css)
    ============================================================ */
 
@@ -747,7 +747,7 @@ html, body {
     flex-shrink: 0;
 }
 
-/* ── SearchPanel Sidebar (Odoo Enterprise Facets) ── */
+/* ── SearchPanel Sidebar (AdvSoft Enterprise Facets) ── */
 .ls-search-panel-sidebar {
     width: 230px;
     min-width: 230px;
@@ -952,7 +952,7 @@ html, body {
 .ls-list-table th.sortable:hover { color: var(--ls-primary); }
 
 /* ============================================================
-   Form View — Full Odoo <form> Architecture Styles
+   Form View — Full AdvSoft <form> Architecture Styles
    ============================================================ */
 
 /* ── Group title (named groups) ──────────── */
@@ -1003,7 +1003,7 @@ html, body {
 .ls-btn-danger:hover { background: #b91c1c !important; }
 
 /* ============================================================
-   Chatter (oe_chatter) — Odoo mail.thread panel
+   Chatter (oe_chatter) — AdvSoft mail.thread panel
    ============================================================ */
 .oe_chatter {
     margin-top: 24px; border-top: 2px solid var(--ls-border);

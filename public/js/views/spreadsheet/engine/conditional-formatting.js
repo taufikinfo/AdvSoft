@@ -1,6 +1,6 @@
 /**
  * Conditional Formatting - Rule-based system (cell value, formula, color scale)
- * Follows Odoo o-spreadsheet conditional formatting pattern
+ * Follows Odoo advsoft-spreadsheet conditional formatting pattern
  */
 (function() {
     'use strict';

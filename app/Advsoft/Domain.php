@@ -6,7 +6,7 @@ use Adianti\Database\TCriteria;
 use Adianti\Database\TFilter;
 
 /**
- * Domain – Odoo-style domain expression parser and query applier for Adianti.
+ * Domain – AdvSoft-style domain expression parser and query applier for Adianti.
  * Converts [['field','op','value'], ...] to SQL where clauses, TCriteria, or query builders.
  */
 class Domain

@@ -1,6 +1,6 @@
 /**
  * Keyboard Navigation - Full arrow keys, Tab, Ctrl+Enter, multi-select
- * Follows Odoo o-spreadsheet keyboard navigation pattern
+ * Follows Odoo advsoft-spreadsheet keyboard navigation pattern
  */
 (function() {
     'use strict';

@@ -1,4 +1,4 @@
-// WebClient Root Template — Odoo-style menu system + View Switcher
+// WebClient Root Template — AdvSoft-style menu system + View Switcher
 (function () {
     const { xml } = owl;
 

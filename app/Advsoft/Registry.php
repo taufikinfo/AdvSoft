@@ -3,7 +3,7 @@
 namespace App\Advsoft;
 
 /**
- * Registry – Singleton model registry (like Odoo's registry).
+ * Registry – Singleton model registry (like AdvSoft's registry).
  *
  * All models register themselves here. The ORM controller resolves everything through this.
  * On boot: auto-discover → register → resolve inheritance chains.

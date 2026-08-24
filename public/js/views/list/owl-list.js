@@ -1,4 +1,4 @@
-// Owl App — Full Odoo <tree> ListView Architecture
+// Owl App — Full AdvSoft <tree> ListView Architecture
 (function () {
 const { Component, useState, useRef, onMounted, onWillStart } = owl;
 const RPC = window.AdvSoftRPC;

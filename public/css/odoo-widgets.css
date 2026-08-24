@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════
-   Odoo Field Widgets CSS
+   AdvSoft Field Widgets CSS
    ══════════════════════════════════════════════════════════ */
 
 /* ── Monetary ─────────────────────────────────────── */
@@ -196,10 +196,10 @@
 .ls-computed-badge { font-size:12px; background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:8px; font-weight:500; cursor:help; }
 
 /* ════════════════════════════════════════════════════
-   New Widget Styles — Full Odoo Architecture
+   New Widget Styles — Full AdvSoft Architecture
    ════════════════════════════════════════════════════ */
 
-/* ── Color Index (Odoo 0-11 palette) ─────────────── */
+/* ── Color Index (AdvSoft 0-11 palette) ─────────────── */
 .ls-color-index-widget { display:flex; flex-wrap:wrap; gap:6px; padding:4px 0; }
 .ls-color-index-widget .ls-color-dot, .ls-color-swatch { width:22px; height:22px; border-radius:50%; cursor:pointer; transition:all 0.15s; border:2px solid transparent; }
 .ls-color-index-widget .ls-color-dot:hover, .ls-color-swatch:hover { transform:scale(1.2); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
@@ -389,7 +389,7 @@
     transition: background 0.2s, color 0.2s;
 }
 
-/* Toggle — green for active (Odoo convention) */
+/* Toggle — green for active (AdvSoft convention) */
 .ls-toggle-widget input:checked + .ls-toggle-slider {
     background: var(--ls-widget-success, #10b981);
 }
@@ -469,7 +469,7 @@
 }
 .ls-m2m-tag-remove:hover { opacity: 1; }
 
-/* Odoo-style color palette for tags (color index 0–11) */
+/* AdvSoft-style color palette for tags (color index 0–11) */
 .ls-m2m-widget .ls-badge-primary,
 .ls-m2m-widget .ls-badge-color-0  { background: #e7e9ed; color: #41434c; border: 1px solid #d1d5db; }
 .ls-m2m-widget .ls-badge-color-1  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }

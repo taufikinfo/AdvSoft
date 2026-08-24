@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  CalendarView — Odoo-style calendar with day/week/month modes
+//  CalendarView — AdvSoft-style calendar with day/week/month modes
 //  Features: drag-drop reschedule, time grid, create-by-selection,
 //  multi-day spanning, tooltips, color legend, quick create
 // ══════════════════════════════════════════════════════════════════

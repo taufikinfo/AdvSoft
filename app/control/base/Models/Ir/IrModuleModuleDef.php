@@ -8,7 +8,7 @@ use App\Advsoft\{ModelDefinition, Field};
 /**
  * IrModuleModuleDef — Module Manager.
  * 
- * Odoo equivalent: ir.module.module
+ * AdvSoft equivalent: ir.module.module
  * Displays installed/available addon modules and their state.
  */
 class IrModuleModuleDef extends ModelDefinition

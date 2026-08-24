@@ -3,9 +3,9 @@
 namespace App\Advsoft\Field\Html;
 
 /**
- * HtmlFieldConfig – Odoo-style configuration for HTML/Rich-Text fields.
+ * HtmlFieldConfig – AdvSoft-style configuration for HTML/Rich-Text fields.
  *
- * Mirrors Odoo's `ir.fields.html` configuration pipeline:
+ * Mirrors AdvSoft's `ir.fields.html` configuration pipeline:
  *   - Define allowed tags / attributes (CSS classes whitelist)
  *   - Configure toolbar buttons (bold/italic/.../table/.../mention)
  *   - Enable / disable plugins (link, image, mention, code-view, source, ...)
@@ -25,7 +25,7 @@ namespace App\Advsoft\Field\Html;
 class HtmlFieldConfig
 {
     // ══════════════════════════════════════════════════════
-    //  Built-in presets (mirror Odoo's standard HTML configs)
+    //  Built-in presets (mirror AdvSoft's standard HTML configs)
     // ══════════════════════════════════════════════════════
 
     /** Minimal config — plain text + bold/italic/lists/links (Odoo default for "html_text"). */

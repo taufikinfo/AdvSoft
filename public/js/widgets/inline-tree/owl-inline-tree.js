@@ -606,7 +606,7 @@ class InlineTreeWidget extends Component {
                 }
             }, 0);
         } else if (this._tab.editable && this.canCreate && this._tab.editable !== false) {
-            // At the last row: Tab-out creates a new line (Odoo behaviour)
+            // At the last row: Tab-out creates a new line (AdvSoft behaviour)
             this.addLine();
         }
     }
@@ -753,7 +753,7 @@ class InlineTreeWidget extends Component {
         const defaults = {};
         if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
 
-        // ── Server-side default_get (Odoo parity) ──────────
+        // ── Server-side default_get (AdvSoft parity) ──────────
         // Try to fetch defaults from the child model's _default_get handler
         const childModel = (this._tab.child_model || this._tab.relation);
         if (childModel && RPC.defaultGet) {
@@ -782,7 +782,7 @@ class InlineTreeWidget extends Component {
         }
 
         // ── Propagate parent context fields to child ──────
-        // Common Odoo pattern: inherit partner_id, date, currency from parent
+        // Common AdvSoft pattern: inherit partner_id, date, currency from parent
         const propagateFields = this._tab.propagate_fields || [];
         const parentRec = this.props.parentRecord || {};
         for (const pf of propagateFields) {

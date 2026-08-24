@@ -1,6 +1,6 @@
 /**
  * SpreadsheetModel - Core model with reactive state
- * Follows Odoo o-spreadsheet model pattern
+ * Follows Odoo advsoft-spreadsheet model pattern
  */
 (function() {
     'use strict';

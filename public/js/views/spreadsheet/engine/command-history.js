@@ -1,6 +1,6 @@
 /**
  * Command History - Granular undo/redo system
- * Follows Odoo o-spreadsheet command pattern
+ * Follows Odoo advsoft-spreadsheet command pattern
  */
 (function() {
     'use strict';

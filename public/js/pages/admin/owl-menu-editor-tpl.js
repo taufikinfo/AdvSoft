@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-//  MenuEditorView Template — Odoo-style Menu Item Editor
+//  MenuEditorView Template — AdvSoft-style Menu Item Editor
 //  Settings → Technical → User Interface → Menu Items
 // ══════════════════════════════════════════════════════════════
 (function(){

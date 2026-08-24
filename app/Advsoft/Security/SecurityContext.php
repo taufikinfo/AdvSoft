@@ -9,7 +9,7 @@ use App\Model\Res\ResCompany;
 /**
  * SecurityContext — request-scoped security state.
  *
- * Mirrors Odoo's `request.env` and `recordset.env`:
+ * Mirrors AdvSoft's `request.env` and `recordset.env`:
  *  - $env.user          → getUser() / setUser()
  *  - $env.su            → isSuperuser() (set by sudo())
  *  - $env.company       → getCompany()

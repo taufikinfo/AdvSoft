@@ -1,6 +1,6 @@
 /**
  * Cell Model - Typed cells with format and style
- * Follows Odoo o-spreadsheet cell model pattern
+ * Follows Odoo advsoft-spreadsheet cell model pattern
  */
 (function() {
     'use strict';

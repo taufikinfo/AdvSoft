@@ -1,6 +1,6 @@
 /**
  * Chart Plugin - Bar, Line, Pie, Doughnut, KPI Card, Gauge
- * Follows Odoo o-spreadsheet chart plugin pattern
+ * Follows Odoo advsoft-spreadsheet chart plugin pattern
  */
 (function() {
     'use strict';

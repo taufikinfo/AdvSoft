@@ -1,6 +1,6 @@
 /**
  * Data Validation - Dropdown lists, custom formulas, error messages
- * Follows Odoo o-spreadsheet data validation pattern
+ * Follows Odoo advsoft-spreadsheet data validation pattern
  */
 (function() {
     'use strict';

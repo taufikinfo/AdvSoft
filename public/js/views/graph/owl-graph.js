@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  GraphView — Odoo-style chart visualization (bar, line, pie)
+//  GraphView — AdvSoft-style chart visualization (bar, line, pie)
 //  Uses Chart.js CDN for rendering
 // ══════════════════════════════════════════════════════════════════
 (function () {

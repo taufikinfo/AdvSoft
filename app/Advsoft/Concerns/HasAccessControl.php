@@ -6,7 +6,7 @@ use App\Advsoft\{Registry, Domain, Field, Security\SecurityContext, Security\Sec
 use App\Advsoft\Exceptions\AccessDenied;
 
 /**
- * HasAccessControl — Odoo-style security system (full odoo2.png parity).
+ * HasAccessControl — AdvSoft-style security system (full odoo2.png parity).
  *
  * Six layers of enforcement (matches odoo2.png diagram):
  *   1. res.users / res.groups         → identify caller & groups
@@ -28,7 +28,7 @@ use App\Advsoft\Exceptions\AccessDenied;
  *
  * At runtime, BOTH are checked. DB ACLs take precedence (explicit data wins).
  *
- * Instance methods (Odoo parity):
+ * Instance methods (AdvSoft parity):
  *   $rec->check_access_rights('write', raise=true)
  *   $rec->check_access_rule('read')
  *   $rec->check_access('write')                 → convenience: rights + rule
@@ -130,7 +130,7 @@ trait HasAccessControl
      *   __today__     → current date
      *
      * @param string $name     Rule name (for debugging)
-     * @param array  $domain   Domain filter (Odoo-style)
+     * @param array  $domain   Domain filter (AdvSoft-style)
      * @param array  $applyOn  Operations to apply on: ['read', 'write', 'unlink']
      * @param array  $groups   Groups this rule applies to (empty = all users)
      */
@@ -313,7 +313,7 @@ trait HasAccessControl
 
     // ══════════════════════════════════════════════════════
     //  ODOO-PARITY INSTANCE METHODS
-    //  Mirrors Odoo's recordset API:
+    //  Mirrors AdvSoft's recordset API:
     //    - check_access_rights(op, raise)
     //    - check_access_rule(op)
     //    - check_access(op, ids)
@@ -498,7 +498,7 @@ trait HasAccessControl
 
     /**
      * get_metadata(fields) — return field metadata filtered by user's groups.
-     *  Equivalent to Odoo's fields_get().
+     *  Equivalent to AdvSoft's fields_get().
      */
     public function getMetadata(?array $fields = null): array
     {

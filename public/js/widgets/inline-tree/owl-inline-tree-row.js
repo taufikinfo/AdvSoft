@@ -204,7 +204,7 @@ class InlineTreeRow extends Component {
                 }
             }
         } else if (ev.key === 'Enter') {
-            // Commit current cell and exit edit mode (Odoo behaviour)
+            // Commit current cell and exit edit mode (AdvSoft behaviour)
             ev.preventDefault();
             if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
             this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);

@@ -1,6 +1,6 @@
 /**
  * Plugin System - CorePlugin + UIPlugin base classes
- * Follows Odoo o-spreadsheet plugin architecture
+ * Follows Odoo advsoft-spreadsheet plugin architecture
  */
 (function() {
     'use strict';

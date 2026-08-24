@@ -1,11 +1,11 @@
 /**
  * AdvSoft Compiled Production Stylesheet
- * Generated: 2026-08-24 02:33:28
+ * Generated: 2026-08-24 02:34:58
  */
 
 /* --- [FILE: css/odoo-layout.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   AdvSoft Enterprise Layout System — Odoo-style Presentation Layer
+   AdvSoft Enterprise Layout System — AdvSoft-style Presentation Layer
    Themes: Light / Dark / Custom brand
    Responsive: Desktop / Tablet / Mobile breakpoints
    ══════════════════════════════════════════════════════════════════ */
@@ -100,7 +100,7 @@
     --ls-transition-slow: 0.3s ease;
     --ls-transition-slower: 0.5s ease;
 
-    /* ══ Spacing Scale (4px base, like Odoo) ══ */
+    /* ══ Spacing Scale (4px base, like AdvSoft) ══ */
     --ls-space-0: 0;
     --ls-space-1: 4px;
     --ls-space-2: 8px;
@@ -312,7 +312,7 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Waffle 9-dots button (Odoo Enterprise signature) */
+/* Waffle 9-dots button (AdvSoft Enterprise signature) */
 .ls-waffle-btn {
     display: flex;
     align-items: center;
@@ -1493,7 +1493,7 @@ html[data-theme="dark"] .ls-toast-message {
 
 /* --- [FILE: css/odoo-list.css] --- */
 /* ============================================================
-   AdvSoft — Odoo-style ListView & Advanced Search CSS
+   AdvSoft — AdvSoft-style ListView & Advanced Search CSS
    (Design tokens are defined in odoo-layout.css)
    ============================================================ */
 
@@ -2241,7 +2241,7 @@ html, body {
     flex-shrink: 0;
 }
 
-/* ── SearchPanel Sidebar (Odoo Enterprise Facets) ── */
+/* ── SearchPanel Sidebar (AdvSoft Enterprise Facets) ── */
 .ls-search-panel-sidebar {
     width: 230px;
     min-width: 230px;
@@ -2446,7 +2446,7 @@ html, body {
 .ls-list-table th.sortable:hover { color: var(--ls-primary); }
 
 /* ============================================================
-   Form View — Full Odoo <form> Architecture Styles
+   Form View — Full AdvSoft <form> Architecture Styles
    ============================================================ */
 
 /* ── Group title (named groups) ──────────── */
@@ -2497,7 +2497,7 @@ html, body {
 .ls-btn-danger:hover { background: #b91c1c !important; }
 
 /* ============================================================
-   Chatter (oe_chatter) — Odoo mail.thread panel
+   Chatter (oe_chatter) — AdvSoft mail.thread panel
    ============================================================ */
 .oe_chatter {
     margin-top: 24px; border-top: 2px solid var(--ls-border);
@@ -2621,7 +2621,7 @@ html, body {
 
 /* --- [FILE: css/odoo-form.css] --- */
 /* ============================================================
-   AdvSoft — Odoo-style Form View CSS
+   AdvSoft — AdvSoft-style Form View CSS
    ============================================================ */
 
 /* ── Status Bar ───────────────────────────── */
@@ -2756,7 +2756,7 @@ html, body {
     grid-column: 1 / -1;
 }
 
-/* Form group title — Odoo-style horizontal rule with text */
+/* Form group title — AdvSoft-style horizontal rule with text */
 .ls-form-group-title {
     grid-column: 1 / -1;
     font-size: var(--ls-font-size-md);
@@ -2771,7 +2771,7 @@ html, body {
     opacity: 0.85;
 }
 
-/* oe_title container — title + priority inline (Odoo signature) */
+/* oe_title container — title + priority inline (AdvSoft signature) */
 .oe_title {
     display: flex;
     align-items: center;
@@ -3595,7 +3595,7 @@ html, body {
 
 /* --- [FILE: css/odoo-menu.css] --- */
 /* ══════════════════════════════════════════════════════════
-   AdvSoft Menu System CSS — Odoo-style navigation
+   AdvSoft Menu System CSS — AdvSoft-style navigation
    ══════════════════════════════════════════════════════════ */
 
 /* ── AppSwitcher (Home screen) ────────────────────── */
@@ -3861,7 +3861,7 @@ html, body {
     color: #64748b;
 }
 
-/* ── NavBar Enhancements (Odoo Enterprise Single Bar) ─ */
+/* ── NavBar Enhancements (AdvSoft Enterprise Single Bar) ─ */
 .ls-nav-item {
     position: relative;
     display: flex;
@@ -4128,7 +4128,7 @@ html[data-theme="dark"] .ls-submenu-dropdown-item.active {
 
 /* --- [FILE: css/odoo-widgets.css] --- */
 /* ══════════════════════════════════════════════════════════
-   Odoo Field Widgets CSS
+   AdvSoft Field Widgets CSS
    ══════════════════════════════════════════════════════════ */
 
 /* ── Monetary ─────────────────────────────────────── */
@@ -4325,10 +4325,10 @@ html[data-theme="dark"] .ls-submenu-dropdown-item.active {
 .ls-computed-badge { font-size:12px; background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:8px; font-weight:500; cursor:help; }
 
 /* ════════════════════════════════════════════════════
-   New Widget Styles — Full Odoo Architecture
+   New Widget Styles — Full AdvSoft Architecture
    ════════════════════════════════════════════════════ */
 
-/* ── Color Index (Odoo 0-11 palette) ─────────────── */
+/* ── Color Index (AdvSoft 0-11 palette) ─────────────── */
 .ls-color-index-widget { display:flex; flex-wrap:wrap; gap:6px; padding:4px 0; }
 .ls-color-index-widget .ls-color-dot, .ls-color-swatch { width:22px; height:22px; border-radius:50%; cursor:pointer; transition:all 0.15s; border:2px solid transparent; }
 .ls-color-index-widget .ls-color-dot:hover, .ls-color-swatch:hover { transform:scale(1.2); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
@@ -4518,7 +4518,7 @@ html[data-theme="dark"] .ls-submenu-dropdown-item.active {
     transition: background 0.2s, color 0.2s;
 }
 
-/* Toggle — green for active (Odoo convention) */
+/* Toggle — green for active (AdvSoft convention) */
 .ls-toggle-widget input:checked + .ls-toggle-slider {
     background: var(--ls-widget-success, #10b981);
 }
@@ -4598,7 +4598,7 @@ html[data-theme="dark"] .ls-submenu-dropdown-item.active {
 }
 .ls-m2m-tag-remove:hover { opacity: 1; }
 
-/* Odoo-style color palette for tags (color index 0–11) */
+/* AdvSoft-style color palette for tags (color index 0–11) */
 .ls-m2m-widget .ls-badge-primary,
 .ls-m2m-widget .ls-badge-color-0  { background: #e7e9ed; color: #41434c; border: 1px solid #d1d5db; }
 .ls-m2m-widget .ls-badge-color-1  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
@@ -4863,7 +4863,7 @@ textarea:focus-visible {
 
 /* --- [FILE: css/odoo-kanban.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Kanban View Styles — Odoo-style kanban board
+   Kanban View Styles — AdvSoft-style kanban board
    Features: columns, cards, drag-drop, fold, context menu, images
    ══════════════════════════════════════════════════════════════════ */
 
@@ -5386,7 +5386,7 @@ textarea:focus-visible {
 
 /* --- [FILE: css/odoo-calendar.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Calendar View Styles — Odoo-style calendar
+   Calendar View Styles — AdvSoft-style calendar
    Features: month/week(day) views, time grid, drag-drop, tooltips,
    selection, sidebar legend, quick create modal
    ══════════════════════════════════════════════════════════════════ */
@@ -6004,7 +6004,7 @@ textarea:focus-visible {
 
 /* --- [FILE: css/odoo-spreadsheet.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Spreadsheet View — Odoo o-spreadsheet style
+   Spreadsheet View — AdvSoft o-spreadsheet style
    ══════════════════════════════════════════════════════════════════ */
 
 .ls-spreadsheet-view {
@@ -6846,7 +6846,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-views.css] --- */
 /* ══════════════════════════════════════════════════════════════════
-   Graph & Pivot View Styles — Odoo-style analytics views
+   Graph & Pivot View Styles — AdvSoft-style analytics views
    ══════════════════════════════════════════════════════════════════ */
 
 /* ── Graph View ───────────────────────────────── */
@@ -7276,7 +7276,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-inline-tree.css] --- */
 /* ══════════════════════════════════════════════════════════════
-   INLINE TREE WIDGET — Odoo-style <list> editable
+   INLINE TREE WIDGET — AdvSoft-style <list> editable
    Full parity: editable top/bottom, multi-edit, attrs, onchange,
    drag-drop, decoration, optional columns, bulk, picker, etc.
 
@@ -7607,7 +7607,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 .ls-it-td.ls-it-required.ls-it-readonly {
     /* For readonly, we could add it back, or just rely on form view */
 }
-/* Odoo-style required indicator for list view */
+/* AdvSoft-style required indicator for list view */
 .ls-it-td.ls-it-required {
     /* No visual clutter in list view, or just a bold column header */
 }
@@ -8610,7 +8610,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 /* ── Decoration: "decoration-*" prefix keys ─────
-   Odoo 17 uses "decoration-danger" etc. in tree arch.
+   AdvSoft 17 uses "decoration-danger" etc. in tree arch.
    Mirror the short keys already in CSS but add the
    prefixed variants so both work.                ── */
 .ls-it-row.ls-it-decoration-danger  { background: rgba(239, 68,  68, .06); }
@@ -8644,7 +8644,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SECTION GROUPING — Odoo-style group-by headers in inline tree
+   SECTION GROUPING — AdvSoft-style group-by headers in inline tree
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Group-by dropdown control ── */
@@ -9397,7 +9397,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-menu-editor.css] --- */
 /* ══════════════════════════════════════════════════════════
-   Menu Editor CSS — Odoo-style Menu Item Management UI
+   Menu Editor CSS — AdvSoft-style Menu Item Management UI
    Settings → Technical → User Interface → Menu Items
    ══════════════════════════════════════════════════════════ */
 
@@ -10076,7 +10076,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-view-builder.css] --- */
 /* ══════════════════════════════════════════════════════════════
-   View Builder — Odoo Studio-style view configuration UI
+   View Builder — AdvSoft Studio-style view configuration UI
    ══════════════════════════════════════════════════════════════ */
 
 .ls-view-builder {
@@ -11037,7 +11037,7 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
 
 /* --- [FILE: css/odoo-rte.css] --- */
 /* ═══════════════════════════════════════════════════════════════════
-   AdvSoft Rich Text Editor (RTE) — Odoo-styled
+   AdvSoft Rich Text Editor (RTE) — AdvSoft-styled
    Depends on odoo-form.css for shared form tokens.
    ═══════════════════════════════════════════════════════════════════ */
 

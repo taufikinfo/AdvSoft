@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════════════════════════════
 //  AdvSoft Security Management UI
 //  4 components: AccessRights (matrix), RecordRules, Groups, Users
-//  Each is a full Odoo-style view with list+form switching.
+//  Each is a full AdvSoft-style view with list+form switching.
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, useRef, onWillStart, onMounted } = owl;

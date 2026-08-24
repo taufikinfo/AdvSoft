@@ -1,13 +1,13 @@
 // ══════════════════════════════════════════════════════════════
 //  InlineTree — Attribute Expression Evaluator
-//  Evaluates Odoo-style attrs expressions safely
+//  Evaluates AdvSoft-style attrs expressions safely
 //  Supports: 'state != "draft"', 'parent.state == "posted"',
 //            'debit > 0 and credit == 0', boolean values
 // ══════════════════════════════════════════════════════════════
 (function () {
 
 /**
- * Evaluate an Odoo-style expression string against a context object.
+ * Evaluate an AdvSoft-style expression string against a context object.
  * Supports:
  *   - Python-like `and`, `or`, `not`
  *   - Comparison operators: ==, !=, <, >, <=, >=

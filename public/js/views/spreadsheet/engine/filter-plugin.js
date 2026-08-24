@@ -1,6 +1,6 @@
 /**
  * Filter Plugin - Auto-filters on columns, filter by value/date
- * Follows Odoo o-spreadsheet filter plugin pattern
+ * Follows Odoo advsoft-spreadsheet filter plugin pattern
  */
 (function() {
     'use strict';

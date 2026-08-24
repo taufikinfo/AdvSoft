@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  PivotView — Odoo-style interactive cross-table
+//  PivotView — AdvSoft-style interactive cross-table
 //  Features: multi-level row/col groupBy, multiple measures,
 //  expandable/collapsible tree, drill-down, context config, export
 // ══════════════════════════════════════════════════════════════════
@@ -516,7 +516,7 @@ class PivotView extends Component {
         // Support both 'domain' and 'actionDomain' prop names
         this._domain = this.props.domain || [];
 
-        // Context-driven config (Odoo pattern)
+        // Context-driven config (AdvSoft pattern)
         const ctxRow = ctx.pivot_row_groupby || [];
         const ctxCol = ctx.pivot_col_groupby || [];
         const ctxMeasures = ctx.pivot_measures || [];

@@ -4,7 +4,7 @@ namespace App\Advsoft\Concerns;
 
 
 /**
- * HasApiDecorators — Odoo-style API decorator registration system.
+ * HasApiDecorators — AdvSoft-style API decorator registration system.
  *
  * Provides fluent registration for:
  *   @api.depends   — trigger field recomputation when dependencies change

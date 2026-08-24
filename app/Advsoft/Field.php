@@ -3,7 +3,7 @@
 namespace App\Advsoft;
 
 /**
- * Field – Complete Odoo-style field definition.
+ * Field – Complete AdvSoft-style field definition.
  *
  * ╔══════════════════════════════════════════════════════════════════╗
  * ║  Fields — unit data terkecil, satu kolom di PostgreSQL          ║
@@ -91,7 +91,7 @@ class Field
     public bool $trim = true;           // Trim whitespace for char fields
 
     // ══════════════════════════════════════════════════════
-    //  HTML / RICH-TEXT ATTRIBUTES (Odoo-style html_field config)
+    //  HTML / RICH-TEXT ATTRIBUTES (AdvSoft-style html_field config)
     //  These are only meaningful when $type === self::HTML.
     //  They are forwarded to HtmlFieldConfig on the server and
     //  consumed by the RTE widget on the client.
@@ -240,7 +240,7 @@ class Field
 
     /**
      * Apply sensible defaults based on field type.
-     * Matches Odoo's automatic behavior.
+     * Matches AdvSoft's automatic behavior.
      */
     private function applyTypeDefaults(string $type, array $attrs): void
     {
@@ -330,7 +330,7 @@ class Field
     // ══════════════════════════════════════════════════════
 
     /**
-     * Export field definition (like Odoo's fields_get response).
+     * Export field definition (like AdvSoft's fields_get response).
      * Includes all widget-relevant metadata for the frontend.
      *
      * The frontend widget registry uses this to:
@@ -505,7 +505,7 @@ class Field
      * Get the default widget name for this field type.
      * Used when no explicit widget= is set in the view.
      *
-     * Matches Odoo's auto-selection logic:
+     * Matches AdvSoft's auto-selection logic:
      *   Field → Column PostgreSQL · Widget → Komponen OWL di browser
      *   tanpa widget= maka Odoo pilih default otomatis
      */

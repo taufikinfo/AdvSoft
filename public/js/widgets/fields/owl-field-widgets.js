@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════
-//  Field Widget Registry — Odoo-style configurable rendering
+//  Field Widget Registry — AdvSoft-style configurable rendering
 //  Each widget is a render function: (fieldDef, value, onChange, record) => HTML string
 // ══════════════════════════════════════════════════════════
 (function () {
@@ -254,11 +254,11 @@ W.percentage_pie = (f) => {
 };
 
 // ════════════════════════════════════════════════════
-//  MANY2ONE WIDGETS — Odoo-style autocomplete
+//  MANY2ONE WIDGETS — AdvSoft-style autocomplete
 //  Full: autocomplete dropdown → quick_create → create & edit → search more
 //  Options: no_create, no_quick_create, no_create_edit, no_open
 // ════════════════════════════════════════════════════
-// many2one: Inline autocomplete input (Odoo-style).
+// many2one: Inline autocomplete input (AdvSoft-style).
 // The input gets bound by FormView._bindM2OAutocompletes() to an
 // M2OAutocomplete instance for Search, Quick Create, Create & Edit, Search More.
 W._many2one_display = (f) => {
@@ -576,7 +576,7 @@ W.ace = (f) => `<textarea class="ls-ace-widget" style="font-family:monospace; ba
 //  MISSING WIDGETS — percentage_pie, char_badge, char_image
 // ════════════════════════════════════════════════════
 
-// Percentage Pie — SVG circular progress indicator (Odoo style)
+// Percentage Pie — SVG circular progress indicator (AdvSoft style)
 W.percentage_pie = (f) => {
     const pct = Math.min(100, Math.max(0, Number(f._val) || 0));
     const r = 18, circ = 2 * Math.PI * r, offset = circ * (1 - pct / 100);

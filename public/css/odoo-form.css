@@ -1,5 +1,5 @@
 /* ============================================================
-   AdvSoft — Odoo-style Form View CSS
+   AdvSoft — AdvSoft-style Form View CSS
    ============================================================ */
 
 /* ── Status Bar ───────────────────────────── */
@@ -134,7 +134,7 @@
     grid-column: 1 / -1;
 }
 
-/* Form group title — Odoo-style horizontal rule with text */
+/* Form group title — AdvSoft-style horizontal rule with text */
 .ls-form-group-title {
     grid-column: 1 / -1;
     font-size: var(--ls-font-size-md);
@@ -149,7 +149,7 @@
     opacity: 0.85;
 }
 
-/* oe_title container — title + priority inline (Odoo signature) */
+/* oe_title container — title + priority inline (AdvSoft signature) */
 .oe_title {
     display: flex;
     align-items: center;

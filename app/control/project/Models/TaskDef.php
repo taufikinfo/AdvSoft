@@ -7,7 +7,7 @@ use App\Advsoft\{ModelDefinition, Field};
 use App\Advsoft\Core\Support\Log;
 
 /**
- * TaskDef – Full Odoo-style configurable model definition for project.task.
+ * TaskDef – Full AdvSoft-style configurable model definition for project.task.
  * Demonstrates all concepts: Fields, Views, Security, Computed, Onchange, Constraints.
  */
 class TaskDef extends ModelDefinition
@@ -34,7 +34,7 @@ class TaskDef extends ModelDefinition
         $this->addField('description', Field::HTML, [
             'string' => 'Description',
             'help' => 'Detailed task description (rich text)',
-            'htmlPreset' => 'full',                // toolbar = full Odoo-style
+            'htmlPreset' => 'full',                // toolbar = full AdvSoft-style
             'htmlPlaceholder' => 'Describe this task…',
             'htmlMinHeight' => '220px',
             // 'htmlPlugins' => ['history', 'heading', 'list', 'link', 'image', 'table',
@@ -151,7 +151,7 @@ class TaskDef extends ModelDefinition
     protected function defineViews(): void
     {
         // ═══════════════════════════════════════════════════
-        //  List View — Full Odoo <tree> arch configuration
+        //  List View — Full AdvSoft <tree> arch configuration
         //  <tree editable="top" decoration-danger="...">
         // ═══════════════════════════════════════════════════
         $this->listView = [
@@ -226,7 +226,7 @@ class TaskDef extends ModelDefinition
         ];
 
         // ═══════════════════════════════════════════════════
-        //  Form View — Full Odoo <form> arch configuration
+        //  Form View — Full AdvSoft <form> arch configuration
         //  <form> → <header> → <sheet> → <div.oe_chatter>
         // ═══════════════════════════════════════════════════
         $this->formView = [

@@ -10,7 +10,7 @@ use App\Advsoft\Core\Http\JsonResponse;
 use App\Advsoft\Core\Http\Request;
 
 /**
- * MenuEditorController – Odoo-style Menu Editor API.
+ * MenuEditorController – AdvSoft-style Menu Editor API.
  *
  * Provides endpoints for the frontend MenuEditorView component:
  * - load_tree: Full menu tree with all metadata
