@@ -1197,13 +1197,13 @@ server {
 ### Global Helper Functions
 
 ```php
-app(?string $abstract = null) // Resolve dependency from container
-app_path(string $path = '')   // Absolute path to app/ directory
-base_path(string $path = '')  // Absolute path to project root
-view(string $template, array $data = []) // Render template
-response()                    // Create HTTP response builder
-abort(int $status, string $message = '') // Terminate with error
-now()                         // Return current DateTime object
+app(?string $abstract = null)            // Resolve service or singleton from IoC Container
+app_path(string $path = '')              // Absolute path to app/ directory
+base_path(string $path = '')             // Absolute path to project root
+view(string $template, array $data = []) // Render Blade server-side template
+response()                               // Create HTTP ResponseBuilder instance
+abort(int $status, string $message = '') // Terminate request with HTTP error code
+now()                                    // Return current DateTime object
 ```
 
 ### Registry API
@@ -1211,31 +1211,40 @@ now()                         // Return current DateTime object
 ```php
 use App\Advsoft\Registry;
 
-Registry::boot();                 // Scan and register all addon models
-Registry::get('project.task');     // Get ModelDefinition instance
-Registry::has('project.task');     // Check if model is registered
-Registry::all();                  // Get array of all registered ModelDefinitions
+Registry::boot();                 // Scan, register, and resolve inheritance for all addon models
+Registry::get('project.task');     // Get ModelDefinition instance by dot-notation name
+Registry::has('project.task');     // Check if model is registered in registry
+Registry::all();                  // Get array map of all registered ModelDefinitions
+Registry::register($definition);  // Manually register custom ModelDefinition
 ```
 
-### Collection Utilities
+### Collection Utilities (`App\Advsoft\Core\Support\Collection`)
 
 ```php
 $collection = Task::where('active', '=', true)->get();
 
-$collection->count();
-$collection->first();
-$collection->last();
-$collection->map(fn($t) => $t->name);
-$collection->filter(fn($t) => $t->planned_hours > 10);
-$collection->pluck('name', 'id');
-$collection->sortBy('deadline');
-$collection->groupBy('stage_id');
-$collection->sum('planned_hours');
+$collection->count();                     // Total item count
+$collection->first();                     // First item or null
+$collection->last();                      // Last item or null
+$collection->isEmpty();                   // True if empty
+$collection->isNotEmpty();                // True if has items
+$collection->map(fn($t) => $t->name);     // Transform collection
+$collection->filter(fn($t) => $t->hours > 10); // Filter items
+$collection->pluck('name', 'id');         // Extract key-value or array of values
+$collection->sortBy('deadline');          // Sort by attribute ascending
+$collection->sortByDesc('deadline');      // Sort by attribute descending
+$collection->groupBy('stage_id');         // Group into nested collections
+$collection->sum('planned_hours');        // Compute numeric sum
+$collection->avg('progress');             // Compute numeric average
+$collection->min('deadline');             // Get minimum value
+$collection->max('planned_hours');        // Get maximum value
+$collection->toArray();                   // Convert to native array
+$collection->toJson();                    // Encode to JSON string
 ```
 
 ---
 
-## Summary Cheat Sheet
+## 22. Detailed Developer Cheat Sheet
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════╗
@@ -1268,6 +1277,508 @@ $collection->sum('planned_hours');
 
 ---
 
+### 🌟 Pillar 1: Create New Feature Workflow
+
+Follow this standard 4-step workflow to add any new business entity to AdvSoft:
+
+#### Step 1.1: Database Schema (DDL)
+```sql
+CREATE TABLE `helpdesk_tickets` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL,
+    `partner_id` INT NULL,
+    `user_id` INT NULL,
+    `stage_id` INT NOT NULL,
+    `priority` VARCHAR(10) DEFAULT '1',
+    `description` LONGTEXT NULL,
+    `resolution_time` DECIMAL(8,2) DEFAULT 0,
+    `active` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME NULL,
+    `updated_at` DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+#### Step 1.2: Active Record Model (`app/model/Helpdesk/Ticket.php`)
+```php
+<?php
+namespace App\Model\Helpdesk;
+
+use App\Model\BaseModel;
+use App\Model\Res\ResPartner;
+use App\Model\Res\ResUser;
+
+class Ticket extends BaseModel
+{
+    const TABLENAME  = 'helpdesk_tickets';
+    const PRIMARYKEY = 'id';
+    const IDPOLICY   = 'serial';
+
+    public function customer(): ?ResPartner
+    {
+        return $this->partner_id ? ResPartner::find($this->partner_id) : null;
+    }
+
+    public function assigned_user(): ?ResUser
+    {
+        return $this->user_id ? ResUser::find($this->user_id) : null;
+    }
+}
+```
+
+#### Step 1.3: Model Definition (`app/control/helpdesk/Models/TicketDef.php`)
+```php
+<?php
+namespace Addons\Helpdesk\Models;
+
+use App\Advsoft\{ModelDefinition, Field};
+use App\Model\Helpdesk\Ticket;
+
+class TicketDef extends ModelDefinition
+{
+    public string $_name        = 'helpdesk.ticket';
+    public string $_description = 'Helpdesk Ticket';
+    public string $_table       = 'helpdesk_tickets';
+    public string $_order       = 'id desc';
+    public string $_rec_name    = 'name';
+    public string $modelClass   = Ticket::class;
+
+    protected function defineFields(): void
+    {
+        $this->addField('name', Field::CHAR, ['string' => 'Subject', 'required' => true, 'searchable' => true]);
+        $this->addField('partner_id', Field::MANY2ONE, ['string' => 'Customer', 'relation' => 'res.partner']);
+        $this->addField('user_id', Field::MANY2ONE, ['string' => 'Assigned To', 'relation' => 'res.users']);
+        $this->addField('priority', Field::SELECTION, [
+            'string' => 'Priority',
+            'widget' => 'priority',
+            'selection' => [['0', 'Low'], ['1', 'Normal'], ['2', 'High'], ['3', 'Urgent']],
+            'default' => '1',
+        ]);
+        $this->addField('description', Field::HTML, ['string' => 'Problem Description', 'htmlPreset' => 'full']);
+        $this->addField('active', Field::BOOLEAN, ['string' => 'Active', 'default' => true]);
+    }
+
+    protected function defineViews(): void
+    {
+        $this->listView = [
+            'fields' => ['name', 'partner_id', 'user_id', 'priority'],
+            'column_config' => ['priority' => ['widget' => 'priority']],
+        ];
+
+        $this->formView = [
+            'title' => 'name',
+            'priority' => 'priority',
+            'groups' => [
+                ['col' => 2, 'columns' => [
+                    ['name', 'partner_id'],
+                    ['user_id', 'priority'],
+                ]],
+            ],
+            'tabs' => [
+                ['name' => 'desc', 'label' => 'Description', 'type' => 'field', 'field' => 'description'],
+            ],
+        ];
+
+        $this->searchView = [
+            'filters' => [
+                ['id' => 'my_tickets', 'label' => 'My Tickets', 'domain' => [['user_id', '=', '__user_id__']]],
+                ['id' => 'urgent', 'label' => 'Urgent', 'domain' => [['priority', '=', '3']]],
+            ],
+            'group_by' => [
+                ['field' => 'user_id', 'label' => 'Assigned User'],
+                ['field' => 'priority', 'label' => 'Priority'],
+            ],
+        ];
+    }
+
+    protected function defineSecurity(): void
+    {
+        $this->setAccess(['read' => true, 'write' => true, 'create' => true, 'unlink' => true]);
+    }
+
+    protected function defineBusinessLogic(): void {}
+}
+```
+
+#### Step 1.4: Navigation Menu Insertion
+```sql
+INSERT INTO menus (name, label, controller, icon, parent_id, `order`, module)
+VALUES ('helpdesk_root', 'Helpdesk', NULL, 'life-buoy', NULL, 70, 'helpdesk');
+
+INSERT INTO menus (name, label, controller, icon, parent_id, `order`, module)
+VALUES ('helpdesk_tickets', 'All Tickets', 'helpdesk.ticket', 'ticket', (SELECT id FROM menus WHERE name='helpdesk_root'), 10, 'helpdesk');
+```
+
+---
+
+### 🌟 Pillar 2: Field Types & Attributes Matrix
+
+| Field Type Constant | Storage Column | Primary Options & Configurations | Example |
+|---------------------|----------------|----------------------------------|---------|
+| `Field::CHAR` | `VARCHAR(size)` | `'size'`, `'trim'`, `'required'`, `'widget'` (`'email'`, `'url'`, `'phone'`, `'color_picker'`) | `$this->addField('sku', Field::CHAR, ['size' => 64]);` |
+| `Field::TEXT` | `LONGTEXT` | `'rows'`, `'placeholder'`, `'help'` | `$this->addField('remarks', Field::TEXT);` |
+| `Field::HTML` | `LONGTEXT` | `'htmlPreset'` (`'full'`, `'standard'`, `'minimal'`), `'htmlMinHeight'`, `'htmlPlaceholder'` | `$this->addField('body', Field::HTML, ['htmlPreset' => 'full']);` |
+| `Field::INTEGER` | `INT` | `'default'`, `'min'`, `'max'`, `'unsigned'` | `$this->addField('quantity', Field::INTEGER, ['default' => 1]);` |
+| `Field::FLOAT` | `DECIMAL(d0,d1)` | `'digits' => [precision, scale]`, `'widget' => 'progressbar'` | `$this->addField('rate', Field::FLOAT, ['digits' => [5, 2]]);` |
+| `Field::MONETARY` | `DECIMAL(12,2)` | `'currency_id'` (points to currency field) | `$this->addField('price', Field::MONETARY, ['currency_id' => 'currency_id']);` |
+| `Field::DATE` | `DATE` | `'default' => 'today'`, `'widget' => 'remaining_days'` | `$this->addField('due_date', Field::DATE, ['default' => 'today']);` |
+| `Field::DATETIME` | `DATETIME` | `'default' => 'now'`, `'readonly'` | `$this->addField('logged_at', Field::DATETIME);` |
+| `Field::BOOLEAN` | `TINYINT(1)` | `'default' => true/false`, `'widget' => 'boolean_favorite'` | `$this->addField('is_starred', Field::BOOLEAN, ['widget' => 'boolean_favorite']);` |
+| `Field::SELECTION` | `VARCHAR(32)` | `'selection' => [['val', 'Label']]`, `'widget' => 'badge'` / `'priority'` | `$this->addField('status', Field::SELECTION, ['selection' => [['a','A'],['b','B']]]);` |
+| `Field::JSON` | `LONGTEXT` / `JSON` | Stores serialized associative JSON arrays or objects | `$this->addField('configs', Field::JSON);` |
+| `Field::MANY2ONE` | `INT (FK)` | `'relation'` (model name), `'displayFields'`, `'ondelete'`, `'widget' => 'statusbar'` | `$this->addField('customer_id', Field::MANY2ONE, ['relation' => 'res.partner']);` |
+| `Field::ONE2MANY` | *Virtual (None)* | `'relation'`, `'inverse_field'`, `'child_model'` | `$this->addField('line_ids', Field::ONE2MANY, ['relation' => 'inv.line', 'inverse_field' => 'invoice_id']);` |
+| `Field::MANY2MANY` | *Pivot Table* | `'relation'`, `'pivot'`, `'widget' => 'many2many_tags'` | `$this->addField('tag_ids', Field::MANY2MANY, ['relation' => 'tag', 'pivot' => 'rel_table']);` |
+| `Field::COMPUTED` | *None / Store* | `'compute' => 'methodName'`, `'store' => false` | `$this->addField('total', Field::FLOAT, ['compute' => 'calcTotal', 'store' => false]);` |
+
+---
+
+### 🌟 Pillar 3: View Configurations Master Template
+
+```php
+protected function defineViews(): void
+{
+    // 1. List View (Tree Grid)
+    $this->listView = [
+        'string'        => 'Records',
+        'default_order' => 'id desc',
+        'limit'         => 80,
+        'fields'        => ['name', 'amount', 'progress', 'status', 'deadline'],
+        'column_config' => [
+            'amount'   => ['sum' => 'Total Amount', 'widget' => 'monetary'],
+            'progress' => ['avg' => 'Average Progress', 'widget' => 'progressbar'],
+            'status'   => ['widget' => 'badge', 'optional' => 'show'],
+            'deadline' => ['widget' => 'remaining_days', 'optional' => 'show'],
+        ],
+        'decoration' => [
+            'decoration-danger'  => 'status == "rejected" or progress == 0',
+            'decoration-success' => 'status == "approved" or progress >= 100',
+            'decoration-warning' => 'progress > 0 and progress < 50',
+            'decoration-muted'   => 'active == false',
+        ],
+        'header_buttons' => [
+            [
+                'name'    => 'action_bulk_approve',
+                'string'  => 'Approve Selected',
+                'class'   => 'ls-btn-success',
+                'icon'    => 'check',
+                'confirm' => 'Approve all selected records?',
+            ],
+        ],
+    ];
+
+    // 2. Form View (Document & Inspector)
+    $this->formView = [
+        'string'              => 'Document Form',
+        'statusbar'           => 'stage_id',
+        'statusbar_clickable' => true,
+        'title'               => 'name',
+        'priority'            => 'priority',
+        'header_buttons' => [
+            [
+                'name'      => 'action_post',
+                'type'      => 'object',
+                'string'    => 'Post Entry',
+                'class'     => 'ls-btn-primary',
+                'invisible' => "status != 'draft'",
+            ],
+            [
+                'name'      => 'action_draft',
+                'type'      => 'object',
+                'string'    => 'Reset to Draft',
+                'class'     => 'ls-btn-secondary',
+                'invisible' => "status == 'draft'",
+            ],
+        ],
+        'groups' => [
+            [
+                'string'  => 'Primary Information',
+                'col'     => 2,
+                'columns' => [
+                    ['name', 'partner_id', ['name' => 'amount', 'widget' => 'monetary']],
+                    ['date', 'user_id', ['name' => 'status', 'widget' => 'badge']],
+                ],
+            ],
+        ],
+        'tabs' => [
+            [
+                'name'        => 'lines',
+                'label'       => 'Order Lines',
+                'type'        => 'one2many',
+                'field'       => 'line_ids',
+                'child_model' => 'sale.order.line',
+                'tree_fields' => ['product_id', 'quantity', 'price_unit', 'subtotal'],
+            ],
+            [
+                'name'  => 'notes',
+                'label' => 'Terms & Notes',
+                'type'  => 'field',
+                'field' => 'notes',
+            ],
+        ],
+    ];
+
+    // 3. Search View (Filters, Group By, Searchpanel)
+    $this->searchView = [
+        'filters' => [
+            ['id' => 'my_records', 'label' => 'My Records', 'domain' => [['user_id', '=', '__user_id__']]],
+            ['id' => 'draft',      'label' => 'Draft Only',  'domain' => [['status', '=', 'draft']]],
+            ['id' => 'open_tasks', 'label' => 'In Progress', 'domain_func' => 'getInProgressDomain'],
+        ],
+        'group_by' => [
+            ['field' => 'stage_id',   'label' => 'Stage'],
+            ['field' => 'partner_id', 'label' => 'Customer'],
+            ['field' => 'date:month', 'label' => 'Month Created'],
+        ],
+        'searchpanel' => [
+            ['field' => 'stage_id',   'type' => 'many2one',   'label' => 'Stage',    'icon' => 'columns'],
+            ['field' => 'partner_id', 'type' => 'many2one',   'label' => 'Customer', 'icon' => 'user'],
+        ],
+        'custom_filter_fields' => ['name', 'amount', 'status', 'date', 'user_id'],
+    ];
+
+    // 4. Kanban View (Card Deck)
+    $this->kanbanView = [
+        'default_group_by' => 'stage_id',
+        'quick_create'     => true,
+        'card_title'       => 'name',
+        'card_fields'      => ['partner_id', 'amount', 'user_id'],
+        'card_tags'        => 'tag_ids',
+        'card_footer'      => ['priority', 'user_id', 'amount'],
+        'color_field'      => 'stage_id',
+        'progress_bar'     => [
+            'field'  => 'progress',
+            'colors' => ['low' => '#3b82f6', 'medium' => '#f59e0b', 'high' => '#10b981'],
+        ],
+    ];
+
+    // 5. Analytics Views: Graph & Pivot
+    $this->graphView = [
+        'type'       => 'bar', // 'bar', 'line', 'pie'
+        'measure'    => 'amount',
+        'groupby'    => ['stage_id'],
+        'measures'   => ['amount', 'quantity'],
+        'dimensions' => ['stage_id', 'partner_id'],
+    ];
+
+    $this->pivotView = [
+        'row_groupby' => ['partner_id'],
+        'col_groupby' => ['stage_id'],
+        'measures'    => ['amount', 'quantity'],
+    ];
+
+    // 6. Interactive Spreadsheet View
+    $this->spreadsheetView = [
+        'fields'       => ['name', 'partner_id', 'quantity', 'amount', 'status'],
+        'column_width' => 140,
+        'row_height'   => 28,
+        'limit'        => 500,
+        'aggregation'  => 'sum',
+    ];
+}
+```
+
+---
+
+### 🌟 Pillar 4: Security & Access Control Declarations
+
+```php
+protected function defineSecurity(): void
+{
+    // 1. Model Level Base CRUD Rights
+    $this->setAccess([
+        'read'   => true,
+        'write'  => true,
+        'create' => true,
+        'unlink' => true,
+    ]);
+
+    // 2. Role/Group Level CRUD Overrides
+    $this->addAccessRule('sales_manager', ['read', 'write', 'create', 'unlink']);
+    $this->addAccessRule('sales_user',    ['read', 'write', 'create']);
+    $this->addAccessRule('portal_user',   ['read']);
+
+    // 3. Record-Level Rules (Dynamic Domain Expressions)
+    // Dynamic Tokens: __user_id__, __company_id__, __user_dept__
+    $this->addRecordRule(
+        'sales_user_own_orders_only',
+        [['user_id', '=', '__user_id__']],
+        ['read', 'write', 'unlink'],
+        ['sales_user']
+    );
+
+    $this->addRecordRule(
+        'company_isolation_rule',
+        [['company_id', '=', '__company_id__']],
+        ['read', 'write', 'create', 'unlink']
+    );
+
+    // 4. Field-Level Access Stripping
+    $this->setFieldAccess('margin_profit', [
+        'read'  => false, // Hidden from standard users
+        'write' => false,
+    ]);
+}
+```
+
+---
+
+### 🌟 Pillar 5: Business Logic, Decorators & Lifecycle Hooks
+
+```php
+protected function defineBusinessLogic(): void
+{
+    // @api.depends: Recalculate computed field when dependencies change
+    $this->apiDepends('computeTotalAmount', ['line_ids', 'tax_id']);
+
+    // @api.constrains: Execute validation assertion
+    $this->apiConstrains('validateDates', ['start_date', 'end_date']);
+
+    // @api.onchange: Reactive UI calculation (UI state only, not saved directly)
+    $this->apiOnchange('onchangeCustomer', ['partner_id']);
+
+    // @api.model: Class-level defaults generator
+    $this->apiModel('_default_get');
+}
+
+/**
+ * @api.depends implementation
+ */
+public function computeTotalAmount(object $record, array $values): array
+{
+    $total = 0.0;
+    if ($record->id) {
+        $lines = \App\Model\Sale\OrderLine::where('order_id', '=', $record->id)->get();
+        foreach ($lines as $line) {
+            $total += ($line->quantity * $line->price_unit);
+        }
+    }
+    return ['amount_total' => $total];
+}
+
+/**
+ * @api.constrains implementation: return error message string on failure or null on pass
+ */
+public function validateDates(object $record, array $values): ?string
+{
+    $start = $values['start_date'] ?? $record->start_date;
+    $end   = $values['end_date']   ?? $record->end_date;
+
+    if ($start && $end && strtotime($start) > strtotime($end)) {
+        return 'The start date cannot be later than the completion end date.';
+    }
+    return null;
+}
+
+/**
+ * @api.onchange implementation: return modified $values payload to client
+ */
+public function onchangeCustomer(string $field, array $values): array
+{
+    if (!empty($values['partner_id'])) {
+        $customer = \App\Model\Res\ResPartner::find($values['partner_id']);
+        if ($customer) {
+            $values['payment_term'] = $customer->payment_term ?? 'immediate';
+            $values['billing_address'] = $customer->address;
+        }
+    }
+    return $values;
+}
+
+/**
+ * Default values generator for new form records
+ */
+public function _default_get(array $defaults): array
+{
+    $defaults['date']   = date('Y-m-d');
+    $defaults['status'] = 'draft';
+    $defaults['active'] = true;
+    return $defaults;
+}
+
+// ── CRUD Lifecycle Hooks ──────────────────────────────────────────
+
+/** Before INSERT into database */
+protected function beforeCreate(array &$vals): void
+{
+    if (empty($vals['code'])) {
+        $vals['code'] = 'SO/' . date('Y') . '/' . strtoupper(bin2hex(random_bytes(3)));
+    }
+}
+
+/** After INSERT into database */
+protected function afterCreate(object $record, array $vals): void
+{
+    \App\Advsoft\Core\Support\Log::info("Created sale order ID #{$record->id} [{$record->code}]");
+}
+
+/** Before UPDATE in database */
+protected function beforeWrite(object $record, array &$vals): void
+{
+    if ($record->status === 'locked' && !isset($vals['unlock_override'])) {
+        throw new \RuntimeException("Locked records cannot be edited.");
+    }
+}
+
+/** After UPDATE in database */
+protected function afterWrite(object $record, array $vals): void
+{
+    \App\Advsoft\Core\Support\Log::info("Updated record ID #{$record->id}");
+}
+
+/** Before DELETE from database: return error string to abort delete */
+protected function beforeUnlink(object $record): ?string
+{
+    if ($record->status === 'posted') {
+        return "Posted entries cannot be deleted. Please cancel or reset to draft first.";
+    }
+    return null; // Allow deletion
+}
+
+/** Custom Record Display Name Resolver */
+public function nameGet(object $record): string
+{
+    return "[{$record->code}] {$record->name}";
+}
+
+// ── Action Button Handlers ────────────────────────────────────────
+
+public function action_confirm(object $record): array
+{
+    $record->status = 'confirmed';
+    $record->save();
+
+    return [
+        'type'   => 'ir.actions.client',
+        'tag'    => 'display_notification',
+        'params' => [
+            'title'   => 'Order Confirmed',
+            'message' => "Order {$record->name} is now confirmed and ready for dispatch.",
+            'type'    => 'success', // 'success', 'info', 'warning', 'danger'
+        ],
+    ];
+}
+```
+
+---
+
+### 🌟 Pillar 6: Domain Expression Syntax Reference
+
+AdvSoft domain expressions filter datasets cleanly using Polish prefix notation and standard arrays:
+
+| Domain Example | SQL Equivalent | Description |
+|----------------|----------------|-------------|
+| `[['status', '=', 'active']]` | `WHERE status = 'active'` | Simple equality comparison |
+| `[['amount', '>=', 1000]]` | `WHERE amount >= 1000` | Numeric comparison |
+| `[['name', 'like', '%adv%']]` | `WHERE name LIKE '%adv%'` | String pattern matching |
+| `[['stage_id', 'in', [1, 2, 3]]]` | `WHERE stage_id IN (1, 2, 3)` | Inclusion in array |
+| `[['deadline', '!=', false]]` | `WHERE deadline IS NOT NULL` | Null check |
+| `['&', ['a', '=', 1], ['b', '=', 2]]` | `WHERE (a = 1 AND b = 2)` | Explicit AND logic |
+| `['\|', ['a', '=', 1], ['b', '=', 2]]` | `WHERE (a = 1 OR b = 2)` | Explicit OR logic |
+| `['!', ['status', '=', 'done']]` | `WHERE NOT (status = 'done')` | Logical NOT inversion |
+
+---
+
 > **AdvSoft** — The Pure PHP Business Applications Platform  
 > Built on Adianti Framework · Zero Laravel Dependency · Open Source  
 > Repository: [https://github.com/taufikinfo/AdvSoft](https://github.com/taufikinfo/AdvSoft)
+
