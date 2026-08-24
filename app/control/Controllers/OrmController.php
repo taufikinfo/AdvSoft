@@ -285,9 +285,9 @@ class OrmController extends Controller
     {
         $def = $this->resolveModel($request, 'read');
         $modelName = $def->_name ?? null;
-        $id = $request->input('id');
+        $id = $request->input('id', $request->input('ids'));
         if (is_array($id)) {
-            $id = $id[0];
+            $id = reset($id);
         }
 
         $query = $def->newQuery();

@@ -139,16 +139,25 @@ class ShowcaseDef extends ModelDefinition
             'string' => 'Tags (M2M Tags)',
             'relation' => 'project.tag',
             'widget' => 'many2many_tags',
+            'pivot' => 'showcase_tag',
+            'column1' => 'showcase_id',
+            'column2' => 'tag_id',
         ]);
         $this->addField('tag_checkboxes', Field::MANY2MANY, [
             'string' => 'Tags (Checkboxes)',
             'relation' => 'project.tag',
             'widget' => 'many2many_checkboxes',
+            'pivot' => 'showcase_m2m_check',
+            'column1' => 'showcase_id',
+            'column2' => 'tag_id',
         ]);
         $this->addField('tag_list', Field::MANY2MANY, [
             'string' => 'Tags (List)',
             'relation' => 'project.tag',
             'widget' => 'many2many',
+            'pivot' => 'showcase_m2m_all',
+            'column1' => 'showcase_id',
+            'column2' => 'tag_id',
         ]);
 
         $this->addField('activities', Field::MANY2MANY, [
@@ -156,6 +165,8 @@ class ShowcaseDef extends ModelDefinition
             'relation' => 'project.tag',
             'widget' => 'activity_ids',
             'pivot' => 'activity_showcase',
+            'column1' => 'showcase_id',
+            'column2' => 'tag_id',
         ]);
 
         // ═══════════════════════════════════════════════════════

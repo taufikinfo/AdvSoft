@@ -734,11 +734,15 @@ abstract class ModelDefinition
                             if (isset($r->color)) $item['color'] = $r->color;
                             return $item;
                         })->values()->toArray();
-                    } elseif (!empty($record->id) && $relDef) {
                         // Load directly from pivot table
                         $pivotTable = $field->relationTable ?: ($field->pivot ?: null);
-                        $col1 = $field->column1 ?: ($field->foreignKey ?: strtolower($this->_name) . '_id');
-                        $col2 = $field->column2 ?: ($field->relatedKey ?: (preg_replace('/_ids?$/', '', $name) . '_id'));
+                        $defaultCol1 = !empty($this->_table) ? (preg_replace('/s$/', '', $this->_table) . '_id') : (str_replace('.', '_', $this->_name) . '_id');
+                        $col1 = $field->column1 ?: ($field->foreignKey ?: $defaultCol1);
+                        $col1 = str_replace('.', '_', $col1);
+
+                        $defaultCol2 = $relDef ? (!empty($relDef->_table) ? (preg_replace('/s$/', '', $relDef->_table) . '_id') : (str_replace('.', '_', $relDef->_name) . '_id')) : (preg_replace('/_ids?$/', '', $name) . '_id');
+                        $col2 = $field->column2 ?: ($field->relatedKey ?: $defaultCol2);
+                        $col2 = str_replace('.', '_', $col2);
 
                         $relItems = [];
                         if ($pivotTable) {
@@ -1219,8 +1223,14 @@ abstract class ModelDefinition
                         $relObj->sync($flatIds);
                     } else {
                         $table = $field->relationTable ?: ($field->pivot ?: null);
-                        $col1 = $field->column1 ?: ($field->foreignKey ?: strtolower($this->_name) . '_id');
-                        $col2 = $field->column2 ?: ($field->relatedKey ?: (preg_replace('/_ids?$/', '', $key) . '_id'));
+                        $defaultCol1 = !empty($this->_table) ? (preg_replace('/s$/', '', $this->_table) . '_id') : (str_replace('.', '_', $this->_name) . '_id');
+                        $col1 = $field->column1 ?: ($field->foreignKey ?: $defaultCol1);
+                        $col1 = str_replace('.', '_', $col1);
+
+                        $relDef = !empty($field->relation) ? Registry::get($field->relation) : null;
+                        $defaultCol2 = $relDef ? (!empty($relDef->_table) ? (preg_replace('/s$/', '', $relDef->_table) . '_id') : (str_replace('.', '_', $relDef->_name) . '_id')) : (preg_replace('/_ids?$/', '', $key) . '_id');
+                        $col2 = $field->column2 ?: ($field->relatedKey ?: $defaultCol2);
+                        $col2 = str_replace('.', '_', $col2);
 
                         if (!empty($table) && !empty($col1) && !empty($col2)) {
                             $opened = false;

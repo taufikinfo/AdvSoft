@@ -64,12 +64,30 @@ echo "Tasks found: " . count(json_decode($res->getContent(), true)['records'] ??
 $showcaseSearchReq = makeReq('/api/orm/search_read', 'POST', [
     'model' => 'showcase.model',
     'domain' => [],
-    'fields' => ['id', 'name'],
     'limit' => 5
 ]);
 $res = $orm->searchRead($showcaseSearchReq);
 echo "Showcase searchRead status: " . $res->getStatusCode() . "\n";
-echo "Showcase records found: " . count(json_decode($res->getContent(), true)['records'] ?? []) . "\n";
+$scRecords = json_decode($res->getContent(), true)['records'] ?? [];
+echo "Showcase records found: " . count($scRecords) . "\n";
+
+$showcaseReadReq = makeReq('/api/orm/read', 'POST', [
+    'model' => 'showcase.model',
+    'ids'   => [3],
+]);
+$res = $orm->read($showcaseReadReq);
+echo "Showcase read (id=3) status: " . $res->getStatusCode() . "\n";
+
+$showcaseWriteReq = makeReq('/api/orm/write', 'POST', [
+    'model' => 'showcase.model',
+    'ids'   => [3],
+    'values' => [
+        'name' => 'Upcoming Feature C (Updated)',
+        'tags' => [[6, 0, [1, 2]]],
+    ]
+]);
+$res = $orm->write($showcaseWriteReq);
+echo "Showcase write (id=3) status: " . $res->getStatusCode() . " body: " . $res->getContent() . "\n";
 
 echo "\n=== 4. Testing Accounting Controller (Trial Balance) ===\n";
 $acc = app(AccountReportController::class);
