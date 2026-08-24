@@ -216,8 +216,10 @@ Route::prefix('api/menu-editor')->group(function () {
 Route::prefix('api/spreadsheet')->group(function () {
     Route::post('/presence',       [SpreadsheetCollaborationController::class, 'presence']);
     Route::post('/publish',        [SpreadsheetCollaborationController::class, 'publish']);
+    Route::post('/apply_op',       [SpreadsheetCollaborationController::class, 'applyOp']);
     Route::post('/batch_publish',  [SpreadsheetCollaborationController::class, 'batchPublish']);
     Route::post('/longpoll',       [SpreadsheetCollaborationController::class, 'longpoll']);
+    Route::get('/fetch_ops',       [SpreadsheetCollaborationController::class, 'fetchOps']);
     Route::get('/history',         [SpreadsheetCollaborationController::class, 'history']);
     Route::post('/cleanup',        [SpreadsheetCollaborationController::class, 'cleanup']);
 });

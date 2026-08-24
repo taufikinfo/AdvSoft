@@ -219,6 +219,67 @@ assert(model2.getCellRaw(1, 0) === '42', 'Model fromJSON restores data');
 
 console.log(`  Spreadsheet Model: ${pass} passed, ${fail} failed`);
 
+console.log('\n=== Regression: Absolute refs ($A$1) ===');
+
+const posAbs = window.SpreadsheetRange.parseCellRef('$A$1');
+assert(posAbs && posAbs.col === 0 && posAbs.row === 0, 'parseCellRef($A$1)');
+
+const absModel = new window.SpreadsheetModel();
+absModel.setCellRaw(0, 0, '7');
+absModel.setCellRaw(1, 0, '3');
+absModel.setCellRaw(0, 1, '=$A$1+B$1');
+const absVal = absModel.getCellValue(0, 1);
+assert(absVal === 10, `Formula with $A$1 evaluates (got ${absVal})`);
+
+const adjusted = window.SpreadsheetRange.adjustFormulaRefs('=$A$1+B2', 1, 1);
+assert(adjusted === '=$A$1+C3', `adjustFormulaRefs preserves $ markers (got ${adjusted})`);
+
+const adjustedRel = window.SpreadsheetRange.adjustFormulaRefs('=SUM(A1:B2)', 1, 0);
+assert(adjustedRel === '=SUM(B1:C2)', `adjustFormulaRefs plain refs (got ${adjustedRel})`);
+
+console.log(`  Absolute refs: ${pass} passed, ${fail} failed`);
+
+console.log('\n=== Regression: Sheet accessors ===');
+
+const sheetModel = new window.SpreadsheetModel();
+assert(sheetModel.getActiveSheet() && sheetModel.getActiveSheet().id === 'sheet1', 'getActiveSheet()');
+assert(sheetModel.getSheetByName('Sheet1') !== null, 'getSheetByName()');
+sheetModel.setCellRaw(2, 3, 'x', 'sheet1');
+assert(sheetModel.getCellFromSheet('sheet1', 2, 3) !== null, 'getCellFromSheet(sheetId, col, row)');
+assert(sheetModel.getCellFromSheet('sheet1', 2, 3).raw === 'x', 'getCellFromSheet raw value');
+
+console.log(`  Sheet accessors: ${pass} passed, ${fail} failed`);
+
+console.log('\n=== Regression: Merge undo/redo ===');
+
+const mergeModel = new window.SpreadsheetModel();
+mergeModel.setMergedCells('A1:B2', true);
+assert(mergeModel.toJSON().mergedCells.length === 1, 'Merge recorded');
+
+mergeModel.undo();
+assert(mergeModel.toJSON().mergedCells.length === 0, 'Undo merge removes merge');
+
+mergeModel.redo();
+assert(mergeModel.toJSON().mergedCells.length === 1, 'Redo merge restores merge');
+
+mergeModel.setMergedCells('A1:B2', false);
+assert(mergeModel.toJSON().mergedCells.length === 0, 'Unmerge removes merge');
+
+mergeModel.undo();
+assert(mergeModel.toJSON().mergedCells.length === 1, 'Undo unmerge restores merge');
+
+console.log(`  Merge undo/redo: ${pass} passed, ${fail} failed`);
+
+console.log('\n=== Regression: Dependency extraction with $ ===');
+
+const depCell = new window.SpreadsheetCell('=$A$1+B2', {});
+assert(
+  depCell.dependencies.includes('A1') && depCell.dependencies.includes('B2'),
+  `Dependencies extracted from $A$1+B2 (got ${JSON.stringify(depCell.dependencies)})`
+);
+
+console.log(`  Dependencies: ${pass} passed, ${fail} failed`);
+
 console.log('\n========================================');
 console.log(`TOTAL: ${pass} passed, ${fail} failed`);
 if (errors.length > 0) {

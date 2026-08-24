@@ -36,13 +36,8 @@
                 this._applyStyles(ws, sheet.id);
                 this._applyColumnWidths(ws, sheet.id);
 
-                const sheetName = sheet.name.substring(0, 31).replace(/[\\\/\*\?\[\]]/g, '');
+                const sheetName = sheet.name.substring(0, 31).replace(/[\\\/\*\?\[\]]/g, '') || 'Sheet';
                 this._sheetJS.utils.book_append_sheet(wb, ws, sheetName);
-            }
-
-            if (this._model.sheets.length === 1) {
-                const ws = wb.Sheets[wb.SheetNames[0]];
-                this._sheetJS.utils.book_append_sheet(wb, ws, 'Sheet1');
             }
 
             this._sheetJS.writeFile(wb, filename);

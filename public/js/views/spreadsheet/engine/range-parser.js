@@ -27,7 +27,7 @@
         }
 
         static parseCellRef(ref) {
-            const match = ref.match(/^([A-Z]+)(\d+)$/);
+            const match = String(ref).trim().match(/^\$?([A-Z]+)\$?(\d+)$/);
             if (!match) return null;
             return {
                 col: this.letterToCol(match[1]),
@@ -70,11 +70,11 @@
         }
 
         static isRange(ref) {
-            return /^[A-Z]+\d+:[A-Z]+\d+$/.test(ref.trim());
+            return /^\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?\d+$/.test(ref.trim());
         }
 
         static isCellRef(ref) {
-            return /^[A-Z]+\d+$/.test(ref.trim());
+            return /^\$?[A-Z]+\$?\d+$/.test(ref.trim());
         }
 
         static parseMultiRange(rangeStr) {
@@ -106,12 +106,28 @@
         }
 
         static adjustFormulaRefs(formula, colOffset, rowOffset) {
-            return formula.replace(/\b([A-Z]+)(\d+)\b/g, (match, col, row) => {
-                const newCol = this.letterToCol(col) + colOffset;
-                const newRow = parseInt(row, 10) - 1 + rowOffset;
-                if (newCol < 0 || newRow < 0) return '#REF!';
-                return this.cellRef(newCol, newRow);
-            });
+            return formula.replace(
+                /(^|[^A-Za-z0-9_$])(\$?)([A-Za-z]+)(\$?)(\d+)(?::(\$?)([A-Za-z]+)(\$?)(\d+))?(?![A-Za-z0-9_$])/g,
+                (match, prefix, c1a, c1, r1a, r1, c2a, c2, r2a, r2) => {
+                    if (c2 !== undefined) {
+                        const start = this._shiftRefPart(c1a, c1, r1a, r1, colOffset, rowOffset);
+                        const end = this._shiftRefPart(c2a, c2, r2a, r2, colOffset, rowOffset);
+                        if (start === null || end === null) return `${prefix}#REF!`;
+                        return `${prefix}${start}:${end}`;
+                    }
+                    // Fully absolute refs ($A$1) never move (Excel fill semantics)
+                    if (c1a === '$' && r1a === '$') return match;
+                    const shifted = this._shiftRefPart(c1a, c1, r1a, r1, colOffset, rowOffset);
+                    return shifted === null ? `${prefix}#REF!` : `${prefix}${shifted}`;
+                }
+            );
+        }
+
+        static _shiftRefPart(colAbs, col, rowAbs, row, colOffset, rowOffset) {
+            const newCol = this.letterToCol(col.toUpperCase()) + (colAbs === '$' ? 0 : colOffset);
+            const newRow = (parseInt(row, 10) - 1) + (rowAbs === '$' ? 0 : rowOffset);
+            if (newCol < 0 || newRow < 0) return null;
+            return `${colAbs}${this.colToLetter(newCol)}${rowAbs}${newRow + 1}`;
         }
     }
 

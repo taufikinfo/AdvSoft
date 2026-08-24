@@ -63,7 +63,7 @@
 
             if (this._useWebSocket && this._url) {
                 this._connectWebSocket();
-            } else if (this._longPollUrl) {
+            } else if (this._longPollUrl || this._spreadsheetId) {
                 this._startLongPoll();
             }
         }
@@ -134,16 +134,16 @@
         async _longPoll() {
             try {
                 const rpc = window.AdvSoftRPC || window.rpc;
-                const result = await rpc.call('spreadsheet.collaboration', 'longpoll', {
+                const result = await rpc.call('/api/spreadsheet/longpoll', {
                     spreadsheet_id: this._spreadsheetId,
-                    last_sequence: this._lastSequence || 0,
+                    since_rev: this._lastRevision || 0,
                 });
 
                 if (result && result.messages) {
                     for (const msg of result.messages) {
                         this._handleMessage(msg);
                     }
-                    this._lastSequence = result.last_sequence || this._lastSequence;
+                    this._lastRevision = result.last_revision || this._lastRevision;
                 }
             } catch (e) {
                 console.error('Long poll error:', e);
@@ -155,7 +155,10 @@
 
             switch (msg.type) {
                 case 'operation':
-                    this._handleRemoteOperation(msg.operation);
+                case 'cellUpdate':
+                case 'cellDelete':
+                case 'formatUpdate':
+                    this._handleRemoteOperation(msg);
                     break;
                 case 'cursor':
                     this._handleRemoteCursor(msg);
@@ -243,14 +246,26 @@
             this._operationBuffer = [];
             this._bufferTimeout = null;
 
-            const batch = {
-                type: 'batch',
-                operations: ops,
-                sender: this._userId,
-                timestamp: Date.now(),
-            };
+            if (ops.length === 1) {
+                this._send(ops[0]);
+            } else {
+                this._sendBatch(ops);
+            }
+        }
 
-            this._send(batch);
+        _sendBatch(ops) {
+            const rpc = window.AdvSoftRPC || window.rpc;
+            if (!rpc || !this._spreadsheetId) {
+                this._pendingOps.push(...ops);
+                return;
+            }
+            rpc.call('/api/spreadsheet/batch_publish', {
+                spreadsheet_id: this._spreadsheetId,
+                operations: ops,
+            }).catch((e) => {
+                console.error('RPC batch publish error:', e);
+                this._pendingOps.push(...ops);
+            });
         }
 
         _clearBuffer() {
@@ -298,7 +313,7 @@
 
             if (this._connection && this._connection.readyState === WebSocket.OPEN) {
                 this._connection.send(msg);
-            } else if (this._longPollUrl) {
+            } else if (this._longPollUrl || this._spreadsheetId) {
                 this._sendViaRPC(data);
             } else {
                 this._pendingOps.push(data);
@@ -308,9 +323,9 @@
         async _sendViaRPC(data) {
             try {
                 const rpc = window.AdvSoftRPC || window.rpc;
-                await rpc.call('spreadsheet.collaboration', 'publish', {
+                await rpc.call('/api/spreadsheet/publish', {
                     spreadsheet_id: this._spreadsheetId,
-                    message: data,
+                    operation: data,
                 });
             } catch (e) {
                 console.error('RPC publish error:', e);

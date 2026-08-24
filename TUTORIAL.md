@@ -900,7 +900,12 @@ Browser B (Live Cursor)  ◀── GET  /api/spreadsheet/presence ──◀ Retu
 
 Endpoints:
 - `POST /api/spreadsheet/presence`: Updates user cursor coordinates and returns online collaborator positions.
-- `POST /api/spreadsheet/apply_op`: Commits atomic cell changes, formatting, and row insertions.
+- `POST /api/spreadsheet/apply_op` (alias `/publish`): Commits atomic cell changes, formatting, and row insertions. Revisions are assigned server-side (monotonic per spreadsheet).
+- `POST /api/spreadsheet/batch_publish`: Commits up to 500 operations in one request.
+- `POST /api/spreadsheet/longpoll`: Poll transport — returns all operations newer than `since_rev` as bus messages.
+- `GET /api/spreadsheet/fetch_ops`: Same data as longpoll in structured `ops` format.
+- `GET /api/spreadsheet/history`: Latest operations, newest first (`limit` up to 500).
+- `POST /api/spreadsheet/cleanup`: Removes stale presence rows (> 5 min idle) and operations older than 7 days.
 
 ---
 

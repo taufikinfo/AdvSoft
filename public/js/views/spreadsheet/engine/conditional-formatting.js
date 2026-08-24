@@ -247,7 +247,26 @@
         }
 
         _getAllValuesInRange() {
-            return [];
+            const values = [];
+            const model = this._model;
+            if (!model || !window.SpreadsheetRange) return values;
+
+            const ranges = this.ranges.length > 0 ? this.ranges : ['A1:Z1000'];
+            for (const rangeStr of ranges) {
+                const parsed = window.SpreadsheetRange.parseRange(rangeStr);
+                if (!parsed) continue;
+                for (let r = parsed.startRow; r <= parsed.endRow; r++) {
+                    for (let c = parsed.startCol; c <= parsed.endCol; c++) {
+                        const cell = model.getCell(c, r);
+                        if (!cell) continue;
+                        const num = Number(model.getCellValue ? model.getCellValue(c, r) : cell.value);
+                        if (!isNaN(num) && cell.raw !== '' && cell.raw !== null && cell.raw !== undefined) {
+                            values.push(num);
+                        }
+                    }
+                }
+            }
+            return values;
         }
 
         _interpolateColor(color1, color2, ratio) {
@@ -304,6 +323,7 @@
 
         addRule(config) {
             const cf = new ConditionalFormat(config);
+            cf._model = this._model;
             this._rules.set(cf.id, cf);
             return cf;
         }
@@ -315,6 +335,7 @@
             if (updates.rule) {
                 cf.rule = { ...cf.rule, ...updates.rule };
             }
+            cf._model = this._model;
             return cf;
         }
 
@@ -388,7 +409,9 @@
             this._rules.clear();
             if (Array.isArray(data)) {
                 for (const [id, cfData] of data) {
-                    this._rules.set(id, ConditionalFormat.fromJSON(cfData));
+                    const cf = ConditionalFormat.fromJSON(cfData);
+                    cf._model = this._model;
+                    this._rules.set(id, cf);
                 }
             }
         }

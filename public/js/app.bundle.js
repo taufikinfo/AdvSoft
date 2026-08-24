@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 04:40:01
+ * Generated: 2026-08-24 08:35:31
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -17176,22 +17176,24 @@ window.PivotView = PivotView;
 
         _extractDependencies() {
             if (!this._formula) return;
-            const refRegex = /\b([A-Z]+\d+)\b/g;
-            const rangeRegex = /\b([A-Z]+\d+):([A-Z]+\d+)\b/g;
+            const refRegex = /(^|[^A-Za-z0-9_:$])(\$?[A-Z]+\$?\d+)(?![A-Za-z0-9_$:])/g;
+            const rangeRegex = /(^|[^A-Za-z0-9_:$])(\$?[A-Z]+\$?\d+):(\$?[A-Z]+\$?\d+)(?![A-Za-z0-9_$:])/g;
             const deps = new Set();
 
             let match;
             const fullFormula = this._formula;
             const ranges = [];
             while ((match = rangeRegex.exec(fullFormula)) !== null) {
-                ranges.push(match[0]);
-                const range = window.SpreadsheetRange?.expandRange(match[0]) || [];
+                const rangeStr = `${match[2]}:${match[4]}`.replace(/\$/g, '');
+                ranges.push(rangeStr);
+                const range = window.SpreadsheetRange?.expandRange(rangeStr) || [];
                 range.forEach(r => deps.add(r));
             }
 
             while ((match = refRegex.exec(fullFormula)) !== null) {
-                if (!ranges.some(r => r.includes(match[1]))) {
-                    deps.add(match[1]);
+                const ref = match[2].replace(/\$/g, '');
+                if (!ranges.some(r => r.includes(ref))) {
+                    deps.add(ref);
                 }
             }
 
@@ -17351,7 +17353,7 @@ window.PivotView = PivotView;
         }
 
         static parseCellRef(ref) {
-            const match = ref.match(/^([A-Z]+)(\d+)$/);
+            const match = String(ref).trim().match(/^\$?([A-Z]+)\$?(\d+)$/);
             if (!match) return null;
             return {
                 col: this.letterToCol(match[1]),
@@ -17394,11 +17396,11 @@ window.PivotView = PivotView;
         }
 
         static isRange(ref) {
-            return /^[A-Z]+\d+:[A-Z]+\d+$/.test(ref.trim());
+            return /^\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?\d+$/.test(ref.trim());
         }
 
         static isCellRef(ref) {
-            return /^[A-Z]+\d+$/.test(ref.trim());
+            return /^\$?[A-Z]+\$?\d+$/.test(ref.trim());
         }
 
         static parseMultiRange(rangeStr) {
@@ -17430,12 +17432,28 @@ window.PivotView = PivotView;
         }
 
         static adjustFormulaRefs(formula, colOffset, rowOffset) {
-            return formula.replace(/\b([A-Z]+)(\d+)\b/g, (match, col, row) => {
-                const newCol = this.letterToCol(col) + colOffset;
-                const newRow = parseInt(row, 10) - 1 + rowOffset;
-                if (newCol < 0 || newRow < 0) return '#REF!';
-                return this.cellRef(newCol, newRow);
-            });
+            return formula.replace(
+                /(^|[^A-Za-z0-9_$])(\$?)([A-Za-z]+)(\$?)(\d+)(?::(\$?)([A-Za-z]+)(\$?)(\d+))?(?![A-Za-z0-9_$])/g,
+                (match, prefix, c1a, c1, r1a, r1, c2a, c2, r2a, r2) => {
+                    if (c2 !== undefined) {
+                        const start = this._shiftRefPart(c1a, c1, r1a, r1, colOffset, rowOffset);
+                        const end = this._shiftRefPart(c2a, c2, r2a, r2, colOffset, rowOffset);
+                        if (start === null || end === null) return `${prefix}#REF!`;
+                        return `${prefix}${start}:${end}`;
+                    }
+                    // Fully absolute refs ($A$1) never move (Excel fill semantics)
+                    if (c1a === '$' && r1a === '$') return match;
+                    const shifted = this._shiftRefPart(c1a, c1, r1a, r1, colOffset, rowOffset);
+                    return shifted === null ? `${prefix}#REF!` : `${prefix}${shifted}`;
+                }
+            );
+        }
+
+        static _shiftRefPart(colAbs, col, rowAbs, row, colOffset, rowOffset) {
+            const newCol = this.letterToCol(col.toUpperCase()) + (colAbs === '$' ? 0 : colOffset);
+            const newRow = (parseInt(row, 10) - 1) + (rowAbs === '$' ? 0 : rowOffset);
+            if (newCol < 0 || newRow < 0) return null;
+            return `${colAbs}${this.colToLetter(newCol)}${rowAbs}${newRow + 1}`;
         }
     }
 
@@ -17718,7 +17736,7 @@ window.PivotView = PivotView;
                 this.pos++;
             } else if (/\d/.test(ch) || (ch === '.' && /\d/.test(this.formula[this.pos + 1]))) {
                 this._readNumber();
-            } else if (/[A-Za-z_]/.test(ch)) {
+            } else if (/[A-Za-z_$]/.test(ch)) {
                 this._readIdentifier();
             } else {
                 this.tokens.push(new Token(TokenType.ERROR, `Unexpected character: ${ch}`, start, start + 1));
@@ -17756,29 +17774,27 @@ window.PivotView = PivotView;
         _readIdentifier() {
             const start = this.pos;
             let name = '';
-            while (this.pos < this.formula.length && /[A-Za-z0-9_.]/.test(this.formula[this.pos])) {
+            while (this.pos < this.formula.length && /[A-Za-z0-9_.$]/.test(this.formula[this.pos])) {
                 name += this.formula[this.pos];
                 this.pos++;
             }
 
-            const upper = name.toUpperCase();
+            // Strip absolute-reference markers ($A$1 -> A1); absoluteness
+            // only matters for fill/copy operations handled by adjustFormulaRefs.
+            const cleanName = name.replace(/\$/g, '');
+            const upper = cleanName.toUpperCase();
 
             if (upper === 'TRUE' || upper === 'FALSE') {
                 this.tokens.push(new Token(TokenType.BOOLEAN, upper === 'TRUE', start, this.pos));
                 return;
             }
 
-            if (this.formula[this.pos] === '(') {
+            if (this.formula[this.pos] === '(' && !cleanName.includes('$')) {
                 this.tokens.push(new Token(TokenType.FUNCTION, upper, start, this.pos));
                 return;
             }
 
-            if (/^[A-Z]+$/i.test(name) && this.formula[this.pos] === /\d/) {
-                this.tokens.push(new Token(TokenType.CELL_REF, upper, start, this.pos));
-                return;
-            }
-
-            if (/^[A-Z]+\d+$/i.test(name)) {
+            if (/^[A-Z]+\d+$/i.test(cleanName)) {
                 this.tokens.push(new Token(TokenType.CELL_REF, upper, start, this.pos));
                 return;
             }
@@ -19038,6 +19054,18 @@ window.PivotView = PivotView;
             return this._cells.get(key) || null;
         }
 
+        getCellFromSheet(sheetId, col, row) {
+            return this.getCell(col, row, sheetId);
+        }
+
+        getActiveSheet() {
+            return this._sheets.find(s => s.id === this._activeSheetId) || this._sheets[0] || null;
+        }
+
+        getSheetByName(name) {
+            return this._sheets.find(s => s.name === name) || null;
+        }
+
         getCellFormat(col, row, sheetId = null) {
             const key = this._getCellKey(col, row, sheetId);
             return this._cellFormats.get(key) || { ...window.DEFAULT_CELL_FORMAT };
@@ -19412,18 +19440,36 @@ window.PivotView = PivotView;
             const parsed = window.SpreadsheetRange.parseRange(rangeStr);
             if (!parsed) return;
 
+            const previousState = this._mergedCells.get(rangeStr) || null;
+            let oldRangeStr = rangeStr;
+
             if (merge) {
                 this._mergedCells.set(rangeStr, parsed);
             } else {
+                let removed = false;
                 for (const [key, val] of this._mergedCells) {
                     if (val.startCol === parsed.startCol && val.startRow === parsed.startRow &&
                         val.endCol === parsed.endCol && val.endRow === parsed.endRow) {
+                        oldRangeStr = key;
                         this._mergedCells.delete(key);
+                        removed = true;
                         break;
                     }
                 }
+                if (!removed) return;
             }
-            this._emit('mergeChanged', { rangeStr, merge });
+
+            this._history.push(new window.SpreadsheetCommand(
+                merge ? window.SpreadsheetCommandType.MERGE : window.SpreadsheetCommandType.UNMERGE,
+                {
+                    rangeStr: oldRangeStr,
+                    previous: previousState,
+                    parsed,
+                },
+                `${merge ? 'Merge' : 'Unmerge'} ${oldRangeStr}`
+            ));
+
+            this._emit('mergeChanged', { rangeStr: oldRangeStr, merge });
         }
 
         addChart(chartConfig) {
@@ -19588,6 +19634,12 @@ window.PivotView = PivotView;
                 case window.SpreadsheetCommandType.COL_RESIZE:
                     if (p.oldWidth) this._colWidths.set(p.col, p.oldWidth);
                     break;
+                case window.SpreadsheetCommandType.MERGE:
+                    this._mergedCells.delete(p.rangeStr);
+                    break;
+                case window.SpreadsheetCommandType.UNMERGE:
+                    if (p.previous) this._mergedCells.set(p.rangeStr, p.previous);
+                    break;
                 case window.SpreadsheetCommandType.ROW_RESIZE:
                     if (p.oldHeight) this._rowHeights.set(p.row, p.oldHeight);
                     break;
@@ -19624,6 +19676,12 @@ window.PivotView = PivotView;
                     break;
                 case window.SpreadsheetCommandType.COL_RESIZE:
                     this._colWidths.set(p.col, p.newWidth);
+                    break;
+                case window.SpreadsheetCommandType.MERGE:
+                    this._mergedCells.set(p.rangeStr, p.parsed);
+                    break;
+                case window.SpreadsheetCommandType.UNMERGE:
+                    this._mergedCells.delete(p.rangeStr);
                     break;
                 case window.SpreadsheetCommandType.ROW_RESIZE:
                     this._rowHeights.set(p.row, p.newHeight);
@@ -21347,7 +21405,7 @@ window.PivotView = PivotView;
     class SpreadsheetDocument {
         constructor(config = {}) {
             this._rpc = config.rpc || window.AdvSoftRPC || window.rpc;
-            this._model = config.model || 'spreadsheet.spreadsheet_data';
+            this._model = config.model || 'spreadsheet.document';
             this._currentId = null;
             this._currentName = '';
             this._autoSave = config.autoSave !== false;
@@ -22206,7 +22264,26 @@ window.PivotView = PivotView;
         }
 
         _getAllValuesInRange() {
-            return [];
+            const values = [];
+            const model = this._model;
+            if (!model || !window.SpreadsheetRange) return values;
+
+            const ranges = this.ranges.length > 0 ? this.ranges : ['A1:Z1000'];
+            for (const rangeStr of ranges) {
+                const parsed = window.SpreadsheetRange.parseRange(rangeStr);
+                if (!parsed) continue;
+                for (let r = parsed.startRow; r <= parsed.endRow; r++) {
+                    for (let c = parsed.startCol; c <= parsed.endCol; c++) {
+                        const cell = model.getCell(c, r);
+                        if (!cell) continue;
+                        const num = Number(model.getCellValue ? model.getCellValue(c, r) : cell.value);
+                        if (!isNaN(num) && cell.raw !== '' && cell.raw !== null && cell.raw !== undefined) {
+                            values.push(num);
+                        }
+                    }
+                }
+            }
+            return values;
         }
 
         _interpolateColor(color1, color2, ratio) {
@@ -22263,6 +22340,7 @@ window.PivotView = PivotView;
 
         addRule(config) {
             const cf = new ConditionalFormat(config);
+            cf._model = this._model;
             this._rules.set(cf.id, cf);
             return cf;
         }
@@ -22274,6 +22352,7 @@ window.PivotView = PivotView;
             if (updates.rule) {
                 cf.rule = { ...cf.rule, ...updates.rule };
             }
+            cf._model = this._model;
             return cf;
         }
 
@@ -22347,7 +22426,9 @@ window.PivotView = PivotView;
             this._rules.clear();
             if (Array.isArray(data)) {
                 for (const [id, cfData] of data) {
-                    this._rules.set(id, ConditionalFormat.fromJSON(cfData));
+                    const cf = ConditionalFormat.fromJSON(cfData);
+                    cf._model = this._model;
+                    this._rules.set(id, cf);
                 }
             }
         }
@@ -22987,13 +23068,21 @@ window.PivotView = PivotView;
         set enabled(val) { this._enabled = val; }
 
         setup() {
-            document.addEventListener('keydown', (e) => this._handleKeyDown(e));
-            document.addEventListener('keyup', (e) => this._handleKeyUp(e));
+            this._boundKeyDown = (e) => this._handleKeyDown(e);
+            this._boundKeyUp = (e) => this._handleKeyUp(e);
+            document.addEventListener('keydown', this._boundKeyDown);
+            document.addEventListener('keyup', this._boundKeyUp);
         }
 
         destroy() {
-            document.removeEventListener('keydown', this._handleKeyDown);
-            document.removeEventListener('keyup', this._handleKeyUp);
+            if (this._boundKeyDown) {
+                document.removeEventListener('keydown', this._boundKeyDown);
+                this._boundKeyDown = null;
+            }
+            if (this._boundKeyUp) {
+                document.removeEventListener('keyup', this._boundKeyUp);
+                this._boundKeyUp = null;
+            }
         }
 
         _handleKeyDown(e) {
@@ -23922,13 +24011,8 @@ window.PivotView = PivotView;
                 this._applyStyles(ws, sheet.id);
                 this._applyColumnWidths(ws, sheet.id);
 
-                const sheetName = sheet.name.substring(0, 31).replace(/[\\\/\*\?\[\]]/g, '');
+                const sheetName = sheet.name.substring(0, 31).replace(/[\\\/\*\?\[\]]/g, '') || 'Sheet';
                 this._sheetJS.utils.book_append_sheet(wb, ws, sheetName);
-            }
-
-            if (this._model.sheets.length === 1) {
-                const ws = wb.Sheets[wb.SheetNames[0]];
-                this._sheetJS.utils.book_append_sheet(wb, ws, 'Sheet1');
             }
 
             this._sheetJS.writeFile(wb, filename);
@@ -24227,7 +24311,7 @@ window.PivotView = PivotView;
 
             if (this._useWebSocket && this._url) {
                 this._connectWebSocket();
-            } else if (this._longPollUrl) {
+            } else if (this._longPollUrl || this._spreadsheetId) {
                 this._startLongPoll();
             }
         }
@@ -24298,16 +24382,16 @@ window.PivotView = PivotView;
         async _longPoll() {
             try {
                 const rpc = window.AdvSoftRPC || window.rpc;
-                const result = await rpc.call('spreadsheet.collaboration', 'longpoll', {
+                const result = await rpc.call('/api/spreadsheet/longpoll', {
                     spreadsheet_id: this._spreadsheetId,
-                    last_sequence: this._lastSequence || 0,
+                    since_rev: this._lastRevision || 0,
                 });
 
                 if (result && result.messages) {
                     for (const msg of result.messages) {
                         this._handleMessage(msg);
                     }
-                    this._lastSequence = result.last_sequence || this._lastSequence;
+                    this._lastRevision = result.last_revision || this._lastRevision;
                 }
             } catch (e) {
                 console.error('Long poll error:', e);
@@ -24319,7 +24403,10 @@ window.PivotView = PivotView;
 
             switch (msg.type) {
                 case 'operation':
-                    this._handleRemoteOperation(msg.operation);
+                case 'cellUpdate':
+                case 'cellDelete':
+                case 'formatUpdate':
+                    this._handleRemoteOperation(msg);
                     break;
                 case 'cursor':
                     this._handleRemoteCursor(msg);
@@ -24407,14 +24494,26 @@ window.PivotView = PivotView;
             this._operationBuffer = [];
             this._bufferTimeout = null;
 
-            const batch = {
-                type: 'batch',
-                operations: ops,
-                sender: this._userId,
-                timestamp: Date.now(),
-            };
+            if (ops.length === 1) {
+                this._send(ops[0]);
+            } else {
+                this._sendBatch(ops);
+            }
+        }
 
-            this._send(batch);
+        _sendBatch(ops) {
+            const rpc = window.AdvSoftRPC || window.rpc;
+            if (!rpc || !this._spreadsheetId) {
+                this._pendingOps.push(...ops);
+                return;
+            }
+            rpc.call('/api/spreadsheet/batch_publish', {
+                spreadsheet_id: this._spreadsheetId,
+                operations: ops,
+            }).catch((e) => {
+                console.error('RPC batch publish error:', e);
+                this._pendingOps.push(...ops);
+            });
         }
 
         _clearBuffer() {
@@ -24462,7 +24561,7 @@ window.PivotView = PivotView;
 
             if (this._connection && this._connection.readyState === WebSocket.OPEN) {
                 this._connection.send(msg);
-            } else if (this._longPollUrl) {
+            } else if (this._longPollUrl || this._spreadsheetId) {
                 this._sendViaRPC(data);
             } else {
                 this._pendingOps.push(data);
@@ -24472,9 +24571,9 @@ window.PivotView = PivotView;
         async _sendViaRPC(data) {
             try {
                 const rpc = window.AdvSoftRPC || window.rpc;
-                await rpc.call('spreadsheet.collaboration', 'publish', {
+                await rpc.call('/api/spreadsheet/publish', {
                     spreadsheet_id: this._spreadsheetId,
-                    message: data,
+                    operation: data,
                 });
             } catch (e) {
                 console.error('RPC publish error:', e);
@@ -25142,6 +25241,7 @@ window.PivotView = PivotView;
     class SpreadsheetView extends Component {
         static template = xml`
 <div class="ls-spreadsheet-view">
+    <input type="file" id="lsSSCsvInput" accept=".csv,text/csv" style="display:none" t-on-change="importCSV"/>
     <!-- ═══ Menu Bar ═══ -->
     <div class="ls-ss-menubar">
         <div class="ls-ss-menu-item" t-on-click="() => this.toggleMenu('file')">File</div>
@@ -25420,6 +25520,11 @@ window.PivotView = PivotView;
                 <t t-if="state.selectedCell">
                     <t t-esc="state.selectedCell"/>: <t t-esc="getSelectedCellRawValue()"/>
                 </t>
+                <t t-foreach="state.collaborators" t-as="collab" t-key="collab.userId">
+                    <span class="ls-ss-collab-chip" t-att-style="'background:' + (collab.userColor || '#6366f1')" t-att-title="collab.userName + ' @ ' + colLetter(collab.col) + (collab.row + 1)">
+                        <t t-esc="collab.userName"/>
+                    </span>
+                </t>
             </span>
             <span class="ls-ss-status-right">
                 <t t-if="state.statusCalc">
@@ -25598,6 +25703,39 @@ window.PivotView = PivotView;
             </div>
         </div>
     </t>
+
+    <!-- ═══ Open Spreadsheet Dialog ═══ -->
+    <t t-if="state.openDialog.show">
+        <div class="ls-ss-modal-overlay" t-on-click.self="() => this.closeSpreadsheetDialog()">
+            <div class="ls-ss-modal">
+                <div class="ls-ss-modal-header">
+                    <span>Open Spreadsheet</span>
+                    <button class="ls-ss-modal-close" t-on-click="() => this.closeSpreadsheetDialog()">×</button>
+                </div>
+                <div class="ls-ss-modal-body">
+                    <t t-if="state.openDialog.error">
+                        <div class="ls-ss-find-count">Failed to load documents: <t t-esc="state.openDialog.error"/></div>
+                    </t>
+                    <t t-elif="state.openDialog.docs.length === 0">
+                        <div class="ls-ss-find-count">No saved spreadsheets found.</div>
+                    </t>
+                    <t t-else="">
+                        <div class="ls-ss-open-doc-list">
+                            <t t-foreach="state.openDialog.docs" t-as="doc" t-key="doc.id">
+                                <div class="ls-ss-open-doc-item" t-on-click="() => this.chooseSpreadsheet(doc.id)">
+                                    <span class="ls-ss-open-doc-name"><t t-esc="doc.name"/></span>
+                                    <span class="ls-ss-open-doc-date"><t t-esc="doc.updated"/></span>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+                <div class="ls-ss-modal-footer">
+                    <button class="ls-btn" t-on-click="() => this.closeSpreadsheetDialog()">Close</button>
+                </div>
+            </div>
+        </div>
+    </t>
 </div>
     `;
 
@@ -25697,6 +25835,10 @@ window.PivotView = PivotView;
                 showGridLines: true,
                 zoom: 100,
                 sheetData: {},
+                // Collaboration presence
+                collaborators: [],
+                // Open-document dialog
+                openDialog: { show: false, docs: [], error: null },
             });
 
 
@@ -25715,6 +25857,8 @@ window.PivotView = PivotView;
 
             onWillUnmount(() => {
                 document.removeEventListener('keydown', this._keyHandler);
+                this._stopPresenceLoop();
+                if (this.collab) { this.collab.disconnect(); this.collab = null; }
                 if (this.engine) this.engine.destroy();
             });
         }
@@ -25747,6 +25891,7 @@ window.PivotView = PivotView;
                     { separator: true },
                     { label: 'Save', icon: 'save', shortcut: 'Ctrl+S', action: () => this.saveData() },
                     { separator: true },
+                    { label: 'Import CSV...', icon: 'upload', action: () => this._triggerCSVImport() },
                     { label: 'Export as CSV', icon: 'download', action: () => this.exportCSV() },
                     { label: 'Export as Excel', icon: 'file-spreadsheet', action: () => this.exportExcel() },
                 ],
@@ -25796,6 +25941,8 @@ window.PivotView = PivotView;
                     { separator: true },
                     { label: 'Remove Duplicates', icon: 'x-circle', action: () => this.removeDuplicates() },
                     { label: 'Data Validation', icon: 'check-circle', action: () => this.openDataValidation() },
+                    { separator: true },
+                    { label: this._isSheetProtected() ? 'Unprotect Sheet' : 'Protect Sheet', icon: this._isSheetProtected() ? 'unlock' : 'lock', action: () => this.toggleSheetProtection() },
                 ],
             };
             return items[menu] || [];
@@ -25817,13 +25964,32 @@ window.PivotView = PivotView;
         }
 
         async openSpreadsheetDialog() {
-            const docId = prompt('Enter spreadsheet document ID to open:');
-            if (!docId) return;
             try {
-                await this.loadSpreadsheet(parseInt(docId));
-                alert('Spreadsheet loaded successfully.');
+                const res = await RPC.searchRead('spreadsheet.document', [], { limit: 50 });
+                this.state.openDialog = {
+                    show: true,
+                    docs: (res.records || []).map(d => ({ id: d.id, name: d.name || ('Document #' + d.id), updated: d.updated_at || d.write_date || '' })),
+                    error: null,
+                };
             } catch (e) {
-                alert('Failed to load spreadsheet: ' + e.message);
+                this.state.openDialog = { show: true, docs: [], error: e.message };
+            }
+        }
+
+        closeSpreadsheetDialog() {
+            this.state.openDialog.show = false;
+        }
+
+        async chooseSpreadsheet(docId) {
+            this.state.openDialog.show = false;
+            try {
+                await this.loadSpreadsheet(docId);
+                this._currentDocId = docId;
+                this._initCollaboration();
+                if (window.AdvSoftToast?.success) window.AdvSoftToast.success('Spreadsheet loaded successfully.');
+            } catch (e) {
+                if (window.AdvSoftToast?.error) window.AdvSoftToast.error('Failed to load spreadsheet: ' + e.message);
+                else alert('Failed to load spreadsheet: ' + e.message);
             }
         }
 
@@ -25895,6 +26061,8 @@ window.PivotView = PivotView;
                 console.warn('Could not load saved spreadsheet document:', e);
             }
 
+            this._initCollaboration();
+
             this.state.loading = false;
             setTimeout(() => this._renderAllCharts(), 150);
         }
@@ -25908,7 +26076,7 @@ window.PivotView = PivotView;
 
             try {
                 const engineModel = this.engine.model;
-                for (let r = 0; r < Math.min(this.state.rows.length, 200); r++) {
+                for (let r = 0; r < this.state.rows.length; r++) {
                     for (let c = 0; c < this.state.columns.length; c++) {
                         const key = c + '_' + r;
                         const cd = this.state.cellData[key];
@@ -25960,6 +26128,107 @@ window.PivotView = PivotView;
                 const cmd = this.engine.redo();
                 if (cmd) this._syncEngineToState();
             }
+        }
+
+        // ══════════════════════════════════════════════════
+        //  Collaboration (presence + operation broadcast)
+        // ══════════════════════════════════════════════════
+
+        _initCollaboration() {
+            if (!this._currentDocId || this.collab) return;
+            const user = window.AdvSoftUser || window.rpc?.user || {};
+            const userId = user.uid || user.id || null;
+            try {
+                this.collab = new window.SpreadsheetCollaborationBus({
+                    spreadsheetId: this._currentDocId,
+                    userId,
+                    userName: user.name || ('User ' + (userId ?? '?')),
+                    useWebSocket: false,
+                });
+                this.collab.connect();
+                this.collab.on('remoteOperation', (op) => this._handleRemoteOperation(op));
+                this._startPresenceLoop();
+            } catch (e) {
+                console.warn('Collaboration init skipped:', e);
+                this.collab = null;
+            }
+        }
+
+        _broadcastCellUpdate(col, row, value) {
+            if (!this.collab || !this.collab.isConnected) return;
+            this.collab.sendOperation({
+                type: 'cellUpdate',
+                col, row,
+                sheet: this.state.activeSheet,
+                value,
+            });
+        }
+
+        _handleRemoteOperation(op) {
+            if (!op || op.type !== 'cellUpdate') return;
+            const key = op.col + '_' + op.row;
+            if (!this.state.cellData[key]) this.state.cellData[key] = { raw: '', value: '', formula: null, format: {} };
+            const cd = this.state.cellData[key];
+            const value = String(op.value ?? '');
+            if (value.startsWith('=')) { cd.formula = value; cd.raw = value; }
+            else { cd.formula = null; cd.raw = value; const num = parseFloat(value); cd.value = (!isNaN(num) && String(num) === value.trim()) ? num : value; }
+            if (this.engine && this.engine.isInitialized) {
+                try { this.engine.setCellRaw(op.col, op.row, value); } catch (e) { /* non-fatal */ }
+            }
+        }
+
+        _startPresenceLoop() {
+            this._stopPresenceLoop();
+            this._presenceTimer = setInterval(() => this._pollPresence(), 15000);
+            this._pollPresence();
+        }
+
+        _stopPresenceLoop() {
+            if (this._presenceTimer) {
+                clearInterval(this._presenceTimer);
+                this._presenceTimer = null;
+            }
+        }
+
+        async _pollPresence() {
+            if (!this._currentDocId) return;
+            try {
+                const sel = this.state.selectedCell || '';
+                const res = await RPC.call('/api/spreadsheet/presence', {
+                    spreadsheet_id: this._currentDocId,
+                    cursor_col: this.state.selectedCol >= 0 ? this.state.selectedCol : 0,
+                    cursor_row: this.state.selectedRow >= 0 ? this.state.selectedRow : 0,
+                    selection: sel,
+                });
+                this.state.collaborators = res.cursors || [];
+            } catch (e) {
+                // Presence is best-effort; ignore errors (e.g. 401)
+            }
+        }
+
+        // ══════════════════════════════════════════════════
+        //  Sheet protection & CSV import
+        // ══════════════════════════════════════════════════
+
+        _isSheetProtected() {
+            return !!(this.state.sheetData[this.state.activeSheet]?.protected);
+        }
+
+        toggleSheetProtection() {
+            this._saveCurrentSheetData();
+            const d = this.state.sheetData[this.state.activeSheet] || {};
+            d.protected = !d.protected;
+            this.state.sheetData[this.state.activeSheet] = d;
+            if (window.AdvSoftToast) {
+                d.protected
+                    ? window.AdvSoftToast.success('Sheet protected — editing is disabled.')
+                    : window.AdvSoftToast.success('Sheet unprotected.');
+            }
+        }
+
+        _triggerCSVImport() {
+            const input = document.getElementById('lsSSCsvInput');
+            if (input) input.click();
         }
 
         // ══════════════════════════════════════════════════
@@ -26076,6 +26345,10 @@ window.PivotView = PivotView;
             const key = colIdx + '_' + rowIdx;
             const cd = this.getCellData(colIdx, rowIdx);
             if (cd && cd.format && cd.format.locked) return;
+            if (this._isSheetProtected()) {
+                if (window.AdvSoftToast?.warning) window.AdvSoftToast.warning('Sheet is protected. Unprotect it first (Data menu).');
+                return;
+            }
             this.state.editingCell = key;
             this.state.editValue = cd ? (cd.formula || String(cd.raw ?? '')) : '';
             this.state.formulaBarValue = this.state.editValue;
@@ -26103,6 +26376,14 @@ window.PivotView = PivotView;
             this._pushUndo({ type: 'edit', key, oldData, newData, colIdx, rowIdx });
             this.state.editingCell = null;
             this.state.editMode = false;
+
+            // Keep engine model in sync (formulas, exports, undo)
+            if (this.engine && this.engine.isInitialized) {
+                try { this.engine.setCellRaw(colIdx, rowIdx, value); } catch (e) { /* non-fatal */ }
+            }
+
+            // Broadcast to collaborators
+            this._broadcastCellUpdate(colIdx, rowIdx, value);
         }
 
         onCellKeydown(ev, colIdx, rowIdx) {
@@ -26771,7 +27052,7 @@ window.PivotView = PivotView;
                 const fmt = isUndo ? action.oldFormat : action.newFormat;
                 if (fmt) this.state.cellFormats[action.key] = { ...fmt };
                 else delete this.state.cellFormats[action.key];
-            } else if (action.type === 'sort') {
+            } else if (action.type === 'sort' || action.type === 'import') {
                 const cd = isUndo ? action.oldCellData : action.newCellData;
                 const rows = isUndo ? action.oldRows : action.newRows;
                 if (cd) this.state.cellData = JSON.parse(JSON.stringify(cd));
@@ -27717,23 +27998,117 @@ window.PivotView = PivotView;
         }
 
         exportExcel() {
+            const filename = (this.props.actionTitle || 'spreadsheet');
+            if (this.engine && this.engine.isInitialized && this.engine.exporter) {
+                this._syncEngineToState();
+                if (this.engine.exporter.hasSheetJS) {
+                    this.engine.exporter.exportToXLSX(filename + '.xlsx');
+                    return;
+                }
+                if (window.AdvSoftToast?.info) {
+                    window.AdvSoftToast.info('Excel library not loaded — exported as CSV instead.');
+                }
+                this.engine.exporter.exportToCSV(filename + '.csv');
+                return;
+            }
+            // Legacy fallback: HTML table (only when engine is unavailable)
             let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="utf-8"></head><body><table border="1">';
             html += '<tr>' + this.state.columns.filter(c => !c.hidden).map(c => '<th style="background:#4f46e5;color:#fff;font-weight:bold;padding:6px 12px">' + esc(c.label) + '</th>').join('') + '</tr>';
             for (const row of this.state.rows) { if (!row.record) continue; html += '<tr>' + this.state.columns.filter(c => !c.hidden).map(col => '<td style="padding:4px 8px">' + esc(String(this.getCellValue(col.idx, row.idx))) + '</td>').join('') + '</tr>'; }
             html += '</table></body></html>';
             const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (this.props.actionTitle || 'spreadsheet') + '.xls'; link.click();
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename + '.xls'; link.click();
+        }
+
+        importCSV(ev) {
+            const file = ev.target.files && ev.target.files[0];
+            ev.target.value = '';
+            if (!file) return;
+            const startCol = this.state.selectedCol >= 0 ? this.state.selectedCol : 0;
+            const startRow = this.state.selectedRow >= 0 ? this.state.selectedRow : 0;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const text = String(reader.result || '');
+                    const rows = this._parseCSV(text);
+                    if (!rows.length) return;
+                    const oldCellData = JSON.parse(JSON.stringify(this.state.cellData));
+                    for (let r = 0; r < rows.length; r++) {
+                        for (let c = 0; c < rows[r].length; c++) {
+                            const colIdx = startCol + c;
+                            const rowIdx = startRow + r;
+                            const key = colIdx + '_' + rowIdx;
+                            const raw = rows[r][c];
+                            if (!this.state.cellData[key]) this.state.cellData[key] = { raw: '', value: '', formula: null, format: {} };
+                            const cd = this.state.cellData[key];
+                            if (raw.startsWith('=')) { cd.formula = raw; cd.raw = raw; }
+                            else { cd.formula = null; cd.raw = raw; const num = parseFloat(raw); cd.value = (!isNaN(num) && String(num) === raw.trim()) ? num : raw; }
+                            if (cd.recordId && cd.fieldName) {
+                                this.state.modifiedCells[key] = { recordId: cd.recordId, fieldName: cd.fieldName, value: cd.value };
+                            }
+                            if (this.engine && this.engine.isInitialized) {
+                                this.engine.setCellRaw(colIdx, rowIdx, raw);
+                            }
+                        }
+                    }
+                    this._pushUndo({
+                        type: 'import',
+                        oldCellData,
+                        newCellData: JSON.parse(JSON.stringify(this.state.cellData)),
+                    });
+                    if (window.AdvSoftToast?.success) window.AdvSoftToast.success('CSV imported: ' + rows.length + ' rows');
+                } catch (e) {
+                    if (window.AdvSoftToast?.error) window.AdvSoftToast.error('Import failed: ' + e.message);
+                    else alert('Import failed: ' + e.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        _parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                if (inQuotes) {
+                    if (ch === '"') {
+                        if (text[i + 1] === '"') { field += '"'; i++; }
+                        else inQuotes = false;
+                    } else field += ch;
+                } else if (ch === '"') {
+                    inQuotes = true;
+                } else if (ch === ',' || ch === ';') {
+                    row.push(field); field = '';
+                } else if (ch === '\n' || ch === '\r') {
+                    if (ch === '\r' && text[i + 1] === '\n') i++;
+                    row.push(field); field = '';
+                    if (row.length > 1 || row[0] !== '') rows.push(row);
+                    row = [];
+                } else {
+                    field += ch;
+                }
+            }
+            row.push(field);
+            if (row.length > 1 || row[0] !== '') rows.push(row);
+            return rows;
         }
 
         async saveData() {
             try {
-                // 1. Save cell modifications to ORM if linked to records
-                const keys = Object.keys(this.state.modifiedCells || {});
-                for (const key of keys) {
-                    const cellInfo = this.state.modifiedCells[key];
+                // 1. Save cell modifications to ORM, batched per record (one write per record)
+                const modified = this.state.modifiedCells || {};
+                const perRecord = {};
+                for (const key of Object.keys(modified)) {
+                    const cellInfo = modified[key];
                     if (cellInfo && cellInfo.recordId && cellInfo.fieldName) {
-                        await RPC.write(this._model, [cellInfo.recordId], { [cellInfo.fieldName]: cellInfo.value });
+                        if (!perRecord[cellInfo.recordId]) perRecord[cellInfo.recordId] = {};
+                        perRecord[cellInfo.recordId][cellInfo.fieldName] = cellInfo.value;
                     }
+                }
+                for (const recordId of Object.keys(perRecord)) {
+                    await RPC.write(this._model, [parseInt(recordId, 10)], perRecord[recordId]);
                 }
                 this.state.modifiedCells = {};
 
@@ -27771,7 +28146,6 @@ window.PivotView = PivotView;
                             parent_model: this._model,
                             spreadsheet_data: JSON.stringify(stateData),
                             raw_data: stateData,
-                            user_id: 1,
                         });
                         if (newDoc && newDoc.id) this._currentDocId = newDoc.id;
                     }

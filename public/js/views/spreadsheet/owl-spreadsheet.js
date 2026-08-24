@@ -153,6 +153,7 @@
     class SpreadsheetView extends Component {
         static template = xml`
 <div class="ls-spreadsheet-view">
+    <input type="file" id="lsSSCsvInput" accept=".csv,text/csv" style="display:none" t-on-change="importCSV"/>
     <!-- ═══ Menu Bar ═══ -->
     <div class="ls-ss-menubar">
         <div class="ls-ss-menu-item" t-on-click="() => this.toggleMenu('file')">File</div>
@@ -431,6 +432,11 @@
                 <t t-if="state.selectedCell">
                     <t t-esc="state.selectedCell"/>: <t t-esc="getSelectedCellRawValue()"/>
                 </t>
+                <t t-foreach="state.collaborators" t-as="collab" t-key="collab.userId">
+                    <span class="ls-ss-collab-chip" t-att-style="'background:' + (collab.userColor || '#6366f1')" t-att-title="collab.userName + ' @ ' + colLetter(collab.col) + (collab.row + 1)">
+                        <t t-esc="collab.userName"/>
+                    </span>
+                </t>
             </span>
             <span class="ls-ss-status-right">
                 <t t-if="state.statusCalc">
@@ -609,6 +615,39 @@
             </div>
         </div>
     </t>
+
+    <!-- ═══ Open Spreadsheet Dialog ═══ -->
+    <t t-if="state.openDialog.show">
+        <div class="ls-ss-modal-overlay" t-on-click.self="() => this.closeSpreadsheetDialog()">
+            <div class="ls-ss-modal">
+                <div class="ls-ss-modal-header">
+                    <span>Open Spreadsheet</span>
+                    <button class="ls-ss-modal-close" t-on-click="() => this.closeSpreadsheetDialog()">×</button>
+                </div>
+                <div class="ls-ss-modal-body">
+                    <t t-if="state.openDialog.error">
+                        <div class="ls-ss-find-count">Failed to load documents: <t t-esc="state.openDialog.error"/></div>
+                    </t>
+                    <t t-elif="state.openDialog.docs.length === 0">
+                        <div class="ls-ss-find-count">No saved spreadsheets found.</div>
+                    </t>
+                    <t t-else="">
+                        <div class="ls-ss-open-doc-list">
+                            <t t-foreach="state.openDialog.docs" t-as="doc" t-key="doc.id">
+                                <div class="ls-ss-open-doc-item" t-on-click="() => this.chooseSpreadsheet(doc.id)">
+                                    <span class="ls-ss-open-doc-name"><t t-esc="doc.name"/></span>
+                                    <span class="ls-ss-open-doc-date"><t t-esc="doc.updated"/></span>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+                <div class="ls-ss-modal-footer">
+                    <button class="ls-btn" t-on-click="() => this.closeSpreadsheetDialog()">Close</button>
+                </div>
+            </div>
+        </div>
+    </t>
 </div>
     `;
 
@@ -708,6 +747,10 @@
                 showGridLines: true,
                 zoom: 100,
                 sheetData: {},
+                // Collaboration presence
+                collaborators: [],
+                // Open-document dialog
+                openDialog: { show: false, docs: [], error: null },
             });
 
 
@@ -726,6 +769,8 @@
 
             onWillUnmount(() => {
                 document.removeEventListener('keydown', this._keyHandler);
+                this._stopPresenceLoop();
+                if (this.collab) { this.collab.disconnect(); this.collab = null; }
                 if (this.engine) this.engine.destroy();
             });
         }
@@ -758,6 +803,7 @@
                     { separator: true },
                     { label: 'Save', icon: 'save', shortcut: 'Ctrl+S', action: () => this.saveData() },
                     { separator: true },
+                    { label: 'Import CSV...', icon: 'upload', action: () => this._triggerCSVImport() },
                     { label: 'Export as CSV', icon: 'download', action: () => this.exportCSV() },
                     { label: 'Export as Excel', icon: 'file-spreadsheet', action: () => this.exportExcel() },
                 ],
@@ -807,6 +853,8 @@
                     { separator: true },
                     { label: 'Remove Duplicates', icon: 'x-circle', action: () => this.removeDuplicates() },
                     { label: 'Data Validation', icon: 'check-circle', action: () => this.openDataValidation() },
+                    { separator: true },
+                    { label: this._isSheetProtected() ? 'Unprotect Sheet' : 'Protect Sheet', icon: this._isSheetProtected() ? 'unlock' : 'lock', action: () => this.toggleSheetProtection() },
                 ],
             };
             return items[menu] || [];
@@ -828,13 +876,32 @@
         }
 
         async openSpreadsheetDialog() {
-            const docId = prompt('Enter spreadsheet document ID to open:');
-            if (!docId) return;
             try {
-                await this.loadSpreadsheet(parseInt(docId));
-                alert('Spreadsheet loaded successfully.');
+                const res = await RPC.searchRead('spreadsheet.document', [], { limit: 50 });
+                this.state.openDialog = {
+                    show: true,
+                    docs: (res.records || []).map(d => ({ id: d.id, name: d.name || ('Document #' + d.id), updated: d.updated_at || d.write_date || '' })),
+                    error: null,
+                };
             } catch (e) {
-                alert('Failed to load spreadsheet: ' + e.message);
+                this.state.openDialog = { show: true, docs: [], error: e.message };
+            }
+        }
+
+        closeSpreadsheetDialog() {
+            this.state.openDialog.show = false;
+        }
+
+        async chooseSpreadsheet(docId) {
+            this.state.openDialog.show = false;
+            try {
+                await this.loadSpreadsheet(docId);
+                this._currentDocId = docId;
+                this._initCollaboration();
+                if (window.AdvSoftToast?.success) window.AdvSoftToast.success('Spreadsheet loaded successfully.');
+            } catch (e) {
+                if (window.AdvSoftToast?.error) window.AdvSoftToast.error('Failed to load spreadsheet: ' + e.message);
+                else alert('Failed to load spreadsheet: ' + e.message);
             }
         }
 
@@ -906,6 +973,8 @@
                 console.warn('Could not load saved spreadsheet document:', e);
             }
 
+            this._initCollaboration();
+
             this.state.loading = false;
             setTimeout(() => this._renderAllCharts(), 150);
         }
@@ -919,7 +988,7 @@
 
             try {
                 const engineModel = this.engine.model;
-                for (let r = 0; r < Math.min(this.state.rows.length, 200); r++) {
+                for (let r = 0; r < this.state.rows.length; r++) {
                     for (let c = 0; c < this.state.columns.length; c++) {
                         const key = c + '_' + r;
                         const cd = this.state.cellData[key];
@@ -971,6 +1040,107 @@
                 const cmd = this.engine.redo();
                 if (cmd) this._syncEngineToState();
             }
+        }
+
+        // ══════════════════════════════════════════════════
+        //  Collaboration (presence + operation broadcast)
+        // ══════════════════════════════════════════════════
+
+        _initCollaboration() {
+            if (!this._currentDocId || this.collab) return;
+            const user = window.AdvSoftUser || window.rpc?.user || {};
+            const userId = user.uid || user.id || null;
+            try {
+                this.collab = new window.SpreadsheetCollaborationBus({
+                    spreadsheetId: this._currentDocId,
+                    userId,
+                    userName: user.name || ('User ' + (userId ?? '?')),
+                    useWebSocket: false,
+                });
+                this.collab.connect();
+                this.collab.on('remoteOperation', (op) => this._handleRemoteOperation(op));
+                this._startPresenceLoop();
+            } catch (e) {
+                console.warn('Collaboration init skipped:', e);
+                this.collab = null;
+            }
+        }
+
+        _broadcastCellUpdate(col, row, value) {
+            if (!this.collab || !this.collab.isConnected) return;
+            this.collab.sendOperation({
+                type: 'cellUpdate',
+                col, row,
+                sheet: this.state.activeSheet,
+                value,
+            });
+        }
+
+        _handleRemoteOperation(op) {
+            if (!op || op.type !== 'cellUpdate') return;
+            const key = op.col + '_' + op.row;
+            if (!this.state.cellData[key]) this.state.cellData[key] = { raw: '', value: '', formula: null, format: {} };
+            const cd = this.state.cellData[key];
+            const value = String(op.value ?? '');
+            if (value.startsWith('=')) { cd.formula = value; cd.raw = value; }
+            else { cd.formula = null; cd.raw = value; const num = parseFloat(value); cd.value = (!isNaN(num) && String(num) === value.trim()) ? num : value; }
+            if (this.engine && this.engine.isInitialized) {
+                try { this.engine.setCellRaw(op.col, op.row, value); } catch (e) { /* non-fatal */ }
+            }
+        }
+
+        _startPresenceLoop() {
+            this._stopPresenceLoop();
+            this._presenceTimer = setInterval(() => this._pollPresence(), 15000);
+            this._pollPresence();
+        }
+
+        _stopPresenceLoop() {
+            if (this._presenceTimer) {
+                clearInterval(this._presenceTimer);
+                this._presenceTimer = null;
+            }
+        }
+
+        async _pollPresence() {
+            if (!this._currentDocId) return;
+            try {
+                const sel = this.state.selectedCell || '';
+                const res = await RPC.call('/api/spreadsheet/presence', {
+                    spreadsheet_id: this._currentDocId,
+                    cursor_col: this.state.selectedCol >= 0 ? this.state.selectedCol : 0,
+                    cursor_row: this.state.selectedRow >= 0 ? this.state.selectedRow : 0,
+                    selection: sel,
+                });
+                this.state.collaborators = res.cursors || [];
+            } catch (e) {
+                // Presence is best-effort; ignore errors (e.g. 401)
+            }
+        }
+
+        // ══════════════════════════════════════════════════
+        //  Sheet protection & CSV import
+        // ══════════════════════════════════════════════════
+
+        _isSheetProtected() {
+            return !!(this.state.sheetData[this.state.activeSheet]?.protected);
+        }
+
+        toggleSheetProtection() {
+            this._saveCurrentSheetData();
+            const d = this.state.sheetData[this.state.activeSheet] || {};
+            d.protected = !d.protected;
+            this.state.sheetData[this.state.activeSheet] = d;
+            if (window.AdvSoftToast) {
+                d.protected
+                    ? window.AdvSoftToast.success('Sheet protected — editing is disabled.')
+                    : window.AdvSoftToast.success('Sheet unprotected.');
+            }
+        }
+
+        _triggerCSVImport() {
+            const input = document.getElementById('lsSSCsvInput');
+            if (input) input.click();
         }
 
         // ══════════════════════════════════════════════════
@@ -1087,6 +1257,10 @@
             const key = colIdx + '_' + rowIdx;
             const cd = this.getCellData(colIdx, rowIdx);
             if (cd && cd.format && cd.format.locked) return;
+            if (this._isSheetProtected()) {
+                if (window.AdvSoftToast?.warning) window.AdvSoftToast.warning('Sheet is protected. Unprotect it first (Data menu).');
+                return;
+            }
             this.state.editingCell = key;
             this.state.editValue = cd ? (cd.formula || String(cd.raw ?? '')) : '';
             this.state.formulaBarValue = this.state.editValue;
@@ -1114,6 +1288,14 @@
             this._pushUndo({ type: 'edit', key, oldData, newData, colIdx, rowIdx });
             this.state.editingCell = null;
             this.state.editMode = false;
+
+            // Keep engine model in sync (formulas, exports, undo)
+            if (this.engine && this.engine.isInitialized) {
+                try { this.engine.setCellRaw(colIdx, rowIdx, value); } catch (e) { /* non-fatal */ }
+            }
+
+            // Broadcast to collaborators
+            this._broadcastCellUpdate(colIdx, rowIdx, value);
         }
 
         onCellKeydown(ev, colIdx, rowIdx) {
@@ -1782,7 +1964,7 @@
                 const fmt = isUndo ? action.oldFormat : action.newFormat;
                 if (fmt) this.state.cellFormats[action.key] = { ...fmt };
                 else delete this.state.cellFormats[action.key];
-            } else if (action.type === 'sort') {
+            } else if (action.type === 'sort' || action.type === 'import') {
                 const cd = isUndo ? action.oldCellData : action.newCellData;
                 const rows = isUndo ? action.oldRows : action.newRows;
                 if (cd) this.state.cellData = JSON.parse(JSON.stringify(cd));
@@ -2728,23 +2910,117 @@
         }
 
         exportExcel() {
+            const filename = (this.props.actionTitle || 'spreadsheet');
+            if (this.engine && this.engine.isInitialized && this.engine.exporter) {
+                this._syncEngineToState();
+                if (this.engine.exporter.hasSheetJS) {
+                    this.engine.exporter.exportToXLSX(filename + '.xlsx');
+                    return;
+                }
+                if (window.AdvSoftToast?.info) {
+                    window.AdvSoftToast.info('Excel library not loaded — exported as CSV instead.');
+                }
+                this.engine.exporter.exportToCSV(filename + '.csv');
+                return;
+            }
+            // Legacy fallback: HTML table (only when engine is unavailable)
             let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="utf-8"></head><body><table border="1">';
             html += '<tr>' + this.state.columns.filter(c => !c.hidden).map(c => '<th style="background:#4f46e5;color:#fff;font-weight:bold;padding:6px 12px">' + esc(c.label) + '</th>').join('') + '</tr>';
             for (const row of this.state.rows) { if (!row.record) continue; html += '<tr>' + this.state.columns.filter(c => !c.hidden).map(col => '<td style="padding:4px 8px">' + esc(String(this.getCellValue(col.idx, row.idx))) + '</td>').join('') + '</tr>'; }
             html += '</table></body></html>';
             const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (this.props.actionTitle || 'spreadsheet') + '.xls'; link.click();
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename + '.xls'; link.click();
+        }
+
+        importCSV(ev) {
+            const file = ev.target.files && ev.target.files[0];
+            ev.target.value = '';
+            if (!file) return;
+            const startCol = this.state.selectedCol >= 0 ? this.state.selectedCol : 0;
+            const startRow = this.state.selectedRow >= 0 ? this.state.selectedRow : 0;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const text = String(reader.result || '');
+                    const rows = this._parseCSV(text);
+                    if (!rows.length) return;
+                    const oldCellData = JSON.parse(JSON.stringify(this.state.cellData));
+                    for (let r = 0; r < rows.length; r++) {
+                        for (let c = 0; c < rows[r].length; c++) {
+                            const colIdx = startCol + c;
+                            const rowIdx = startRow + r;
+                            const key = colIdx + '_' + rowIdx;
+                            const raw = rows[r][c];
+                            if (!this.state.cellData[key]) this.state.cellData[key] = { raw: '', value: '', formula: null, format: {} };
+                            const cd = this.state.cellData[key];
+                            if (raw.startsWith('=')) { cd.formula = raw; cd.raw = raw; }
+                            else { cd.formula = null; cd.raw = raw; const num = parseFloat(raw); cd.value = (!isNaN(num) && String(num) === raw.trim()) ? num : raw; }
+                            if (cd.recordId && cd.fieldName) {
+                                this.state.modifiedCells[key] = { recordId: cd.recordId, fieldName: cd.fieldName, value: cd.value };
+                            }
+                            if (this.engine && this.engine.isInitialized) {
+                                this.engine.setCellRaw(colIdx, rowIdx, raw);
+                            }
+                        }
+                    }
+                    this._pushUndo({
+                        type: 'import',
+                        oldCellData,
+                        newCellData: JSON.parse(JSON.stringify(this.state.cellData)),
+                    });
+                    if (window.AdvSoftToast?.success) window.AdvSoftToast.success('CSV imported: ' + rows.length + ' rows');
+                } catch (e) {
+                    if (window.AdvSoftToast?.error) window.AdvSoftToast.error('Import failed: ' + e.message);
+                    else alert('Import failed: ' + e.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        _parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                if (inQuotes) {
+                    if (ch === '"') {
+                        if (text[i + 1] === '"') { field += '"'; i++; }
+                        else inQuotes = false;
+                    } else field += ch;
+                } else if (ch === '"') {
+                    inQuotes = true;
+                } else if (ch === ',' || ch === ';') {
+                    row.push(field); field = '';
+                } else if (ch === '\n' || ch === '\r') {
+                    if (ch === '\r' && text[i + 1] === '\n') i++;
+                    row.push(field); field = '';
+                    if (row.length > 1 || row[0] !== '') rows.push(row);
+                    row = [];
+                } else {
+                    field += ch;
+                }
+            }
+            row.push(field);
+            if (row.length > 1 || row[0] !== '') rows.push(row);
+            return rows;
         }
 
         async saveData() {
             try {
-                // 1. Save cell modifications to ORM if linked to records
-                const keys = Object.keys(this.state.modifiedCells || {});
-                for (const key of keys) {
-                    const cellInfo = this.state.modifiedCells[key];
+                // 1. Save cell modifications to ORM, batched per record (one write per record)
+                const modified = this.state.modifiedCells || {};
+                const perRecord = {};
+                for (const key of Object.keys(modified)) {
+                    const cellInfo = modified[key];
                     if (cellInfo && cellInfo.recordId && cellInfo.fieldName) {
-                        await RPC.write(this._model, [cellInfo.recordId], { [cellInfo.fieldName]: cellInfo.value });
+                        if (!perRecord[cellInfo.recordId]) perRecord[cellInfo.recordId] = {};
+                        perRecord[cellInfo.recordId][cellInfo.fieldName] = cellInfo.value;
                     }
+                }
+                for (const recordId of Object.keys(perRecord)) {
+                    await RPC.write(this._model, [parseInt(recordId, 10)], perRecord[recordId]);
                 }
                 this.state.modifiedCells = {};
 
@@ -2782,7 +3058,6 @@
                             parent_model: this._model,
                             spreadsheet_data: JSON.stringify(stateData),
                             raw_data: stateData,
-                            user_id: 1,
                         });
                         if (newDoc && newDoc.id) this._currentDocId = newDoc.id;
                     }

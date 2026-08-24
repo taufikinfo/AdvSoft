@@ -8,7 +8,7 @@
     class SpreadsheetDocument {
         constructor(config = {}) {
             this._rpc = config.rpc || window.AdvSoftRPC || window.rpc;
-            this._model = config.model || 'spreadsheet.spreadsheet_data';
+            this._model = config.model || 'spreadsheet.document';
             this._currentId = null;
             this._currentName = '';
             this._autoSave = config.autoSave !== false;

@@ -121,22 +121,24 @@
 
         _extractDependencies() {
             if (!this._formula) return;
-            const refRegex = /\b([A-Z]+\d+)\b/g;
-            const rangeRegex = /\b([A-Z]+\d+):([A-Z]+\d+)\b/g;
+            const refRegex = /(^|[^A-Za-z0-9_:$])(\$?[A-Z]+\$?\d+)(?![A-Za-z0-9_$:])/g;
+            const rangeRegex = /(^|[^A-Za-z0-9_:$])(\$?[A-Z]+\$?\d+):(\$?[A-Z]+\$?\d+)(?![A-Za-z0-9_$:])/g;
             const deps = new Set();
 
             let match;
             const fullFormula = this._formula;
             const ranges = [];
             while ((match = rangeRegex.exec(fullFormula)) !== null) {
-                ranges.push(match[0]);
-                const range = window.SpreadsheetRange?.expandRange(match[0]) || [];
+                const rangeStr = `${match[2]}:${match[4]}`.replace(/\$/g, '');
+                ranges.push(rangeStr);
+                const range = window.SpreadsheetRange?.expandRange(rangeStr) || [];
                 range.forEach(r => deps.add(r));
             }
 
             while ((match = refRegex.exec(fullFormula)) !== null) {
-                if (!ranges.some(r => r.includes(match[1]))) {
-                    deps.add(match[1]);
+                const ref = match[2].replace(/\$/g, '');
+                if (!ranges.some(r => r.includes(ref))) {
+                    deps.add(ref);
                 }
             }
 

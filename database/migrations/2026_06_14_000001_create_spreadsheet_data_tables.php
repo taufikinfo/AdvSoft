@@ -52,12 +52,13 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('operation_type', 50);
             $table->json('operation_data');
-            $table->bigInteger('sequence')->default(0);
+            $table->bigInteger('revision')->default(0);
+            $table->timestamp('applied_at')->nullable();
             $table->timestamps();
 
             $table->index('spreadsheet_id');
             $table->index('user_id');
-            $table->index('sequence');
+            $table->index(['spreadsheet_id', 'revision']);
             $table->foreign('spreadsheet_id')->references('id')->on('spreadsheet_data')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('res_users')->cascadeOnDelete();
         });

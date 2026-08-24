@@ -9,7 +9,7 @@ use App\Model\BaseModel;
  */
 class SpreadsheetCollaboration extends BaseModel
 {
-    const TABLENAME  = 'spreadsheet_collaborations';
+    const TABLENAME  = 'spreadsheet_collaboration';
     const PRIMARYKEY = 'id';
     const IDPOLICY   = 'serial';
 }

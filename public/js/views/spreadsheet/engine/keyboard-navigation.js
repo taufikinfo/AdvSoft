@@ -55,13 +55,21 @@
         set enabled(val) { this._enabled = val; }
 
         setup() {
-            document.addEventListener('keydown', (e) => this._handleKeyDown(e));
-            document.addEventListener('keyup', (e) => this._handleKeyUp(e));
+            this._boundKeyDown = (e) => this._handleKeyDown(e);
+            this._boundKeyUp = (e) => this._handleKeyUp(e);
+            document.addEventListener('keydown', this._boundKeyDown);
+            document.addEventListener('keyup', this._boundKeyUp);
         }
 
         destroy() {
-            document.removeEventListener('keydown', this._handleKeyDown);
-            document.removeEventListener('keyup', this._handleKeyUp);
+            if (this._boundKeyDown) {
+                document.removeEventListener('keydown', this._boundKeyDown);
+                this._boundKeyDown = null;
+            }
+            if (this._boundKeyUp) {
+                document.removeEventListener('keyup', this._boundKeyUp);
+                this._boundKeyUp = null;
+            }
         }
 
         _handleKeyDown(e) {

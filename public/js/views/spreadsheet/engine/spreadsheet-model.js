@@ -78,6 +78,18 @@
             return this._cells.get(key) || null;
         }
 
+        getCellFromSheet(sheetId, col, row) {
+            return this.getCell(col, row, sheetId);
+        }
+
+        getActiveSheet() {
+            return this._sheets.find(s => s.id === this._activeSheetId) || this._sheets[0] || null;
+        }
+
+        getSheetByName(name) {
+            return this._sheets.find(s => s.name === name) || null;
+        }
+
         getCellFormat(col, row, sheetId = null) {
             const key = this._getCellKey(col, row, sheetId);
             return this._cellFormats.get(key) || { ...window.DEFAULT_CELL_FORMAT };
@@ -452,18 +464,36 @@
             const parsed = window.SpreadsheetRange.parseRange(rangeStr);
             if (!parsed) return;
 
+            const previousState = this._mergedCells.get(rangeStr) || null;
+            let oldRangeStr = rangeStr;
+
             if (merge) {
                 this._mergedCells.set(rangeStr, parsed);
             } else {
+                let removed = false;
                 for (const [key, val] of this._mergedCells) {
                     if (val.startCol === parsed.startCol && val.startRow === parsed.startRow &&
                         val.endCol === parsed.endCol && val.endRow === parsed.endRow) {
+                        oldRangeStr = key;
                         this._mergedCells.delete(key);
+                        removed = true;
                         break;
                     }
                 }
+                if (!removed) return;
             }
-            this._emit('mergeChanged', { rangeStr, merge });
+
+            this._history.push(new window.SpreadsheetCommand(
+                merge ? window.SpreadsheetCommandType.MERGE : window.SpreadsheetCommandType.UNMERGE,
+                {
+                    rangeStr: oldRangeStr,
+                    previous: previousState,
+                    parsed,
+                },
+                `${merge ? 'Merge' : 'Unmerge'} ${oldRangeStr}`
+            ));
+
+            this._emit('mergeChanged', { rangeStr: oldRangeStr, merge });
         }
 
         addChart(chartConfig) {
@@ -628,6 +658,12 @@
                 case window.SpreadsheetCommandType.COL_RESIZE:
                     if (p.oldWidth) this._colWidths.set(p.col, p.oldWidth);
                     break;
+                case window.SpreadsheetCommandType.MERGE:
+                    this._mergedCells.delete(p.rangeStr);
+                    break;
+                case window.SpreadsheetCommandType.UNMERGE:
+                    if (p.previous) this._mergedCells.set(p.rangeStr, p.previous);
+                    break;
                 case window.SpreadsheetCommandType.ROW_RESIZE:
                     if (p.oldHeight) this._rowHeights.set(p.row, p.oldHeight);
                     break;
@@ -664,6 +700,12 @@
                     break;
                 case window.SpreadsheetCommandType.COL_RESIZE:
                     this._colWidths.set(p.col, p.newWidth);
+                    break;
+                case window.SpreadsheetCommandType.MERGE:
+                    this._mergedCells.set(p.rangeStr, p.parsed);
+                    break;
+                case window.SpreadsheetCommandType.UNMERGE:
+                    this._mergedCells.delete(p.rangeStr);
                     break;
                 case window.SpreadsheetCommandType.ROW_RESIZE:
                     this._rowHeights.set(p.row, p.newHeight);

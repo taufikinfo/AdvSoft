@@ -2,7 +2,7 @@
 
 namespace Addons\Spreadsheet\Models;
 
-use App\Model\SpreadsheetDocument;
+use App\Model\Spreadsheet\SpreadsheetDocument;
 use App\Advsoft\Field;
 use App\Advsoft\ModelDefinition;
 

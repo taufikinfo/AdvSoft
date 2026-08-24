@@ -134,7 +134,7 @@
                 this.pos++;
             } else if (/\d/.test(ch) || (ch === '.' && /\d/.test(this.formula[this.pos + 1]))) {
                 this._readNumber();
-            } else if (/[A-Za-z_]/.test(ch)) {
+            } else if (/[A-Za-z_$]/.test(ch)) {
                 this._readIdentifier();
             } else {
                 this.tokens.push(new Token(TokenType.ERROR, `Unexpected character: ${ch}`, start, start + 1));
@@ -172,29 +172,27 @@
         _readIdentifier() {
             const start = this.pos;
             let name = '';
-            while (this.pos < this.formula.length && /[A-Za-z0-9_.]/.test(this.formula[this.pos])) {
+            while (this.pos < this.formula.length && /[A-Za-z0-9_.$]/.test(this.formula[this.pos])) {
                 name += this.formula[this.pos];
                 this.pos++;
             }
 
-            const upper = name.toUpperCase();
+            // Strip absolute-reference markers ($A$1 -> A1); absoluteness
+            // only matters for fill/copy operations handled by adjustFormulaRefs.
+            const cleanName = name.replace(/\$/g, '');
+            const upper = cleanName.toUpperCase();
 
             if (upper === 'TRUE' || upper === 'FALSE') {
                 this.tokens.push(new Token(TokenType.BOOLEAN, upper === 'TRUE', start, this.pos));
                 return;
             }
 
-            if (this.formula[this.pos] === '(') {
+            if (this.formula[this.pos] === '(' && !cleanName.includes('$')) {
                 this.tokens.push(new Token(TokenType.FUNCTION, upper, start, this.pos));
                 return;
             }
 
-            if (/^[A-Z]+$/i.test(name) && this.formula[this.pos] === /\d/) {
-                this.tokens.push(new Token(TokenType.CELL_REF, upper, start, this.pos));
-                return;
-            }
-
-            if (/^[A-Z]+\d+$/i.test(name)) {
+            if (/^[A-Z]+\d+$/i.test(cleanName)) {
                 this.tokens.push(new Token(TokenType.CELL_REF, upper, start, this.pos));
                 return;
             }

@@ -831,10 +831,12 @@ CREATE TABLE `spreadsheet_operations` (
   `user_id` int NOT NULL,
   `operation_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `operation_data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sequence` int NOT NULL DEFAULT '0',
+  `revision` bigint NOT NULL DEFAULT '0',
+  `applied_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `spreadsheet_operations_spreadsheet_id_revision_index` (`spreadsheet_id`,`revision`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
