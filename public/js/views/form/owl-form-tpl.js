@@ -127,7 +127,7 @@ window.TEMPLATES.FormView = xml`
                 <div class="oe_title" t-if="titleField">
                     <h1>
                         <input class="ls-form-title-text" t-att-value="state.record[titleField]"
-                               t-on-input="(ev) => this.debouncedUpdate(titleField, ev.target.value)"
+                               t-on-input="_onWidgetInput"
                                t-on-change="(ev) => this.updateField(titleField, ev.target.value)"
                                placeholder="Untitled"
                                aria-label="Record title"/>

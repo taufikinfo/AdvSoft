@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 03:16:29
+ * Generated: 2026-08-24 03:19:37
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -11947,7 +11947,7 @@ window.TEMPLATES.FormView = xml`
                 <div class="oe_title" t-if="titleField">
                     <h1>
                         <input class="ls-form-title-text" t-att-value="state.record[titleField]"
-                               t-on-input="(ev) => this.debouncedUpdate(titleField, ev.target.value)"
+                               t-on-input="_onWidgetInput"
                                t-on-change="(ev) => this.updateField(titleField, ev.target.value)"
                                placeholder="Untitled"
                                aria-label="Record title"/>
@@ -12562,14 +12562,9 @@ class FormView extends Component {
         const target = ev.target;
         if (target.closest('.ls-inline-tree')) return; // Ignore events from InlineTreeWidget
 
-        const fieldName = target.getAttribute('data-field');
-        if (!fieldName || target.type === 'file') return;
-
-        let value = target.value;
-        if (target.type === 'checkbox') value = target.checked;
-        if (target.type === 'number') value = target.value === '' ? null : parseFloat(target.value);
-
-        this.debouncedUpdate(fieldName, value);
+        if (!this.state.dirty) {
+            this.state.dirty = true;
+        }
     }
 
     _onWidgetChange(ev) {

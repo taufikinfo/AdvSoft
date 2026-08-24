@@ -440,14 +440,9 @@ class FormView extends Component {
         const target = ev.target;
         if (target.closest('.ls-inline-tree')) return; // Ignore events from InlineTreeWidget
 
-        const fieldName = target.getAttribute('data-field');
-        if (!fieldName || target.type === 'file') return;
-
-        let value = target.value;
-        if (target.type === 'checkbox') value = target.checked;
-        if (target.type === 'number') value = target.value === '' ? null : parseFloat(target.value);
-
-        this.debouncedUpdate(fieldName, value);
+        if (!this.state.dirty) {
+            this.state.dirty = true;
+        }
     }
 
     _onWidgetChange(ev) {
