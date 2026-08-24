@@ -3,7 +3,7 @@
 //  Components: AppSwitcher, NavBar, SubMenu, Breadcrumb, WebClient
 (function () {
     const { Component, useState, useRef, onWillStart, onMounted, onError } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     // View type icons (SVG inline)
     const VIEW_ICONS = {
@@ -21,7 +21,7 @@
     };
 
     // Global Page Registry
-    window.LarasoftPageRegistry = Object.assign({
+    window.AdvSoftPageRegistry = Object.assign({
         'security_overview': window.SecurityOverview,
         'security_access': window.AccessRights,
         'security_rules': window.RecordRules,
@@ -30,10 +30,12 @@
         'menu_editor': window.MenuEditorView,
         'view_builder': window.ViewBuilderView,
         'accounting_reports': window.AccountingReports,
-    }, window.LarasoftPageRegistry || {});
+    }, window.AdvSoftPageRegistry || {});
+    window.AdvsoftPageRegistry = window.AdvSoftPageRegistry;
+    window.LarasoftPageRegistry = window.AdvSoftPageRegistry;
 
     window.registerCustomPage = function(viewId, componentClass) {
-        window.LarasoftPageRegistry[viewId] = componentClass;
+        window.AdvSoftPageRegistry[viewId] = componentClass;
     };
 
     // ── App Theme Palette Helper for Odoo Enterprise Look ─
@@ -219,21 +221,21 @@
         onAppClick(app) { this.props.onAppClick(app); }
         onProfileClick(ev) {
             if (ev) ev.preventDefault();
-            const uid = window.LarasoftUser?.uid || 1;
+            const uid = window.AdvSoftUser?.uid || 1;
             if (this.props.onOpenProfile) {
                 this.props.onOpenProfile(uid);
             }
         }
         toggleTheme() {
-            if (window.LarasoftLayout) {
-                window.LarasoftLayout.setTheme(window.LarasoftLayout.effectiveTheme === 'dark' ? 'light' : 'dark');
+            if (window.AdvSoftLayout) {
+                window.AdvSoftLayout.setTheme(window.AdvSoftLayout.effectiveTheme === 'dark' ? 'light' : 'dark');
             }
         }
         toggleSettings() {
-            if (window.LarasoftLayout) window.LarasoftLayout.toggleSettings();
+            if (window.AdvSoftLayout) window.AdvSoftLayout.toggleSettings();
         }
         get effectiveTheme() {
-            return window.LarasoftLayout ? window.LarasoftLayout.effectiveTheme : 'light';
+            return window.AdvSoftLayout ? window.AdvSoftLayout.effectiveTheme : 'light';
         }
     }
 
@@ -288,11 +290,11 @@
 
         // Get the dynamic component from registry
         get customComponent() {
-            return window.LarasoftPageRegistry[this.state.currentView] || null;
+            return window.AdvSoftPageRegistry[this.state.currentView] || null;
         }
 
         get isCustomView() {
-            return !!window.LarasoftPageRegistry[this.state.currentView];
+            return !!window.AdvSoftPageRegistry[this.state.currentView];
         }
 
         setup() {
@@ -345,7 +347,7 @@
                 clientError: null,
 
                 // Layout / Theme / Device state
-                layout: window.LarasoftLayout ? window.LarasoftLayout.toState() : {
+                layout: window.AdvSoftLayout ? window.AdvSoftLayout.toState() : {
                     theme: 'light', effectiveTheme: 'light', brandColor: 'purple',
                     density: 'default', device: 'desktop', isMobile: false,
                     isTablet: false, isDesktop: true, settingsOpen: false,
@@ -357,9 +359,9 @@
             this._actionCache = {};
 
             // Sync LayoutService → Owl state
-            if (window.LarasoftLayout) {
-                window.LarasoftLayout.onChange(() => {
-                    Object.assign(this.state.layout, window.LarasoftLayout.toState());
+            if (window.AdvSoftLayout) {
+                window.AdvSoftLayout.onChange(() => {
+                    Object.assign(this.state.layout, window.AdvSoftLayout.toState());
                 });
             }
 
@@ -421,7 +423,7 @@
 
         // ── Custom SPA Page Navigation ──────────────
         openCustomView(type, updateHash = true) {
-            if (!window.LarasoftPageRegistry[type]) {
+            if (!window.AdvSoftPageRegistry[type]) {
                 console.warn('Custom page not found in registry:', type);
                 return;
             }
@@ -467,11 +469,11 @@
         }
 
         setTheme(theme) {
-            if (window.LarasoftLayout) window.LarasoftLayout.setTheme(theme);
+            if (window.AdvSoftLayout) window.AdvSoftLayout.setTheme(theme);
         }
 
         closeSettings() {
-            if (window.LarasoftLayout) window.LarasoftLayout.closeSettings();
+            if (window.AdvSoftLayout) window.AdvSoftLayout.closeSettings();
         }
 
         // ── View Mode Switcher ──────────────────────────
@@ -725,7 +727,7 @@
             if (typeof uid === 'number' || (typeof uid === 'string' && /^\d+$/.test(uid))) {
                 userId = parseInt(uid);
             } else {
-                userId = (window.LarasoftUser && window.LarasoftUser.uid) ? window.LarasoftUser.uid : 1;
+                userId = (window.AdvSoftUser && window.AdvSoftUser.uid) ? window.AdvSoftUser.uid : 1;
             }
             this.state.formRecordId = userId;
             this.state.currentModel = 'res.users';
@@ -920,7 +922,7 @@
                 }
 
                 // Standard Adianti Controller Fallback (TPage / TWindow)
-                if (window.LarasoftPageRegistry && window.LarasoftPageRegistry['adianti_page']) {
+                if (window.AdvSoftPageRegistry && window.AdvSoftPageRegistry['adianti_page']) {
                     this.state.adiantiControllerClass = params.class;
                     this.state.adiantiControllerMethod = params.method || '';
                     this.state.adiantiControllerParams = params;
@@ -930,7 +932,7 @@
             }
 
             // 2. Legacy custom view routing (#view=security_access)
-            if (params.view && window.LarasoftPageRegistry[params.view]) {
+            if (params.view && window.AdvSoftPageRegistry[params.view]) {
                 this.openCustomView(params.view);
                 return;
             }
@@ -1018,7 +1020,7 @@
         const env = {
             _t: (str) => str, // Placeholder fungsi translasi (i18n)
             services: {
-                rpc: window.LarasoftRPC
+                rpc: window.AdvSoftRPC
             }
         };
 
@@ -1043,7 +1045,7 @@
             const app = new owl.App(WebClient, config);
             app.mount(document.getElementById('app'));
         } catch (e) {
-            console.error("[CRITICAL] Gagal me-mount Larasoft WebClient:", e);
+            console.error("[CRITICAL] Gagal me-mount AdvSoft WebClient:", e);
             document.getElementById('app').innerHTML = `
                 <div style="padding: 20px; color: red; font-family: sans-serif;">
                     <h3>Critical System Error</h3>

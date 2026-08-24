@@ -52,14 +52,14 @@ W.char_emojis = (f) => `<div class="ls-char-emojis-widget">
 W.text = (f) => `<textarea class="ls-field-textarea" data-field="${f.name}" rows="4" placeholder="${esc(f.placeholder||'')}" ${f.required ? 'required aria-required="true"' : ''}>${esc(f._val)}</textarea>`;
 
 // RTE-powered HTML widget: returns a mountable div that the form binder
-// will later turn into a fully-configured LarasoftRTE instance.
+// will later turn into a fully-configured AdvSoftRTE instance.
 W.html = (f) => {
-    // Build the config that will be passed to LarasoftRTE
+    // Build the config that will be passed to AdvSoftRTE
     const htmlCfg = f.html || {};
     const containerId = 'ls-rte-' + (f.name || 'field').replace(/[^a-z0-9_]/gi, '_');
     // We embed the config as a data attribute so the form binder can read it
     // after the DOM is inserted. The form binder will look for elements with
-    // [data-rte] and call LarasoftRTE.create().
+    // [data-rte] and call AdvSoftRTE.create().
     return `<div id="${containerId}" class="ls-html-widget-mount" data-field="${esc(f.name)}" data-rte="1" data-rte-model="${esc(f._model||'')}" data-rte-field="${esc(f.name)}" data-rte-config='${esc(JSON.stringify(htmlCfg))}' data-rte-value='${esc(JSON.stringify(f._val || ""))}'></div>`;
 };
 
@@ -161,7 +161,7 @@ W.daterange = (f) => {
 // ════════════════════════════════════════════════════
 W.selection = (f) => {
     const sel = Array.isArray(f.selection) ? f.selection : Object.entries(f.selection || {});
-    const userGroups = (window.LarasoftUser?.groups) || [];
+    const userGroups = (window.AdvSoftUser?.groups) || [];
     let html = `<select class="ls-field-select" data-field="${f.name}" ${f.required ? 'required aria-required="true"' : ''}>`;
     if (!f.required) html += `<option value="">—</option>`;
     sel.forEach(item => {
@@ -181,7 +181,7 @@ W.selection = (f) => {
 
 W.radio = (f) => {
     const sel = Array.isArray(f.selection) ? f.selection : Object.entries(f.selection || {});
-    const userGroups = (window.LarasoftUser?.groups) || [];
+    const userGroups = (window.AdvSoftUser?.groups) || [];
     let html = '<div class="ls-radio-widget">';
     sel.forEach(item => {
         let v, l, groups = null;

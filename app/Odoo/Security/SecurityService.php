@@ -10,7 +10,7 @@ use App\Odoo\Domain;
 use App\Odoo\Exceptions\AccessDenied;
 
 /**
- * SecurityService — the enforcement brain of Larasoft security.
+ * SecurityService — the enforcement brain of AdvSoft security.
  *
  * Implements the 6 layers from odoo2.png:
  *   1. res.users            → identify caller
@@ -20,7 +20,7 @@ use App\Odoo\Exceptions\AccessDenied;
  *   5. record.sudo() / .with_user() → context switching
  *   6. field groups= / readonly / invisible → field-level stripping
  *
- * Plus: dynamic model registry sync from Larasoft's Registry.
+ * Plus: dynamic model registry sync from AdvSoft's Registry.
  */
 class SecurityService
 {
@@ -50,7 +50,7 @@ class SecurityService
     }
 
     // ─────────────────────────────────────────────────────────
-    //  LAYER 0: Sync ir_model with the Larasoft model registry
+    //  LAYER 0: Sync ir_model with the AdvSoft model registry
     //  Called on every request, idempotent.
     // ─────────────────────────────────────────────────────────
     public function syncModels(array $models): void
@@ -65,7 +65,7 @@ class SecurityService
                 IrModel::create([
                     'model' => $modelName,
                     'name'  => $name,
-                    'module'=> 'larasoft',
+                    'module'=> 'AdvSoft',
                 ]);
             }
         }

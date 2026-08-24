@@ -1,9 +1,9 @@
 // ══════════════════════════════════════════════════════════════════
-//  Larasoft Layout Service — Odoo Enterprise Presentation Layer
+//  AdvSoft Layout Service — Odoo Enterprise Presentation Layer
 //  Manages: Theme, Layout Mode, Device Detection, Density, Brand
 // ══════════════════════════════════════════════════════════════════
 (function () {
-    const STORAGE_KEY = 'larasoft_layout';
+    const STORAGE_KEY = 'AdvSoft_layout';
 
     const BRAND_COLORS = [
         { id: 'purple', label: 'Purple', color: '#714B67' },
@@ -213,6 +213,8 @@
     }
 
     // Create singleton and expose globally
-    window.LarasoftLayout = new LayoutService();
+    window.AdvSoftLayout = new LayoutService();
+    window.AdvsoftLayout = window.AdvSoftLayout;
+    window.LarasoftLayout = window.AdvSoftLayout;
 
 })();

@@ -1,7 +1,7 @@
 // Form View Component – Completely Dynamic & Widget-Driven
 (function () {
 const { Component, useState, onWillStart, onMounted, onPatched, useRef } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class FormView extends Component {
     static template = window.TEMPLATES.FormView;
@@ -747,7 +747,7 @@ class FormView extends Component {
         if (fDef.widget === 'monetary' || fDef.type === 'monetary') {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
-                currency: window.LarasoftUser?.company_currency || 'IDR',
+                currency: window.AdvSoftUser?.company_currency || 'IDR',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0 // Stat buttons usually look better without decimals
             }).format(val);
@@ -775,7 +775,7 @@ class FormView extends Component {
 
         if (btn.type === 'object') {
             try {
-                const res = await window.LarasoftRPC.call_button(this.props.model, this.props.recordId, btn.name);
+                const res = await window.AdvSoftRPC.call_button(this.props.model, this.props.recordId, btn.name);
                 if (res.action) {
                     if (res.action.type === 'ir.actions.client') {
                         if (res.action.tag === 'reload') {
@@ -1223,10 +1223,10 @@ class FormView extends Component {
 
         // Force save parent if it is new, because createChild requires a parent ID in this architecture
         if (!this.state.record.id || this.state.record.id === 'null') {
-            if (window.LarasoftToast) window.LarasoftToast.info('Auto-saving record to attach lines...');
+            if (window.AdvSoftToast) window.AdvSoftToast.info('Auto-saving record to attach lines...');
             await this.saveRecord();
             if (!this.state.record.id || this.state.record.id === 'null') {
-                if (window.LarasoftToast) window.LarasoftToast.error('Please complete required fields first.');
+                if (window.AdvSoftToast) window.AdvSoftToast.error('Please complete required fields first.');
                 return null; // Could not save parent
             }
         }
@@ -1246,7 +1246,7 @@ class FormView extends Component {
             this.state.dirty = true;
             return ts;
         } catch (e) {
-            if (window.LarasoftToast) window.LarasoftToast.error('Add line failed: ' + e.message);
+            if (window.AdvSoftToast) window.AdvSoftToast.error('Add line failed: ' + e.message);
             return null;
         }
     }
@@ -1288,7 +1288,7 @@ class FormView extends Component {
                 // Rollback on error
                 line[field] = oldValue;
                 this.state.record[tab.field] = [...lines];
-                if (window.LarasoftToast) window.LarasoftToast.error(`Update ${field} failed: ${e.message}`);
+                if (window.AdvSoftToast) window.AdvSoftToast.error(`Update ${field} failed: ${e.message}`);
             } finally {
                 this._o2mDebounceTimers.delete(key);
             }
@@ -1348,7 +1348,7 @@ class FormView extends Component {
             .catch(e => {
                 Object.assign(line, oldValues);
                 this.state.record[tab.field] = [...lines];
-                if (window.LarasoftToast) window.LarasoftToast.error(`Batch update failed: ${e.message}`);
+                if (window.AdvSoftToast) window.AdvSoftToast.error(`Batch update failed: ${e.message}`);
             });
     }
 
@@ -1686,12 +1686,12 @@ class FormView extends Component {
 
     // ── RTE (Rich Text Editor) instances ────────────────
     /**
-     * Mount a LarasoftRTE instance on every [data-rte] mount div
+     * Mount a AdvSoftRTE instance on every [data-rte] mount div
      * that hasn't been mounted yet. The mount div is created by the
      * html widget (W.html in owl-field-widgets.js).
      */
     _bindRTEInstances() {
-        if (!window.LarasoftRTE) return;
+        if (!window.AdvSoftRTE) return;
         // Garbage-collect instances whose mounts are no longer in the DOM
         this._rteInstances = (this._rteInstances || []).filter(inst => {
             if (!document.body.contains(inst.mountEl)) {
@@ -1718,7 +1718,7 @@ class FormView extends Component {
             let value = '';
             try { value = JSON.parse(mountEl.getAttribute('data-rte-value') || '""'); }
             catch (e) { value = mountEl.getAttribute('data-rte-value') || ''; }
-            const inst = window.LarasoftRTE.create(mountEl, {
+            const inst = window.AdvSoftRTE.create(mountEl, {
                 value,
                 model: modelName,
                 field: fieldName,

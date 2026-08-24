@@ -16,7 +16,7 @@ echo "Booted models in registry: " . count($models) . "\n";
 foreach ($models as $name => $def) {
     $desc = $def->_description ?: class_basename($def);
     $stmt = $conn->prepare("INSERT OR REPLACE INTO ir_model (model, name, module) VALUES (:m, :n, :mod)");
-    $stmt->execute([':m' => $name, ':n' => $desc, ':mod' => 'larasoft']);
+    $stmt->execute([':m' => $name, ':n' => $desc, ':mod' => 'AdvSoft']);
 }
 
 $mCount = $conn->query("SELECT COUNT(*) FROM ir_model")->fetchColumn();

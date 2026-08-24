@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml, useState, onMounted, onPatched, onWillUnmount, useRef } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class InlineTreeWidget extends Component {
     static template = xml`

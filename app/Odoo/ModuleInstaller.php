@@ -9,7 +9,7 @@ use App\Odoo\Core\Support\Log;
  * ModuleInstaller — Odoo-style addon lifecycle manager.
  *
  * Handles:
- *   1. Discovery: scan addons/ directory for larasoft.json manifests
+ *   1. Discovery: scan addons/ directory for AdvSoft.json manifests
  *   2. Install: load data files, update module state
  *   3. Upgrade: re-load data files, update version
  *   4. Dependency resolution: install dependencies first
@@ -41,7 +41,10 @@ class ModuleInstaller
         $discovered = [];
         foreach (scandir($addonsPath) as $dir) {
             if ($dir === '.' || $dir === '..') continue;
-            $manifestPath = $addonsPath . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . 'larasoft.json';
+            $manifestPath = $addonsPath . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . 'advsoft.json';
+            if (!file_exists($manifestPath)) {
+                $manifestPath = $addonsPath . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . 'AdvSoft.json';
+            }
             if (!file_exists($manifestPath)) continue;
 
             $manifest = json_decode(file_get_contents($manifestPath), true);

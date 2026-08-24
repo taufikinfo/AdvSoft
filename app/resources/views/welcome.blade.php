@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script>
         window.TEMPLATES = {};
-        window.LarasoftRPC = {};
+        window.AdvSoftRPC = {};
+        window.AdvsoftRPC = window.AdvSoftRPC;
+        window.LarasoftRPC = window.AdvSoftRPC;
         window.__adianti_dialog = function(opts) {
             console.log('[Adianti Dialog]', opts);
             if (opts.callback) opts.callback();
@@ -169,24 +171,28 @@
         $ctx = app(\App\Odoo\Security\SecurityContext::class);
         $userArr = $ctx->toArray();
     @endphp
-    window.LarasoftUser = @json($userArr);
+    window.AdvSoftUser = @json($userArr);
+    window.AdvsoftUser = window.AdvSoftUser;
+    window.LarasoftUser = window.AdvSoftUser;
     // ── Dark Mode Toggle ──────────────────────────
     (function() {
         const saved = localStorage.getItem('ls-theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = saved || (prefersDark ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
-        window.LarasoftTheme = {
+        window.AdvSoftTheme = {
             get: () => document.documentElement.getAttribute('data-theme'),
             set: (t) => {
                 document.documentElement.setAttribute('data-theme', t);
                 localStorage.setItem('ls-theme', t);
             },
             toggle: () => {
-                const cur = window.LarasoftTheme.get();
-                window.LarasoftTheme.set(cur === 'dark' ? 'light' : 'dark');
+                const cur = window.AdvSoftTheme.get();
+                window.AdvSoftTheme.set(cur === 'dark' ? 'light' : 'dark');
             }
         };
+        window.AdvsoftTheme = window.AdvSoftTheme;
+        window.LarasoftTheme = window.AdvSoftTheme;
     })();
     </script>
     <!-- App is mounted automatically by bundled scripts -->

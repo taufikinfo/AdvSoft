@@ -80,7 +80,7 @@
     // ── NavBar (Top navigation) ──────────────────────────
     window.TEMPLATES.NavBar = xml`
 <nav t-att-class="'ls-navbar' + (props.isHome ? ' ls-navbar-home' : '')">
-    <button class="ls-hamburger" t-on-click="() => window.LarasoftLayout.toggleMobileMenu()">
+    <button class="ls-hamburger" t-on-click="() => window.AdvSoftLayout.toggleMobileMenu()">
         <t t-out="window.lucideIcon('menu', 20)"/>
     </button>
     
@@ -103,7 +103,7 @@
         <span class="ls-brand-logo">
             <t t-out="window.lucideIcon('box', 20)"/>
         </span>
-        <span class="ls-brand-name">Larasoft</span>
+        <span class="ls-brand-name">AdvSoft</span>
     </div>
 
     <!-- App Switcher Top Links -->
@@ -122,7 +122,7 @@
         <button class="ls-theme-toggle" t-on-click="toggleSettings" title="Settings &amp; Preferences">
             <t t-out="window.lucideIcon('settings', 16)"/>
         </button>
-        <t t-set="u" t-value="window.LarasoftUser || {}"/>
+        <t t-set="u" t-value="window.AdvSoftUser || {}"/>
         <div class="ls-user-chip" t-if="u.uid" title="User Profile">
             <a href="#" class="ls-user-chip-btn" t-on-click.prevent="() => this.onProfileClick()" title="My Profile">
                 <div class="ls-avatar">
@@ -321,18 +321,18 @@
     </t>
     
     <!-- Mobile Overlay Menu -->
-    <div t-att-class="'ls-mobile-menu-overlay' + (state.layout.mobileMenuOpen ? ' open' : '')" t-on-click="() => window.LarasoftLayout.closeMobileMenu()">
+    <div t-att-class="'ls-mobile-menu-overlay' + (state.layout.mobileMenuOpen ? ' open' : '')" t-on-click="() => window.AdvSoftLayout.closeMobileMenu()">
         <div class="ls-mobile-menu-panel" t-on-click.stop="() => {}">
             <div class="ls-mobile-menu-header">
                 <h3>Menu</h3>
-                <button class="ls-mobile-menu-close" t-on-click="() => window.LarasoftLayout.closeMobileMenu()">
+                <button class="ls-mobile-menu-close" t-on-click="() => window.AdvSoftLayout.closeMobileMenu()">
                     <t t-out="window.lucideIcon('x', 18)"/>
                 </button>
             </div>
             <div class="ls-mobile-menu-apps">
                 <t t-foreach="state.apps" t-as="app" t-key="app.id">
                     <div t-att-class="'ls-mobile-menu-app' + (state.activeAppId === app.id ? ' active' : '')"
-                         t-on-click="() => { this.onAppClick(app); window.LarasoftLayout.closeMobileMenu(); }">
+                         t-on-click="() => { this.onAppClick(app); window.AdvSoftLayout.closeMobileMenu(); }">
                         <div class="ls-mobile-menu-app-icon" t-att-style="'background:' + (app.web_icon_color || '#7C3AED')">
                             <t t-out="window.lucideIcon(app.web_icon || app.icon || 'box', 18)"/>
                         </div>
@@ -376,7 +376,7 @@
                 <t t-foreach="state.layout.brandColors" t-as="bc" t-key="bc.id">
                     <div t-att-class="'ls-brand-swatch' + (state.layout.brandColor === bc.id ? ' active' : '')"
                          t-att-style="'background:' + bc.color" t-att-title="bc.label"
-                         t-on-click="() => window.LarasoftLayout.setBrandColor(bc.id)"></div>
+                         t-on-click="() => window.AdvSoftLayout.setBrandColor(bc.id)"></div>
                 </t>
             </div>
         </div>
@@ -384,9 +384,9 @@
         <div class="ls-settings-section">
             <div class="ls-settings-section-title">Density</div>
             <div class="ls-density-options">
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'compact' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('compact')">Compact</div>
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'default' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('default')">Default</div>
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'comfortable' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('comfortable')">Comfort</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'compact' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('compact')">Compact</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'default' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('default')">Default</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'comfortable' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('comfortable')">Comfort</div>
             </div>
         </div>
 
@@ -410,7 +410,7 @@
                     <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.125rem;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         <t t-if="state.clientError.serverError">Server Error</t>
-                        <t t-else="">Larasoft Client Error</t>
+                        <t t-else="">AdvSoft Client Error</t>
                     </h3>
                     <button class="ls-modal-close" t-on-click="clearError" style="color: #991b1b; background:none; border:none; font-size:1.25rem; cursor:pointer; padding:0; line-height:1;">✕</button>
                 </div>

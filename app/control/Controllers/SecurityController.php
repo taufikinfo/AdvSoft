@@ -197,7 +197,7 @@ class SecurityController extends Controller
 
         foreach ($models as $name => $def) {
             $desc = $def->_description ?: class_basename($def);
-            $module = method_exists($def, 'getModule') ? $def->getModule() : ($def->_module ?? 'larasoft');
+            $module = method_exists($def, 'getModule') ? $def->getModule() : ($def->_module ?? 'AdvSoft');
             $irModel = IrModel::where('model', $name)->first();
             if (!$irModel) {
                 $irModel = IrModel::create([

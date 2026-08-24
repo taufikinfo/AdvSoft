@@ -28,7 +28,7 @@ class EmbedExtractor
     protected int $timeout = 4;
 
     /** User agent string. */
-    protected string $userAgent = 'LarasoftEmbedBot/1.0 (+https://larasoft.local)';
+    protected string $userAgent = 'AdvSoftEmbedBot/1.0 (+https://AdvSoft.local)';
 
     /**
      * Extract embed metadata for a URL.

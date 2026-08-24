@@ -101,7 +101,7 @@
 <body>
     <div class="login-card">
         <h1>Adiantisoft</h1>
-        <p class="subtitle">Join the Larasoft platform</p>
+        <p class="subtitle">Join the AdvSoft platform</p>
         <div class="error" id="register-error"></div>
         <form id="register-form" autocomplete="on">
             <div class="field">

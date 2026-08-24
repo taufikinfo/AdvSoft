@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml, useState, onMounted } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class AddFromListDialog extends Component {
     static template = xml`

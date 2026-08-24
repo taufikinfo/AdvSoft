@@ -1,12 +1,12 @@
 /**
  * Adiantisoft Compiled Production Bundle
- * Generated: 2026-08-24 00:48:30
+ * Generated: 2026-08-24 01:04:09
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
 /**
  * ══════════════════════════════════════════════════════════════════
- * Larasoft Dialog & Notification Engine
+ * AdvSoft Dialog & Notification Engine
  * Replaces ugly browser alerts/confirms with modern, professional UI modals & toasts.
  * ══════════════════════════════════════════════════════════════════
  */
@@ -50,9 +50,9 @@
     }
 
     // ══════════════════════════════════════════════════════════════════
-    // 1. Toast Notification Manager (LarasoftToast)
+    // 1. Toast Notification Manager (AdvSoftToast)
     // ══════════════════════════════════════════════════════════════════
-    const LarasoftToast = {
+    const AdvSoftToast = {
         _getContainer() {
             let container = document.getElementById('ls-toast-container');
             if (!container) {
@@ -152,9 +152,9 @@
     };
 
     // ══════════════════════════════════════════════════════════════════
-    // 2. Modal Dialog Engine (LarasoftDialog)
+    // 2. Modal Dialog Engine (AdvSoftDialog)
     // ══════════════════════════════════════════════════════════════════
-    const LarasoftDialog = {
+    const AdvSoftDialog = {
         show(options = {}) {
             return new Promise((resolve) => {
                 let {
@@ -392,11 +392,11 @@
             cleanMsg = raw;
         } else if (/success|berhasil|saved successfully/i.test(raw)) {
             // For simple success, a toast is even smoother!
-            LarasoftToast.success(raw);
+            AdvSoftToast.success(raw);
             return;
         }
 
-        LarasoftDialog.show({
+        AdvSoftDialog.show({
             type: type,
             title: title,
             message: cleanMsg,
@@ -424,7 +424,7 @@
             if (opts.text && !opts.message) opts.message = opts.text;
 
             if (opts.toast) {
-                return Promise.resolve(LarasoftToast.show({
+                return Promise.resolve(AdvSoftToast.show({
                     title: opts.title,
                     message: opts.message,
                     type: opts.type,
@@ -432,7 +432,7 @@
                 }));
             }
 
-            return LarasoftDialog.show({
+            return AdvSoftDialog.show({
                 title: opts.title,
                 message: opts.message,
                 type: opts.type || 'info',
@@ -450,9 +450,15 @@
     // ══════════════════════════════════════════════════════════════════
     // 5. Expose Global APIs
     // ══════════════════════════════════════════════════════════════════
-    window.LarasoftToast = LarasoftToast;
-    window.LarasoftDialog = LarasoftDialog;
-    window.LarasoftAlert = LarasoftDialog;
+    window.AdvSoftToast = AdvSoftToast;
+    window.AdvsoftToast = AdvSoftToast;
+    window.AdvSoftDialog = AdvSoftDialog;
+    window.AdvsoftDialog = AdvSoftDialog;
+    window.AdvSoftAlert = AdvSoftDialog;
+    window.AdvsoftAlert = AdvSoftDialog;
+    window.LarasoftToast = AdvSoftToast;
+    window.LarasoftDialog = AdvSoftDialog;
+    window.LarasoftAlert = AdvSoftDialog;
     window.Swal = Swal;
 
     // Adianti framework bridge overrides
@@ -460,7 +466,7 @@
         const type = opts.type || 'info';
         const title = opts.title || (type === 'error' ? 'Error' : 'Notification');
         const message = opts.message || '';
-        LarasoftDialog.show({
+        AdvSoftDialog.show({
             type: type,
             title: title,
             message: message,
@@ -471,13 +477,13 @@
     };
 
     window.__adianti_error = function (title, message, callback) {
-        LarasoftDialog.error(message, title).then(() => {
+        AdvSoftDialog.error(message, title).then(() => {
             if (callback) callback();
         });
     };
 
     window.__adianti_message = function (title, message, callback) {
-        LarasoftDialog.info(message, title).then(() => {
+        AdvSoftDialog.info(message, title).then(() => {
             if (callback) callback();
         });
     };
@@ -486,7 +492,7 @@
 
 
 /* --- [FILE: js/core/owl-rpc.js] --- */
-// Larasoft RPC Service – Odoo-style JSON-RPC communication layer
+// AdvSoft RPC Service – Odoo-style JSON-RPC communication layer
 (function () {
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content
         || window.__CSRF_TOKEN__ || '';
@@ -537,25 +543,33 @@
         return promise;
     }
 
-    window.LarasoftRPC = window.LarasoftRPC || {};
-    Object.assign(window.LarasoftRPC, {
+    window.AdvSoftRPC = window.AdvSoftRPC || window.AdvsoftRPC || window.LarasoftRPC || {};
+    window.AdvsoftRPC = window.AdvSoftRPC;
+    window.LarasoftRPC = window.AdvSoftRPC;
+    Object.assign(window.AdvSoftRPC, {
         csrf,
         _cache,
 
-        //  Auth  
+        // ── Auth ─────────────────────────────────────
         async login(login, password) {
             const res = await post('/api/auth/login', { login, password });
-            if (res.success) window.LarasoftUser = res.user;
+            if (res.success) {
+                window.AdvSoftUser = res.user;
+                window.AdvsoftUser = res.user;
+                window.LarasoftUser = res.user;
+            }
             return res;
         },
         async logout() {
             const res = await post('/api/auth/logout', {});
+            window.AdvSoftUser = { uid: null };
+            window.AdvsoftUser = { uid: null };
             window.LarasoftUser = { uid: null };
             return res;
         },
         async me() {
             const res = await get('/api/auth/me');
-            window.LarasoftUser = res.user || {};
+            window.AdvSoftUser = res.user || {};
             return res;
         },
         async loadMenu() {
@@ -849,7 +863,11 @@
         // ── Profile (own res.users record) ───────────
         async updateProfile(values) {
             const res = await post('/profile', { ...values, _ajax: 1 });
-            if (res.success) window.LarasoftUser = res.user;
+            if (res.success) {
+                window.AdvSoftUser = res.user;
+                window.AdvsoftUser = res.user;
+                window.LarasoftUser = res.user;
+            }
             return res;
         },
 
@@ -869,7 +887,7 @@
 // SVG icon helpers - wrapped in owl.markup() for safe HTML rendering
 (function(){
 const m = owl.markup;
-window.LarasoftIcons = {
+window.AdvSoftIcons = {
     search: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.45 4.39l4.26 4.27a.75.75 0 11-1.06 1.06l-4.27-4.26A7 7 0 012 9z"/></svg>`),
     chevDown: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>`),
     x: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"/></svg>`),
@@ -2855,17 +2873,19 @@ window.lucideIcon = function(name, size) {
     if (!paths) return m(`<span style="width:${size}px;height:${size}px;display:inline-block;"></span>`);
     return m(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`);
 };
-window.LarasoftIcons.get = window.lucideIcon;
+window.AdvSoftIcons.get = window.lucideIcon;
+window.AdvsoftIcons = window.AdvSoftIcons;
+window.LarasoftIcons = window.AdvSoftIcons;
 })();
 
 
 /* --- [FILE: js/core/owl-layout-service.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  Larasoft Layout Service — Odoo Enterprise Presentation Layer
+//  AdvSoft Layout Service — Odoo Enterprise Presentation Layer
 //  Manages: Theme, Layout Mode, Device Detection, Density, Brand
 // ══════════════════════════════════════════════════════════════════
 (function () {
-    const STORAGE_KEY = 'larasoft_layout';
+    const STORAGE_KEY = 'AdvSoft_layout';
 
     const BRAND_COLORS = [
         { id: 'purple', label: 'Purple', color: '#714B67' },
@@ -3075,7 +3095,9 @@ window.LarasoftIcons.get = window.lucideIcon;
     }
 
     // Create singleton and expose globally
-    window.LarasoftLayout = new LayoutService();
+    window.AdvSoftLayout = new LayoutService();
+    window.AdvsoftLayout = window.AdvSoftLayout;
+    window.LarasoftLayout = window.AdvSoftLayout;
 
 })();
 
@@ -3628,7 +3650,7 @@ window.TEMPLATES.App = xml`
     // ── NavBar (Top navigation) ──────────────────────────
     window.TEMPLATES.NavBar = xml`
 <nav t-att-class="'ls-navbar' + (props.isHome ? ' ls-navbar-home' : '')">
-    <button class="ls-hamburger" t-on-click="() => window.LarasoftLayout.toggleMobileMenu()">
+    <button class="ls-hamburger" t-on-click="() => window.AdvSoftLayout.toggleMobileMenu()">
         <t t-out="window.lucideIcon('menu', 20)"/>
     </button>
     
@@ -3651,7 +3673,7 @@ window.TEMPLATES.App = xml`
         <span class="ls-brand-logo">
             <t t-out="window.lucideIcon('box', 20)"/>
         </span>
-        <span class="ls-brand-name">Larasoft</span>
+        <span class="ls-brand-name">AdvSoft</span>
     </div>
 
     <!-- App Switcher Top Links -->
@@ -3670,7 +3692,7 @@ window.TEMPLATES.App = xml`
         <button class="ls-theme-toggle" t-on-click="toggleSettings" title="Settings &amp; Preferences">
             <t t-out="window.lucideIcon('settings', 16)"/>
         </button>
-        <t t-set="u" t-value="window.LarasoftUser || {}"/>
+        <t t-set="u" t-value="window.AdvSoftUser || {}"/>
         <div class="ls-user-chip" t-if="u.uid" title="User Profile">
             <a href="#" class="ls-user-chip-btn" t-on-click.prevent="() => this.onProfileClick()" title="My Profile">
                 <div class="ls-avatar">
@@ -3869,18 +3891,18 @@ window.TEMPLATES.App = xml`
     </t>
     
     <!-- Mobile Overlay Menu -->
-    <div t-att-class="'ls-mobile-menu-overlay' + (state.layout.mobileMenuOpen ? ' open' : '')" t-on-click="() => window.LarasoftLayout.closeMobileMenu()">
+    <div t-att-class="'ls-mobile-menu-overlay' + (state.layout.mobileMenuOpen ? ' open' : '')" t-on-click="() => window.AdvSoftLayout.closeMobileMenu()">
         <div class="ls-mobile-menu-panel" t-on-click.stop="() => {}">
             <div class="ls-mobile-menu-header">
                 <h3>Menu</h3>
-                <button class="ls-mobile-menu-close" t-on-click="() => window.LarasoftLayout.closeMobileMenu()">
+                <button class="ls-mobile-menu-close" t-on-click="() => window.AdvSoftLayout.closeMobileMenu()">
                     <t t-out="window.lucideIcon('x', 18)"/>
                 </button>
             </div>
             <div class="ls-mobile-menu-apps">
                 <t t-foreach="state.apps" t-as="app" t-key="app.id">
                     <div t-att-class="'ls-mobile-menu-app' + (state.activeAppId === app.id ? ' active' : '')"
-                         t-on-click="() => { this.onAppClick(app); window.LarasoftLayout.closeMobileMenu(); }">
+                         t-on-click="() => { this.onAppClick(app); window.AdvSoftLayout.closeMobileMenu(); }">
                         <div class="ls-mobile-menu-app-icon" t-att-style="'background:' + (app.web_icon_color || '#7C3AED')">
                             <t t-out="window.lucideIcon(app.web_icon || app.icon || 'box', 18)"/>
                         </div>
@@ -3924,7 +3946,7 @@ window.TEMPLATES.App = xml`
                 <t t-foreach="state.layout.brandColors" t-as="bc" t-key="bc.id">
                     <div t-att-class="'ls-brand-swatch' + (state.layout.brandColor === bc.id ? ' active' : '')"
                          t-att-style="'background:' + bc.color" t-att-title="bc.label"
-                         t-on-click="() => window.LarasoftLayout.setBrandColor(bc.id)"></div>
+                         t-on-click="() => window.AdvSoftLayout.setBrandColor(bc.id)"></div>
                 </t>
             </div>
         </div>
@@ -3932,9 +3954,9 @@ window.TEMPLATES.App = xml`
         <div class="ls-settings-section">
             <div class="ls-settings-section-title">Density</div>
             <div class="ls-density-options">
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'compact' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('compact')">Compact</div>
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'default' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('default')">Default</div>
-                <div t-att-class="'ls-density-btn' + (state.layout.density === 'comfortable' ? ' active' : '')" t-on-click="() => window.LarasoftLayout.setDensity('comfortable')">Comfort</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'compact' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('compact')">Compact</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'default' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('default')">Default</div>
+                <div t-att-class="'ls-density-btn' + (state.layout.density === 'comfortable' ? ' active' : '')" t-on-click="() => window.AdvSoftLayout.setDensity('comfortable')">Comfort</div>
             </div>
         </div>
 
@@ -3958,7 +3980,7 @@ window.TEMPLATES.App = xml`
                     <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.125rem;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         <t t-if="state.clientError.serverError">Server Error</t>
-                        <t t-else="">Larasoft Client Error</t>
+                        <t t-else="">AdvSoft Client Error</t>
                     </h3>
                     <button class="ls-modal-close" t-on-click="clearError" style="color: #991b1b; background:none; border:none; font-size:1.25rem; cursor:pointer; padding:0; line-height:1;">✕</button>
                 </div>
@@ -4064,14 +4086,14 @@ W.char_emojis = (f) => `<div class="ls-char-emojis-widget">
 W.text = (f) => `<textarea class="ls-field-textarea" data-field="${f.name}" rows="4" placeholder="${esc(f.placeholder||'')}" ${f.required ? 'required aria-required="true"' : ''}>${esc(f._val)}</textarea>`;
 
 // RTE-powered HTML widget: returns a mountable div that the form binder
-// will later turn into a fully-configured LarasoftRTE instance.
+// will later turn into a fully-configured AdvSoftRTE instance.
 W.html = (f) => {
-    // Build the config that will be passed to LarasoftRTE
+    // Build the config that will be passed to AdvSoftRTE
     const htmlCfg = f.html || {};
     const containerId = 'ls-rte-' + (f.name || 'field').replace(/[^a-z0-9_]/gi, '_');
     // We embed the config as a data attribute so the form binder can read it
     // after the DOM is inserted. The form binder will look for elements with
-    // [data-rte] and call LarasoftRTE.create().
+    // [data-rte] and call AdvSoftRTE.create().
     return `<div id="${containerId}" class="ls-html-widget-mount" data-field="${esc(f.name)}" data-rte="1" data-rte-model="${esc(f._model||'')}" data-rte-field="${esc(f.name)}" data-rte-config='${esc(JSON.stringify(htmlCfg))}' data-rte-value='${esc(JSON.stringify(f._val || ""))}'></div>`;
 };
 
@@ -4173,7 +4195,7 @@ W.daterange = (f) => {
 // ════════════════════════════════════════════════════
 W.selection = (f) => {
     const sel = Array.isArray(f.selection) ? f.selection : Object.entries(f.selection || {});
-    const userGroups = (window.LarasoftUser?.groups) || [];
+    const userGroups = (window.AdvSoftUser?.groups) || [];
     let html = `<select class="ls-field-select" data-field="${f.name}" ${f.required ? 'required aria-required="true"' : ''}>`;
     if (!f.required) html += `<option value="">—</option>`;
     sel.forEach(item => {
@@ -4193,7 +4215,7 @@ W.selection = (f) => {
 
 W.radio = (f) => {
     const sel = Array.isArray(f.selection) ? f.selection : Object.entries(f.selection || {});
-    const userGroups = (window.LarasoftUser?.groups) || [];
+    const userGroups = (window.AdvSoftUser?.groups) || [];
     let html = '<div class="ls-radio-widget">';
     sel.forEach(item => {
         let v, l, groups = null;
@@ -5611,7 +5633,7 @@ window.addEventListener('load', () => {
 
 /* --- [FILE: js/widgets/fields/owl-rte.js] --- */
 // ═══════════════════════════════════════════════════════════════════════════
-//  Larasoft RTE — Odoo-style Rich Text Editor
+//  AdvSoft RTE — Odoo-style Rich Text Editor
 //
 //  Single-file implementation that mirrors Odoo's HTML field widget:
 //    - Configurable toolbar (from field's HtmlFieldConfig)
@@ -5622,10 +5644,10 @@ window.addEventListener('load', () => {
 //    - URL embeds (YouTube/Vimeo cards)
 //    - Link editor, table insert, color picker
 //    - Code/source view, fullscreen, stats, history
-//    - Programmatic API: window.LarasoftRTE.create(container, options)
+//    - Programmatic API: window.AdvSoftRTE.create(container, options)
 //
 //  Architecture:
-//    LarasoftRTE          ← public factory
+//    AdvSoftRTE          ← public factory
 //      ├─ Sanitizer       ← allowlist-based HTML cleaning
 //      ├─ Commands        ← execCommand wrappers + custom ops
 //      ├─ Toolbar         ← dynamic button rendering
@@ -5637,7 +5659,7 @@ window.addEventListener('load', () => {
 //
 //  Dependencies (provided by host page):
 //    - window.RPC (optional, for image upload / mentions / embeds)
-//    - window.LarasoftUser  (CSRF/uid, optional)
+//    - window.AdvSoftUser  (CSRF/uid, optional)
 //    - window.owl  (only if you mount the OWL component — standalone works too)
 // ═══════════════════════════════════════════════════════════════════════════
 (function () {
@@ -6379,12 +6401,12 @@ class SourceView {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  Main LarasoftRTE class
+//  Main AdvSoftRTE class
 // ═══════════════════════════════════════════════════════════════════════
-class LarasoftRTE {
+class AdvSoftRTE {
     constructor(container, options = {}) {
         if (typeof container === 'string') container = document.querySelector(container);
-        if (!container) throw new Error('LarasoftRTE: container not found');
+        if (!container) throw new Error('AdvSoftRTE: container not found');
         this.container = container;
         this.options = options;
         this.cfg = options.html || options.config || { allowed_tags: [], toolbar: [], plugins: [] };
@@ -6802,9 +6824,9 @@ class LarasoftRTE {
 //  Public factory
 // ═══════════════════════════════════════════════════════════════════════
 const instances = new WeakMap();
-window.LarasoftRTE = {
+window.AdvSoftRTE = {
     create(container, options) {
-        const inst = new LarasoftRTE(container, options);
+        const inst = new AdvSoftRTE(container, options);
         instances.set(container, inst);
         return inst;
     },
@@ -6819,7 +6841,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cfgAttr = el.getAttribute('data-rte-config');
             const cfg = cfgAttr ? JSON.parse(cfgAttr) : {};
             const value = el.textContent || el.innerHTML || '';
-            window.LarasoftRTE.create(el, {
+            window.AdvSoftRTE.create(el, {
                 value,
                 ...cfg,
             });
@@ -6851,7 +6873,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //    ✓ Clear button for optional fields
 // ══════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -8917,7 +8939,7 @@ window.InlineTreeDrag = DragController;
 //  Mirrors _triggerOnchange for O2M line-level onchange
 // ══════════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function useInlineTreeOnchange(state, props) {
     const pending = new Map();
@@ -8989,7 +9011,7 @@ function useInlineTreeOnchange(state, props) {
             }
 
             if (result && result.warning) {
-                if (window.LarasoftToast) window.LarasoftToast.warn(result.warning);
+                if (window.AdvSoftToast) window.AdvSoftToast.warn(result.warning);
                 else console.warn('[Onchange warning]', result.warning);
             }
         } catch (e) {
@@ -9033,7 +9055,7 @@ window.useInlineTreeOnchange = useInlineTreeOnchange;
 //  Selection + bulk delete/duplicate/archive
 // ══════════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 async function bulkDelete(childModel, lineIds) {
     if (!lineIds || !lineIds.length) return { success: true, deleted: 0 };
@@ -9112,7 +9134,7 @@ window.InlineTreeBulk = {
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml, useState, onMounted } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class AddFromListDialog extends Component {
     static template = xml`
@@ -9492,7 +9514,7 @@ window.InlineTreeRow = InlineTreeRow;
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml, useState, onMounted, onPatched, onWillUnmount, useRef } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class InlineTreeWidget extends Component {
     static template = xml`
@@ -10814,8 +10836,8 @@ window.InlineTreeWidget = InlineTreeWidget;
 // Owl App — Full Odoo <tree> ListView Architecture
 (function () {
 const { Component, useState, useRef, onMounted, onWillStart } = owl;
-const RPC = window.LarasoftRPC;
-const icons = window.LarasoftIcons;
+const RPC = window.AdvSoftRPC;
+const icons = window.AdvSoftIcons;
 let facetCounter = 0;
 
 class ListView extends Component {
@@ -11328,7 +11350,7 @@ class ListView extends Component {
         if (col.widget === 'monetary') {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
-                currency: window.LarasoftUser?.company_currency || 'IDR',
+                currency: window.AdvSoftUser?.company_currency || 'IDR',
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(v);
@@ -12100,7 +12122,7 @@ window.TEMPLATES.FormView = xml`
 // Form View Component – Completely Dynamic & Widget-Driven
 (function () {
 const { Component, useState, onWillStart, onMounted, onPatched, useRef } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class FormView extends Component {
     static template = window.TEMPLATES.FormView;
@@ -12846,7 +12868,7 @@ class FormView extends Component {
         if (fDef.widget === 'monetary' || fDef.type === 'monetary') {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
-                currency: window.LarasoftUser?.company_currency || 'IDR',
+                currency: window.AdvSoftUser?.company_currency || 'IDR',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0 // Stat buttons usually look better without decimals
             }).format(val);
@@ -12874,7 +12896,7 @@ class FormView extends Component {
 
         if (btn.type === 'object') {
             try {
-                const res = await window.LarasoftRPC.call_button(this.props.model, this.props.recordId, btn.name);
+                const res = await window.AdvSoftRPC.call_button(this.props.model, this.props.recordId, btn.name);
                 if (res.action) {
                     if (res.action.type === 'ir.actions.client') {
                         if (res.action.tag === 'reload') {
@@ -13322,10 +13344,10 @@ class FormView extends Component {
 
         // Force save parent if it is new, because createChild requires a parent ID in this architecture
         if (!this.state.record.id || this.state.record.id === 'null') {
-            if (window.LarasoftToast) window.LarasoftToast.info('Auto-saving record to attach lines...');
+            if (window.AdvSoftToast) window.AdvSoftToast.info('Auto-saving record to attach lines...');
             await this.saveRecord();
             if (!this.state.record.id || this.state.record.id === 'null') {
-                if (window.LarasoftToast) window.LarasoftToast.error('Please complete required fields first.');
+                if (window.AdvSoftToast) window.AdvSoftToast.error('Please complete required fields first.');
                 return null; // Could not save parent
             }
         }
@@ -13345,7 +13367,7 @@ class FormView extends Component {
             this.state.dirty = true;
             return ts;
         } catch (e) {
-            if (window.LarasoftToast) window.LarasoftToast.error('Add line failed: ' + e.message);
+            if (window.AdvSoftToast) window.AdvSoftToast.error('Add line failed: ' + e.message);
             return null;
         }
     }
@@ -13387,7 +13409,7 @@ class FormView extends Component {
                 // Rollback on error
                 line[field] = oldValue;
                 this.state.record[tab.field] = [...lines];
-                if (window.LarasoftToast) window.LarasoftToast.error(`Update ${field} failed: ${e.message}`);
+                if (window.AdvSoftToast) window.AdvSoftToast.error(`Update ${field} failed: ${e.message}`);
             } finally {
                 this._o2mDebounceTimers.delete(key);
             }
@@ -13447,7 +13469,7 @@ class FormView extends Component {
             .catch(e => {
                 Object.assign(line, oldValues);
                 this.state.record[tab.field] = [...lines];
-                if (window.LarasoftToast) window.LarasoftToast.error(`Batch update failed: ${e.message}`);
+                if (window.AdvSoftToast) window.AdvSoftToast.error(`Batch update failed: ${e.message}`);
             });
     }
 
@@ -13785,12 +13807,12 @@ class FormView extends Component {
 
     // ── RTE (Rich Text Editor) instances ────────────────
     /**
-     * Mount a LarasoftRTE instance on every [data-rte] mount div
+     * Mount a AdvSoftRTE instance on every [data-rte] mount div
      * that hasn't been mounted yet. The mount div is created by the
      * html widget (W.html in owl-field-widgets.js).
      */
     _bindRTEInstances() {
-        if (!window.LarasoftRTE) return;
+        if (!window.AdvSoftRTE) return;
         // Garbage-collect instances whose mounts are no longer in the DOM
         this._rteInstances = (this._rteInstances || []).filter(inst => {
             if (!document.body.contains(inst.mountEl)) {
@@ -13817,7 +13839,7 @@ class FormView extends Component {
             let value = '';
             try { value = JSON.parse(mountEl.getAttribute('data-rte-value') || '""'); }
             catch (e) { value = mountEl.getAttribute('data-rte-value') || ''; }
-            const inst = window.LarasoftRTE.create(mountEl, {
+            const inst = window.AdvSoftRTE.create(mountEl, {
                 value,
                 model: modelName,
                 field: fieldName,
@@ -13845,7 +13867,7 @@ window.FormView = FormView;
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml, useState, onMounted } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class FormViewDialog extends Component {
     static template = xml`
@@ -13933,8 +13955,8 @@ window.FormViewDialog = FormViewDialog;
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, onMounted, xml, useRef } = owl;
-const RPC = window.LarasoftRPC;
-const icons = window.LarasoftIcons;
+const RPC = window.AdvSoftRPC;
+const icons = window.AdvSoftIcons;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -14171,7 +14193,7 @@ class KanbanView extends Component {
 
     setup() {
         this._model = this.props.model || 'task';
-        this.icons = window.LarasoftIcons;
+        this.icons = window.AdvSoftIcons;
         this.state = useState({
             loading: true,
             columns: [],
@@ -14716,7 +14738,7 @@ window.KanbanView = KanbanView;
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, onMounted, onWillUnmount, xml, useRef } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -15691,7 +15713,7 @@ window.CalendarView = CalendarView;
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, onMounted, onPatched, useRef, xml } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -16000,7 +16022,7 @@ window.GraphView = GraphView;
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, xml } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -20446,7 +20468,7 @@ window.PivotView = PivotView;
             if (!pivot || !pivot.model) return null;
 
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 const result = await rpc.searchRead(pivot.model, pivot.domain, {
                     fields: [...pivot.groupBy, ...pivot.measures.map(m => m.field)],
                     limit: pivot.rowLimit,
@@ -20664,7 +20686,7 @@ window.PivotView = PivotView;
             if (!list || !list.model) return null;
 
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 const opts = {
                     fields: list.fields,
                     limit: list.limit,
@@ -21114,7 +21136,7 @@ window.PivotView = PivotView;
 
     class SpreadsheetDocument {
         constructor(config = {}) {
-            this._rpc = config.rpc || window.LarasoftRPC || window.rpc;
+            this._rpc = config.rpc || window.AdvSoftRPC || window.rpc;
             this._model = config.model || 'spreadsheet.spreadsheet_data';
             this._currentId = null;
             this._currentName = '';
@@ -24065,7 +24087,7 @@ window.PivotView = PivotView;
 
         async _longPoll() {
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 const result = await rpc.call('spreadsheet.collaboration', 'longpoll', {
                     spreadsheet_id: this._spreadsheetId,
                     last_sequence: this._lastSequence || 0,
@@ -24239,7 +24261,7 @@ window.PivotView = PivotView;
 
         async _sendViaRPC(data) {
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 await rpc.call('spreadsheet.collaboration', 'publish', {
                     spreadsheet_id: this._spreadsheetId,
                     message: data,
@@ -24764,7 +24786,7 @@ window.PivotView = PivotView;
 // ══════════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, onWillStart, onMounted, onWillUnmount, xml, useRef } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     function esc(v) { return v == null ? '' : String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
@@ -25383,7 +25405,7 @@ window.PivotView = PivotView;
 
         setup() {
             this._model = this.props.model || 'task';
-            this.icons = window.LarasoftIcons;
+            this.icons = window.AdvSoftIcons;
 
             // Initialize Engine
             this.engine = new window.SpreadsheetEngine({
@@ -27545,14 +27567,14 @@ window.PivotView = PivotView;
                     }
                 }
 
-                if (window.LarasoftToast) {
-                    window.LarasoftToast.success('Spreadsheet saved successfully');
+                if (window.AdvSoftToast) {
+                    window.AdvSoftToast.success('Spreadsheet saved successfully');
                 } else {
                     alert('Spreadsheet saved successfully');
                 }
             } catch (e) {
-                if (window.LarasoftToast) {
-                    window.LarasoftToast.error('Save failed: ' + e.message);
+                if (window.AdvSoftToast) {
+                    window.AdvSoftToast.error('Save failed: ' + e.message);
                 } else {
                     alert('Save failed: ' + e.message);
                 }
@@ -28343,7 +28365,7 @@ window.TEMPLATES.securityOverview = xml`
 <div class="ls-sec-page">
     <div class="ls-sec-header">
         <h1>Security Overview</h1>
-        <p class="ls-sec-subtitle">Dashboard and diagnostics for the Larasoft security engine.</p>
+        <p class="ls-sec-subtitle">Dashboard and diagnostics for the AdvSoft security engine.</p>
     </div>
 
     <div t-if="state.loading" class="ls-sec-loading">
@@ -28449,7 +28471,7 @@ window.TEMPLATES.accessRights = xml`
                         <td class="ls-matrix-rowhead">
                             <div class="ls-matrix-rowhead-name" t-esc="m.model"/>
                             <div class="ls-matrix-rowhead-meta">
-                                <span t-esc="m.module || 'larasoft'"/>
+                                <span t-esc="m.module || 'AdvSoft'"/>
                                 <span> · </span>
                                 <span t-esc="m.group_count"/> rules
                             </div>
@@ -30434,11 +30456,11 @@ window.AccountingReports = AccountingReports;
 
             const raw = window.location.hash.slice(1) || window.location.search.slice(1);
             const params = new URLSearchParams(raw);
-            let className = params.get('class') || window.LarasoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
+            let className = params.get('class') || window.AdvSoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
             if (className === 'adianti_page' || !className) {
-                className = window.LarasoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
+                className = window.AdvSoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
             }
-            const method = params.get('method') || window.LarasoftRootInstance?.state?.adiantiControllerMethod || '';
+            const method = params.get('method') || window.AdvSoftRootInstance?.state?.adiantiControllerMethod || '';
 
             this.state.className = className;
             this.state.method = method;
@@ -30491,9 +30513,9 @@ window.AccountingReports = AccountingReports;
         }
     }
 
-    window.LarasoftPageRegistry = window.LarasoftPageRegistry || {};
-    window.LarasoftPageRegistry['adianti_page'] = AdiantiPageView;
-    window.LarasoftPageRegistry['sample_controller'] = AdiantiPageView;
+    window.AdvSoftPageRegistry = window.AdvSoftPageRegistry || {};
+    window.AdvSoftPageRegistry['adianti_page'] = AdiantiPageView;
+    window.AdvSoftPageRegistry['sample_controller'] = AdiantiPageView;
     window.AdiantiPageView = AdiantiPageView;
 })();
 
@@ -30505,7 +30527,7 @@ window.AccountingReports = AccountingReports;
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, onMounted } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class MenuEditorView extends Component {
     static template = window.TEMPLATES.MenuEditor;
@@ -30993,14 +31015,14 @@ window.MenuEditorView = MenuEditorView;
 
 /* --- [FILE: js/pages/admin/owl-security-views.js] --- */
 // ══════════════════════════════════════════════════════════════════
-//  Larasoft Security Management UI
+//  AdvSoft Security Management UI
 //  4 components: AccessRights (matrix), RecordRules, Groups, Users
 //  Each is a full Odoo-style view with list+form switching.
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, useRef, onWillStart, onMounted } = owl;
-const RPC = window.LarasoftRPC;
-const icons = window.LarasoftIcons;
+const RPC = window.AdvSoftRPC;
+const icons = window.AdvSoftIcons;
 
 const PERM_COLS = [
     { key: 'r', label: 'Read',   short: 'R', color: '#059669' },
@@ -31070,7 +31092,7 @@ class AccessRights extends Component {
     }
 
     get modules() {
-        const set = new Set(this.state.models.map(m => m.module || 'larasoft'));
+        const set = new Set(this.state.models.map(m => m.module || 'AdvSoft'));
         return Array.from(set).sort();
     }
 
@@ -31078,7 +31100,7 @@ class AccessRights extends Component {
         const term = this.state.filter.toLowerCase();
         const mod = this.state.selectedModule;
         return this.state.models.filter(m => {
-            if (mod !== 'all' && (m.module || 'larasoft') !== mod) return false;
+            if (mod !== 'all' && (m.module || 'AdvSoft') !== mod) return false;
             if (!term) return true;
             return m.model.toLowerCase().includes(term) ||
                    (m.name || '').toLowerCase().includes(term);
@@ -31622,7 +31644,7 @@ window.UsersView = UsersView;
 // View Builder Component — Odoo Studio-style view configuration
 (function(){
 const { Component, useState, onMounted, markup } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class ViewBuilderView extends Component {
     static template = window.TEMPLATES.ViewBuilder;
@@ -32679,7 +32701,7 @@ window.ViewBuilderView = ViewBuilderView;
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, onMounted } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     // Warna avatar berdasarkan nama (deterministik)
     const AVATAR_COLORS = [
@@ -32933,9 +32955,9 @@ window.ViewBuilderView = ViewBuilderView;
         }
     }
 
-    // Daftarkan ke LarasoftPageRegistry
-    window.LarasoftPageRegistry = window.LarasoftPageRegistry || {};
-    window.LarasoftPageRegistry['my_custom_page'] = MyCustomPage;
+    // Daftarkan ke AdvSoftPageRegistry
+    window.AdvSoftPageRegistry = window.AdvSoftPageRegistry || {};
+    window.AdvSoftPageRegistry['my_custom_page'] = MyCustomPage;
 })();
 
 
@@ -32945,7 +32967,7 @@ window.ViewBuilderView = ViewBuilderView;
 //  Components: AppSwitcher, NavBar, SubMenu, Breadcrumb, WebClient
 (function () {
     const { Component, useState, useRef, onWillStart, onMounted, onError } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     // View type icons (SVG inline)
     const VIEW_ICONS = {
@@ -32963,7 +32985,7 @@ window.ViewBuilderView = ViewBuilderView;
     };
 
     // Global Page Registry
-    window.LarasoftPageRegistry = Object.assign({
+    window.AdvSoftPageRegistry = Object.assign({
         'security_overview': window.SecurityOverview,
         'security_access': window.AccessRights,
         'security_rules': window.RecordRules,
@@ -32972,10 +32994,12 @@ window.ViewBuilderView = ViewBuilderView;
         'menu_editor': window.MenuEditorView,
         'view_builder': window.ViewBuilderView,
         'accounting_reports': window.AccountingReports,
-    }, window.LarasoftPageRegistry || {});
+    }, window.AdvSoftPageRegistry || {});
+    window.AdvsoftPageRegistry = window.AdvSoftPageRegistry;
+    window.LarasoftPageRegistry = window.AdvSoftPageRegistry;
 
     window.registerCustomPage = function(viewId, componentClass) {
-        window.LarasoftPageRegistry[viewId] = componentClass;
+        window.AdvSoftPageRegistry[viewId] = componentClass;
     };
 
     // ── App Theme Palette Helper for Odoo Enterprise Look ─
@@ -33161,21 +33185,21 @@ window.ViewBuilderView = ViewBuilderView;
         onAppClick(app) { this.props.onAppClick(app); }
         onProfileClick(ev) {
             if (ev) ev.preventDefault();
-            const uid = window.LarasoftUser?.uid || 1;
+            const uid = window.AdvSoftUser?.uid || 1;
             if (this.props.onOpenProfile) {
                 this.props.onOpenProfile(uid);
             }
         }
         toggleTheme() {
-            if (window.LarasoftLayout) {
-                window.LarasoftLayout.setTheme(window.LarasoftLayout.effectiveTheme === 'dark' ? 'light' : 'dark');
+            if (window.AdvSoftLayout) {
+                window.AdvSoftLayout.setTheme(window.AdvSoftLayout.effectiveTheme === 'dark' ? 'light' : 'dark');
             }
         }
         toggleSettings() {
-            if (window.LarasoftLayout) window.LarasoftLayout.toggleSettings();
+            if (window.AdvSoftLayout) window.AdvSoftLayout.toggleSettings();
         }
         get effectiveTheme() {
-            return window.LarasoftLayout ? window.LarasoftLayout.effectiveTheme : 'light';
+            return window.AdvSoftLayout ? window.AdvSoftLayout.effectiveTheme : 'light';
         }
     }
 
@@ -33230,11 +33254,11 @@ window.ViewBuilderView = ViewBuilderView;
 
         // Get the dynamic component from registry
         get customComponent() {
-            return window.LarasoftPageRegistry[this.state.currentView] || null;
+            return window.AdvSoftPageRegistry[this.state.currentView] || null;
         }
 
         get isCustomView() {
-            return !!window.LarasoftPageRegistry[this.state.currentView];
+            return !!window.AdvSoftPageRegistry[this.state.currentView];
         }
 
         setup() {
@@ -33287,7 +33311,7 @@ window.ViewBuilderView = ViewBuilderView;
                 clientError: null,
 
                 // Layout / Theme / Device state
-                layout: window.LarasoftLayout ? window.LarasoftLayout.toState() : {
+                layout: window.AdvSoftLayout ? window.AdvSoftLayout.toState() : {
                     theme: 'light', effectiveTheme: 'light', brandColor: 'purple',
                     density: 'default', device: 'desktop', isMobile: false,
                     isTablet: false, isDesktop: true, settingsOpen: false,
@@ -33299,9 +33323,9 @@ window.ViewBuilderView = ViewBuilderView;
             this._actionCache = {};
 
             // Sync LayoutService → Owl state
-            if (window.LarasoftLayout) {
-                window.LarasoftLayout.onChange(() => {
-                    Object.assign(this.state.layout, window.LarasoftLayout.toState());
+            if (window.AdvSoftLayout) {
+                window.AdvSoftLayout.onChange(() => {
+                    Object.assign(this.state.layout, window.AdvSoftLayout.toState());
                 });
             }
 
@@ -33363,7 +33387,7 @@ window.ViewBuilderView = ViewBuilderView;
 
         // ── Custom SPA Page Navigation ──────────────
         openCustomView(type, updateHash = true) {
-            if (!window.LarasoftPageRegistry[type]) {
+            if (!window.AdvSoftPageRegistry[type]) {
                 console.warn('Custom page not found in registry:', type);
                 return;
             }
@@ -33409,11 +33433,11 @@ window.ViewBuilderView = ViewBuilderView;
         }
 
         setTheme(theme) {
-            if (window.LarasoftLayout) window.LarasoftLayout.setTheme(theme);
+            if (window.AdvSoftLayout) window.AdvSoftLayout.setTheme(theme);
         }
 
         closeSettings() {
-            if (window.LarasoftLayout) window.LarasoftLayout.closeSettings();
+            if (window.AdvSoftLayout) window.AdvSoftLayout.closeSettings();
         }
 
         // ── View Mode Switcher ──────────────────────────
@@ -33667,7 +33691,7 @@ window.ViewBuilderView = ViewBuilderView;
             if (typeof uid === 'number' || (typeof uid === 'string' && /^\d+$/.test(uid))) {
                 userId = parseInt(uid);
             } else {
-                userId = (window.LarasoftUser && window.LarasoftUser.uid) ? window.LarasoftUser.uid : 1;
+                userId = (window.AdvSoftUser && window.AdvSoftUser.uid) ? window.AdvSoftUser.uid : 1;
             }
             this.state.formRecordId = userId;
             this.state.currentModel = 'res.users';
@@ -33862,7 +33886,7 @@ window.ViewBuilderView = ViewBuilderView;
                 }
 
                 // Standard Adianti Controller Fallback (TPage / TWindow)
-                if (window.LarasoftPageRegistry && window.LarasoftPageRegistry['adianti_page']) {
+                if (window.AdvSoftPageRegistry && window.AdvSoftPageRegistry['adianti_page']) {
                     this.state.adiantiControllerClass = params.class;
                     this.state.adiantiControllerMethod = params.method || '';
                     this.state.adiantiControllerParams = params;
@@ -33872,7 +33896,7 @@ window.ViewBuilderView = ViewBuilderView;
             }
 
             // 2. Legacy custom view routing (#view=security_access)
-            if (params.view && window.LarasoftPageRegistry[params.view]) {
+            if (params.view && window.AdvSoftPageRegistry[params.view]) {
                 this.openCustomView(params.view);
                 return;
             }
@@ -33960,7 +33984,7 @@ window.ViewBuilderView = ViewBuilderView;
         const env = {
             _t: (str) => str, // Placeholder fungsi translasi (i18n)
             services: {
-                rpc: window.LarasoftRPC
+                rpc: window.AdvSoftRPC
             }
         };
 
@@ -33985,7 +34009,7 @@ window.ViewBuilderView = ViewBuilderView;
             const app = new owl.App(WebClient, config);
             app.mount(document.getElementById('app'));
         } catch (e) {
-            console.error("[CRITICAL] Gagal me-mount Larasoft WebClient:", e);
+            console.error("[CRITICAL] Gagal me-mount AdvSoft WebClient:", e);
             document.getElementById('app').innerHTML = `
                 <div style="padding: 20px; color: red; font-family: sans-serif;">
                     <h3>Critical System Error</h3>

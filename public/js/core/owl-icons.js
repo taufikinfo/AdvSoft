@@ -1,7 +1,7 @@
 // SVG icon helpers - wrapped in owl.markup() for safe HTML rendering
 (function(){
 const m = owl.markup;
-window.LarasoftIcons = {
+window.AdvSoftIcons = {
     search: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.45 4.39l4.26 4.27a.75.75 0 11-1.06 1.06l-4.27-4.26A7 7 0 012 9z"/></svg>`),
     chevDown: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>`),
     x: m(`<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"/></svg>`),
@@ -1987,5 +1987,7 @@ window.lucideIcon = function(name, size) {
     if (!paths) return m(`<span style="width:${size}px;height:${size}px;display:inline-block;"></span>`);
     return m(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`);
 };
-window.LarasoftIcons.get = window.lucideIcon;
+window.AdvSoftIcons.get = window.lucideIcon;
+window.AdvsoftIcons = window.AdvSoftIcons;
+window.LarasoftIcons = window.AdvSoftIcons;
 })();

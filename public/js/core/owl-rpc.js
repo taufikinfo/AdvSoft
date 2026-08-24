@@ -1,4 +1,4 @@
-// Larasoft RPC Service – Odoo-style JSON-RPC communication layer
+// AdvSoft RPC Service – Odoo-style JSON-RPC communication layer
 (function () {
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content
         || window.__CSRF_TOKEN__ || '';
@@ -49,25 +49,33 @@
         return promise;
     }
 
-    window.LarasoftRPC = window.LarasoftRPC || {};
-    Object.assign(window.LarasoftRPC, {
+    window.AdvSoftRPC = window.AdvSoftRPC || window.AdvsoftRPC || window.LarasoftRPC || {};
+    window.AdvsoftRPC = window.AdvSoftRPC;
+    window.LarasoftRPC = window.AdvSoftRPC;
+    Object.assign(window.AdvSoftRPC, {
         csrf,
         _cache,
 
-        //  Auth  
+        // ── Auth ─────────────────────────────────────
         async login(login, password) {
             const res = await post('/api/auth/login', { login, password });
-            if (res.success) window.LarasoftUser = res.user;
+            if (res.success) {
+                window.AdvSoftUser = res.user;
+                window.AdvsoftUser = res.user;
+                window.LarasoftUser = res.user;
+            }
             return res;
         },
         async logout() {
             const res = await post('/api/auth/logout', {});
+            window.AdvSoftUser = { uid: null };
+            window.AdvsoftUser = { uid: null };
             window.LarasoftUser = { uid: null };
             return res;
         },
         async me() {
             const res = await get('/api/auth/me');
-            window.LarasoftUser = res.user || {};
+            window.AdvSoftUser = res.user || {};
             return res;
         },
         async loadMenu() {
@@ -361,7 +369,11 @@
         // ── Profile (own res.users record) ───────────
         async updateProfile(values) {
             const res = await post('/profile', { ...values, _ajax: 1 });
-            if (res.success) window.LarasoftUser = res.user;
+            if (res.success) {
+                window.AdvSoftUser = res.user;
+                window.AdvsoftUser = res.user;
+                window.LarasoftUser = res.user;
+            }
             return res;
         },
 

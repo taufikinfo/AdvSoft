@@ -354,7 +354,7 @@ trait HasAccessControl
      * Odoo: returns True if access is granted. If raise_exception=True and denied,
      * throws AccessError.
      *
-     * In Larasoft: also checks in-code $this->access AND DB ir.model.access.
+     * In AdvSoft: also checks in-code $this->access AND DB ir.model.access.
      */
     public function checkAccessRights(string $operation, bool $raise = true): bool
     {

@@ -107,7 +107,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="company-name">{{ $company->name ?? 'Larasoft ERP' }}</div>
+        <div class="company-name">{{ $company->name ?? 'AdvSoft ERP' }}</div>
         <div class="report-title">PROJECT MANAGEMENT — TASK STATUS REPORT</div>
     </div>
 
@@ -166,7 +166,7 @@
     @endforeach
 
     <div class="footer">
-        Generated on {{ now()->format('d M Y H:i:s') }} by Larasoft ERP
+        Generated on {{ now()->format('d M Y H:i:s') }} by AdvSoft ERP
     </div>
 </body>
 </html>

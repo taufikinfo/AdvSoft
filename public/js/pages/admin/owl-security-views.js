@@ -1,12 +1,12 @@
 // ══════════════════════════════════════════════════════════════════
-//  Larasoft Security Management UI
+//  AdvSoft Security Management UI
 //  4 components: AccessRights (matrix), RecordRules, Groups, Users
 //  Each is a full Odoo-style view with list+form switching.
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, useRef, onWillStart, onMounted } = owl;
-const RPC = window.LarasoftRPC;
-const icons = window.LarasoftIcons;
+const RPC = window.AdvSoftRPC;
+const icons = window.AdvSoftIcons;
 
 const PERM_COLS = [
     { key: 'r', label: 'Read',   short: 'R', color: '#059669' },
@@ -76,7 +76,7 @@ class AccessRights extends Component {
     }
 
     get modules() {
-        const set = new Set(this.state.models.map(m => m.module || 'larasoft'));
+        const set = new Set(this.state.models.map(m => m.module || 'AdvSoft'));
         return Array.from(set).sort();
     }
 
@@ -84,7 +84,7 @@ class AccessRights extends Component {
         const term = this.state.filter.toLowerCase();
         const mod = this.state.selectedModule;
         return this.state.models.filter(m => {
-            if (mod !== 'all' && (m.module || 'larasoft') !== mod) return false;
+            if (mod !== 'all' && (m.module || 'AdvSoft') !== mod) return false;
             if (!term) return true;
             return m.model.toLowerCase().includes(term) ||
                    (m.name || '').toLowerCase().includes(term);

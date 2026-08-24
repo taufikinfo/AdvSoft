@@ -7,7 +7,7 @@
 // ══════════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, onWillStart, onMounted, onWillUnmount, xml, useRef } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     function esc(v) { return v == null ? '' : String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
@@ -626,7 +626,7 @@
 
         setup() {
             this._model = this.props.model || 'task';
-            this.icons = window.LarasoftIcons;
+            this.icons = window.AdvSoftIcons;
 
             // Initialize Engine
             this.engine = new window.SpreadsheetEngine({
@@ -2788,14 +2788,14 @@
                     }
                 }
 
-                if (window.LarasoftToast) {
-                    window.LarasoftToast.success('Spreadsheet saved successfully');
+                if (window.AdvSoftToast) {
+                    window.AdvSoftToast.success('Spreadsheet saved successfully');
                 } else {
                     alert('Spreadsheet saved successfully');
                 }
             } catch (e) {
-                if (window.LarasoftToast) {
-                    window.LarasoftToast.error('Save failed: ' + e.message);
+                if (window.AdvSoftToast) {
+                    window.AdvSoftToast.error('Save failed: ' + e.message);
                 } else {
                     alert('Save failed: ' + e.message);
                 }

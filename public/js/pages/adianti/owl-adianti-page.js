@@ -29,11 +29,11 @@
 
             const raw = window.location.hash.slice(1) || window.location.search.slice(1);
             const params = new URLSearchParams(raw);
-            let className = params.get('class') || window.LarasoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
+            let className = params.get('class') || window.AdvSoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
             if (className === 'adianti_page' || !className) {
-                className = window.LarasoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
+                className = window.AdvSoftRootInstance?.state?.adiantiControllerClass || 'SampleController';
             }
-            const method = params.get('method') || window.LarasoftRootInstance?.state?.adiantiControllerMethod || '';
+            const method = params.get('method') || window.AdvSoftRootInstance?.state?.adiantiControllerMethod || '';
 
             this.state.className = className;
             this.state.method = method;
@@ -86,8 +86,8 @@
         }
     }
 
-    window.LarasoftPageRegistry = window.LarasoftPageRegistry || {};
-    window.LarasoftPageRegistry['adianti_page'] = AdiantiPageView;
-    window.LarasoftPageRegistry['sample_controller'] = AdiantiPageView;
+    window.AdvSoftPageRegistry = window.AdvSoftPageRegistry || {};
+    window.AdvSoftPageRegistry['adianti_page'] = AdiantiPageView;
+    window.AdvSoftPageRegistry['sample_controller'] = AdiantiPageView;
     window.AdiantiPageView = AdiantiPageView;
 })();

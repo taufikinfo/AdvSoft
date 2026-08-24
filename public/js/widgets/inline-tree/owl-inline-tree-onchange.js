@@ -3,7 +3,7 @@
 //  Mirrors _triggerOnchange for O2M line-level onchange
 // ══════════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function useInlineTreeOnchange(state, props) {
     const pending = new Map();
@@ -75,7 +75,7 @@ function useInlineTreeOnchange(state, props) {
             }
 
             if (result && result.warning) {
-                if (window.LarasoftToast) window.LarasoftToast.warn(result.warning);
+                if (window.AdvSoftToast) window.AdvSoftToast.warn(result.warning);
                 else console.warn('[Onchange warning]', result.warning);
             }
         } catch (e) {

@@ -16,7 +16,7 @@ window.TEMPLATES.securityOverview = xml`
 <div class="ls-sec-page">
     <div class="ls-sec-header">
         <h1>Security Overview</h1>
-        <p class="ls-sec-subtitle">Dashboard and diagnostics for the Larasoft security engine.</p>
+        <p class="ls-sec-subtitle">Dashboard and diagnostics for the AdvSoft security engine.</p>
     </div>
 
     <div t-if="state.loading" class="ls-sec-loading">
@@ -122,7 +122,7 @@ window.TEMPLATES.accessRights = xml`
                         <td class="ls-matrix-rowhead">
                             <div class="ls-matrix-rowhead-name" t-esc="m.model"/>
                             <div class="ls-matrix-rowhead-meta">
-                                <span t-esc="m.module || 'larasoft'"/>
+                                <span t-esc="m.module || 'AdvSoft'"/>
                                 <span> · </span>
                                 <span t-esc="m.group_count"/> rules
                             </div>

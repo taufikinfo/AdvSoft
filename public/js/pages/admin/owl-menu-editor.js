@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, onMounted } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class MenuEditorView extends Component {
     static template = window.TEMPLATES.MenuEditor;

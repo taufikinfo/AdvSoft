@@ -5,7 +5,7 @@
 // ══════════════════════════════════════════════════════════════════
 (function () {
 const { Component, useState, onWillStart, xml } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 

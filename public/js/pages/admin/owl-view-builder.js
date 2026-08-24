@@ -1,7 +1,7 @@
 // View Builder Component — Odoo Studio-style view configuration
 (function(){
 const { Component, useState, onMounted, markup } = owl;
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 class ViewBuilderView extends Component {
     static template = window.TEMPLATES.ViewBuilder;

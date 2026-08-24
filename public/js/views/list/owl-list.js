@@ -1,8 +1,8 @@
 // Owl App — Full Odoo <tree> ListView Architecture
 (function () {
 const { Component, useState, useRef, onMounted, onWillStart } = owl;
-const RPC = window.LarasoftRPC;
-const icons = window.LarasoftIcons;
+const RPC = window.AdvSoftRPC;
+const icons = window.AdvSoftIcons;
 let facetCounter = 0;
 
 class ListView extends Component {
@@ -515,7 +515,7 @@ class ListView extends Component {
         if (col.widget === 'monetary') {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
-                currency: window.LarasoftUser?.company_currency || 'IDR',
+                currency: window.AdvSoftUser?.company_currency || 'IDR',
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(v);

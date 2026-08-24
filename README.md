@@ -1,6 +1,6 @@
 # Adiantisoft
 
-> **Adiantisoft** adalah platform aplikasi bisnis berbasis metadata (*metadata-driven*) dengan arsitektur Odoo/Larasoft yang dibangun dengan backend **Adianti PHP Framework** dan frontend modern **OWL 2.0 Web Client**.
+> **Adiantisoft** adalah platform aplikasi bisnis berbasis metadata (*metadata-driven*) dengan arsitektur Odoo/AdvSoft yang dibangun dengan backend **Adianti PHP Framework** dan frontend modern **OWL 2.0 Web Client**.
 
 ---
 

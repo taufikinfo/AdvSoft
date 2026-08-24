@@ -5,7 +5,7 @@
 // ══════════════════════════════════════════════════════════════
 (function () {
     const { Component, useState, onMounted } = owl;
-    const RPC = window.LarasoftRPC;
+    const RPC = window.AdvSoftRPC;
 
     // Warna avatar berdasarkan nama (deterministik)
     const AVATAR_COLORS = [
@@ -259,7 +259,7 @@
         }
     }
 
-    // Daftarkan ke LarasoftPageRegistry
-    window.LarasoftPageRegistry = window.LarasoftPageRegistry || {};
-    window.LarasoftPageRegistry['my_custom_page'] = MyCustomPage;
+    // Daftarkan ke AdvSoftPageRegistry
+    window.AdvSoftPageRegistry = window.AdvSoftPageRegistry || {};
+    window.AdvSoftPageRegistry['my_custom_page'] = MyCustomPage;
 })();

@@ -18,7 +18,7 @@ class IrModelDef extends ModelDefinition
     {
         $this->addField('model', Field::CHAR, ['string' => 'Model Name', 'required' => true, 'unique' => true]);
         $this->addField('name', Field::CHAR, ['string' => 'Label', 'required' => true]);
-        $this->addField('module', Field::CHAR, ['string' => 'Module', 'default' => 'larasoft']);
+        $this->addField('module', Field::CHAR, ['string' => 'Module', 'default' => 'AdvSoft']);
         $this->addField('description', Field::TEXT, ['string' => 'Description']);
         $this->addField('transient', Field::BOOLEAN, ['string' => 'Transient', 'default' => false]);
     }

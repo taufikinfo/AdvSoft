@@ -1,6 +1,6 @@
 /**
  * ══════════════════════════════════════════════════════════════════
- * Larasoft Dialog & Notification Engine
+ * AdvSoft Dialog & Notification Engine
  * Replaces ugly browser alerts/confirms with modern, professional UI modals & toasts.
  * ══════════════════════════════════════════════════════════════════
  */
@@ -44,9 +44,9 @@
     }
 
     // ══════════════════════════════════════════════════════════════════
-    // 1. Toast Notification Manager (LarasoftToast)
+    // 1. Toast Notification Manager (AdvSoftToast)
     // ══════════════════════════════════════════════════════════════════
-    const LarasoftToast = {
+    const AdvSoftToast = {
         _getContainer() {
             let container = document.getElementById('ls-toast-container');
             if (!container) {
@@ -146,9 +146,9 @@
     };
 
     // ══════════════════════════════════════════════════════════════════
-    // 2. Modal Dialog Engine (LarasoftDialog)
+    // 2. Modal Dialog Engine (AdvSoftDialog)
     // ══════════════════════════════════════════════════════════════════
-    const LarasoftDialog = {
+    const AdvSoftDialog = {
         show(options = {}) {
             return new Promise((resolve) => {
                 let {
@@ -386,11 +386,11 @@
             cleanMsg = raw;
         } else if (/success|berhasil|saved successfully/i.test(raw)) {
             // For simple success, a toast is even smoother!
-            LarasoftToast.success(raw);
+            AdvSoftToast.success(raw);
             return;
         }
 
-        LarasoftDialog.show({
+        AdvSoftDialog.show({
             type: type,
             title: title,
             message: cleanMsg,
@@ -418,7 +418,7 @@
             if (opts.text && !opts.message) opts.message = opts.text;
 
             if (opts.toast) {
-                return Promise.resolve(LarasoftToast.show({
+                return Promise.resolve(AdvSoftToast.show({
                     title: opts.title,
                     message: opts.message,
                     type: opts.type,
@@ -426,7 +426,7 @@
                 }));
             }
 
-            return LarasoftDialog.show({
+            return AdvSoftDialog.show({
                 title: opts.title,
                 message: opts.message,
                 type: opts.type || 'info',
@@ -444,9 +444,15 @@
     // ══════════════════════════════════════════════════════════════════
     // 5. Expose Global APIs
     // ══════════════════════════════════════════════════════════════════
-    window.LarasoftToast = LarasoftToast;
-    window.LarasoftDialog = LarasoftDialog;
-    window.LarasoftAlert = LarasoftDialog;
+    window.AdvSoftToast = AdvSoftToast;
+    window.AdvsoftToast = AdvSoftToast;
+    window.AdvSoftDialog = AdvSoftDialog;
+    window.AdvsoftDialog = AdvSoftDialog;
+    window.AdvSoftAlert = AdvSoftDialog;
+    window.AdvsoftAlert = AdvSoftDialog;
+    window.LarasoftToast = AdvSoftToast;
+    window.LarasoftDialog = AdvSoftDialog;
+    window.LarasoftAlert = AdvSoftDialog;
     window.Swal = Swal;
 
     // Adianti framework bridge overrides
@@ -454,7 +460,7 @@
         const type = opts.type || 'info';
         const title = opts.title || (type === 'error' ? 'Error' : 'Notification');
         const message = opts.message || '';
-        LarasoftDialog.show({
+        AdvSoftDialog.show({
             type: type,
             title: title,
             message: message,
@@ -465,13 +471,13 @@
     };
 
     window.__adianti_error = function (title, message, callback) {
-        LarasoftDialog.error(message, title).then(() => {
+        AdvSoftDialog.error(message, title).then(() => {
             if (callback) callback();
         });
     };
 
     window.__adianti_message = function (title, message, callback) {
-        LarasoftDialog.info(message, title).then(() => {
+        AdvSoftDialog.info(message, title).then(() => {
             if (callback) callback();
         });
     };

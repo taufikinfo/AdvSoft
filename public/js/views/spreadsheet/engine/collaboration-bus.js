@@ -133,7 +133,7 @@
 
         async _longPoll() {
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 const result = await rpc.call('spreadsheet.collaboration', 'longpoll', {
                     spreadsheet_id: this._spreadsheetId,
                     last_sequence: this._lastSequence || 0,
@@ -307,7 +307,7 @@
 
         async _sendViaRPC(data) {
             try {
-                const rpc = window.LarasoftRPC || window.rpc;
+                const rpc = window.AdvSoftRPC || window.rpc;
                 await rpc.call('spreadsheet.collaboration', 'publish', {
                     spreadsheet_id: this._spreadsheetId,
                     message: data,

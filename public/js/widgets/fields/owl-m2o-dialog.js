@@ -18,7 +18,7 @@
 //    ✓ Clear button for optional fields
 // ══════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 function esc(v) { return v == null ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 

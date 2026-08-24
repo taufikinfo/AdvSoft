@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-//  Larasoft RTE — Odoo-style Rich Text Editor
+//  AdvSoft RTE — Odoo-style Rich Text Editor
 //
 //  Single-file implementation that mirrors Odoo's HTML field widget:
 //    - Configurable toolbar (from field's HtmlFieldConfig)
@@ -10,10 +10,10 @@
 //    - URL embeds (YouTube/Vimeo cards)
 //    - Link editor, table insert, color picker
 //    - Code/source view, fullscreen, stats, history
-//    - Programmatic API: window.LarasoftRTE.create(container, options)
+//    - Programmatic API: window.AdvSoftRTE.create(container, options)
 //
 //  Architecture:
-//    LarasoftRTE          ← public factory
+//    AdvSoftRTE          ← public factory
 //      ├─ Sanitizer       ← allowlist-based HTML cleaning
 //      ├─ Commands        ← execCommand wrappers + custom ops
 //      ├─ Toolbar         ← dynamic button rendering
@@ -25,7 +25,7 @@
 //
 //  Dependencies (provided by host page):
 //    - window.RPC (optional, for image upload / mentions / embeds)
-//    - window.LarasoftUser  (CSRF/uid, optional)
+//    - window.AdvSoftUser  (CSRF/uid, optional)
 //    - window.owl  (only if you mount the OWL component — standalone works too)
 // ═══════════════════════════════════════════════════════════════════════════
 (function () {
@@ -767,12 +767,12 @@ class SourceView {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  Main LarasoftRTE class
+//  Main AdvSoftRTE class
 // ═══════════════════════════════════════════════════════════════════════
-class LarasoftRTE {
+class AdvSoftRTE {
     constructor(container, options = {}) {
         if (typeof container === 'string') container = document.querySelector(container);
-        if (!container) throw new Error('LarasoftRTE: container not found');
+        if (!container) throw new Error('AdvSoftRTE: container not found');
         this.container = container;
         this.options = options;
         this.cfg = options.html || options.config || { allowed_tags: [], toolbar: [], plugins: [] };
@@ -1190,9 +1190,9 @@ class LarasoftRTE {
 //  Public factory
 // ═══════════════════════════════════════════════════════════════════════
 const instances = new WeakMap();
-window.LarasoftRTE = {
+window.AdvSoftRTE = {
     create(container, options) {
-        const inst = new LarasoftRTE(container, options);
+        const inst = new AdvSoftRTE(container, options);
         instances.set(container, inst);
         return inst;
     },
@@ -1207,7 +1207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cfgAttr = el.getAttribute('data-rte-config');
             const cfg = cfgAttr ? JSON.parse(cfgAttr) : {};
             const value = el.textContent || el.innerHTML || '';
-            window.LarasoftRTE.create(el, {
+            window.AdvSoftRTE.create(el, {
                 value,
                 ...cfg,
             });

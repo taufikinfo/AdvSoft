@@ -65,7 +65,7 @@ abstract class ModelDefinition
             if (str_starts_with($this->_name, 'showcase.')) return 'showcase';
         }
 
-        return 'larasoft';
+        return 'AdvSoft';
     }
 
     // ── Field definitions ────────────────────────────────

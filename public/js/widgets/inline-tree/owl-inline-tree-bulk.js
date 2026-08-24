@@ -3,7 +3,7 @@
 //  Selection + bulk delete/duplicate/archive
 // ══════════════════════════════════════════════════════════════
 (function () {
-const RPC = window.LarasoftRPC;
+const RPC = window.AdvSoftRPC;
 
 async function bulkDelete(childModel, lineIds) {
     if (!lineIds || !lineIds.length) return { success: true, deleted: 0 };
