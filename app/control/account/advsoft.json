@@ -4,7 +4,9 @@
     "category": "Accounting",
     "depends": ["base"],
     "data": [
-        "data/account_data.xml"
+        "security/ir.model.access.csv",
+        "i18n/id.xml",
+        "i18n/en.xml"
     ],
     "installable": true,
     "auto_install": false

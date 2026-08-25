@@ -99,7 +99,7 @@ class Registry
         // Phase 1a: Discover core models if directory exists
         $modelsPath = app_path('Advsoft/Models');
         if (is_dir($modelsPath)) {
-            self::discoverModels($modelsPath, 'App\\Advsoft\\Models\\');
+            self::discoverModels($modelsPath, 'App\\Advsoft\\Models\\', 'base');
         }
 
         // Phase 1b: Discover control/addon models
@@ -110,7 +110,7 @@ class Registry
                 $addonModelsPath = $controlPath . DIRECTORY_SEPARATOR . $addonDir . DIRECTORY_SEPARATOR . 'Models';
                 if (is_dir($addonModelsPath)) {
                     $namespace = 'Addons\\' . \App\Advsoft\Core\Support\Str::studly($addonDir) . '\\Models\\';
-                    self::discoverModels($addonModelsPath, $namespace);
+                    self::discoverModels($addonModelsPath, $namespace, $addonDir);
                 }
             }
         }
@@ -123,7 +123,7 @@ class Registry
         }
     }
 
-    private static function discoverModels(string $path, string $baseNamespace): void
+    private static function discoverModels(string $path, string $baseNamespace, ?string $module = null): void
     {
         if (!is_dir($path)) return;
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
@@ -133,7 +133,11 @@ class Registry
                 $className = $baseNamespace . str_replace('/', '\\', str_replace('.php', '', str_replace('\\', '/', $relativePath)));
                 require_once $file->getPathname();
                 if (class_exists($className) && is_subclass_of($className, ModelDefinition::class)) {
-                    self::register(new $className());
+                    $instance = new $className();
+                    if (empty($instance->_module) && !empty($module)) {
+                        $instance->_module = $module;
+                    }
+                    self::register($instance);
                 }
             }
         }

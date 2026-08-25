@@ -36,10 +36,6 @@ return [
             'support_url' => 'https://advsoft.local',
         ],
 
-        // ── Environment Mode ─────────────────────────────────────────
-        // 'development' : Development mode (enables debug tools & uncompiled raw assets)
-        // 'production'  : Production mode (maximum performance & pre-compiled bundles)
-        'environment' => 'development',
 
         // ── Asset Pipeline & JS/CSS Bundler ──────────────────────────
         'assets' => [

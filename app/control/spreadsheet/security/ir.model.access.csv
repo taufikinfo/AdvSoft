@@ -1,0 +1,5 @@
+id,name,model,group,perm_read,perm_write,perm_create,perm_unlink
+access_spreadsheet_document_administration___system_admin,"Administration / System Admin on spreadsheet.document",spreadsheet.document,"Administration / System Admin",1,1,1,1
+access_spreadsheet_document_project___manager,"Project / Manager on spreadsheet.document",spreadsheet.document,"Project / Manager",1,1,1,1
+access_spreadsheet_document_project___user,"Project / User on spreadsheet.document",spreadsheet.document,"Project / User",1,0,0,0
+access_spreadsheet_document_user___portal,"User / Portal on spreadsheet.document",spreadsheet.document,"User / Portal",0,0,0,0

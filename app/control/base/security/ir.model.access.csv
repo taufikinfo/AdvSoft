@@ -1,0 +1,69 @@
+id,name,model,group,perm_read,perm_write,perm_create,perm_unlink
+access_ir_action_administration___system_admin,"Administration / System Admin on ir.action",ir.action,"Administration / System Admin",1,1,1,1
+access_ir_action_project___manager,"Project / Manager on ir.action",ir.action,"Project / Manager",1,0,0,0
+access_ir_action_project___user,"Project / User on ir.action",ir.action,"Project / User",1,0,0,0
+access_ir_action_user___portal,"User / Portal on ir.action",ir.action,"User / Portal",0,0,0,0
+access_ir_actions_report_administration___system_admin,"Administration / System Admin on ir.actions.report",ir.actions.report,"Administration / System Admin",1,1,1,1
+access_ir_actions_report_project___manager,"Project / Manager on ir.actions.report",ir.actions.report,"Project / Manager",1,0,0,0
+access_ir_actions_report_project___user,"Project / User on ir.actions.report",ir.actions.report,"Project / User",1,0,0,0
+access_ir_actions_report_user___portal,"User / Portal on ir.actions.report",ir.actions.report,"User / Portal",0,0,0,0
+access_ir_config_parameter_administration___system_admin,"Administration / System Admin on ir.config_parameter",ir.config_parameter,"Administration / System Admin",1,1,1,1
+access_ir_config_parameter_project___manager,"Project / Manager on ir.config_parameter",ir.config_parameter,"Project / Manager",1,0,0,0
+access_ir_config_parameter_project___user,"Project / User on ir.config_parameter",ir.config_parameter,"Project / User",1,0,0,0
+access_ir_config_parameter_user___portal,"User / Portal on ir.config_parameter",ir.config_parameter,"User / Portal",0,0,0,0
+access_ir_model_administration___system_admin,"Administration / System Admin on ir.model",ir.model,"Administration / System Admin",1,1,1,1
+access_ir_model_project___manager,"Project / Manager on ir.model",ir.model,"Project / Manager",1,0,0,0
+access_ir_model_project___user,"Project / User on ir.model",ir.model,"Project / User",1,0,0,0
+access_ir_model_user___portal,"User / Portal on ir.model",ir.model,"User / Portal",0,0,0,0
+access_ir_model_access_administration___system_admin,"Administration / System Admin on ir.model.access",ir.model.access,"Administration / System Admin",1,1,1,1
+access_ir_model_access_project___manager,"Project / Manager on ir.model.access",ir.model.access,"Project / Manager",1,0,0,0
+access_ir_model_access_project___user,"Project / User on ir.model.access",ir.model.access,"Project / User",1,0,0,0
+access_ir_model_access_user___portal,"User / Portal on ir.model.access",ir.model.access,"User / Portal",0,0,0,0
+access_ir_module_module_administration___system_admin,"Administration / System Admin on ir.module.module",ir.module.module,"Administration / System Admin",1,1,1,1
+access_ir_module_module_project___manager,"Project / Manager on ir.module.module",ir.module.module,"Project / Manager",1,0,0,0
+access_ir_module_module_project___user,"Project / User on ir.module.module",ir.module.module,"Project / User",1,0,0,0
+access_ir_module_module_user___portal,"User / Portal on ir.module.module",ir.module.module,"User / Portal",0,0,0,0
+access_ir_rule_administration___system_admin,"Administration / System Admin on ir.rule",ir.rule,"Administration / System Admin",1,1,1,1
+access_ir_rule_project___manager,"Project / Manager on ir.rule",ir.rule,"Project / Manager",1,0,0,0
+access_ir_rule_project___user,"Project / User on ir.rule",ir.rule,"Project / User",1,0,0,0
+access_ir_rule_user___portal,"User / Portal on ir.rule",ir.rule,"User / Portal",0,0,0,0
+access_ir_sequence_administration___system_admin,"Administration / System Admin on ir.sequence",ir.sequence,"Administration / System Admin",1,1,1,1
+access_ir_sequence_project___manager,"Project / Manager on ir.sequence",ir.sequence,"Project / Manager",1,0,0,0
+access_ir_sequence_project___user,"Project / User on ir.sequence",ir.sequence,"Project / User",1,0,0,0
+access_ir_sequence_user___portal,"User / Portal on ir.sequence",ir.sequence,"User / Portal",0,0,0,0
+access_ir_translation_administration___system_admin,"Administration / System Admin on ir.translation",ir.translation,"Administration / System Admin",1,1,1,1
+access_ir_translation_project___manager,"Project / Manager on ir.translation",ir.translation,"Project / Manager",1,1,1,1
+access_ir_translation_project___user,"Project / User on ir.translation",ir.translation,"Project / User",1,0,0,0
+access_ir_translation_user___portal,"User / Portal on ir.translation",ir.translation,"User / Portal",0,0,0,0
+access_ir_ui_menu_administration___system_admin,"Administration / System Admin on ir.ui.menu",ir.ui.menu,"Administration / System Admin",1,1,1,1
+access_ir_ui_menu_project___manager,"Project / Manager on ir.ui.menu",ir.ui.menu,"Project / Manager",1,0,0,0
+access_ir_ui_menu_project___user,"Project / User on ir.ui.menu",ir.ui.menu,"Project / User",1,0,0,0
+access_ir_ui_menu_user___portal,"User / Portal on ir.ui.menu",ir.ui.menu,"User / Portal",0,0,0,0
+access_ir_ui_view_administration___system_admin,"Administration / System Admin on ir.ui.view",ir.ui.view,"Administration / System Admin",1,1,1,1
+access_ir_ui_view_project___manager,"Project / Manager on ir.ui.view",ir.ui.view,"Project / Manager",1,0,0,0
+access_ir_ui_view_project___user,"Project / User on ir.ui.view",ir.ui.view,"Project / User",1,0,0,0
+access_ir_ui_view_user___portal,"User / Portal on ir.ui.view",ir.ui.view,"User / Portal",0,0,0,0
+access_res_company_administration___system_admin,"Administration / System Admin on res.company",res.company,"Administration / System Admin",1,1,1,1
+access_res_company_project___manager,"Project / Manager on res.company",res.company,"Project / Manager",1,0,0,0
+access_res_company_project___user,"Project / User on res.company",res.company,"Project / User",1,0,0,0
+access_res_company_user___portal,"User / Portal on res.company",res.company,"User / Portal",0,0,0,0
+access_res_groups_administration___system_admin,"Administration / System Admin on res.groups",res.groups,"Administration / System Admin",1,1,1,1
+access_res_groups_project___manager,"Project / Manager on res.groups",res.groups,"Project / Manager",1,0,0,0
+access_res_groups_project___user,"Project / User on res.groups",res.groups,"Project / User",1,0,0,0
+access_res_groups_user___portal,"User / Portal on res.groups",res.groups,"User / Portal",0,0,0,0
+access_res_groups_category_administration___system_admin,"Administration / System Admin on res.groups.category",res.groups.category,"Administration / System Admin",1,1,1,1
+access_res_groups_category_project___manager,"Project / Manager on res.groups.category",res.groups.category,"Project / Manager",1,0,0,0
+access_res_groups_category_project___user,"Project / User on res.groups.category",res.groups.category,"Project / User",1,0,0,0
+access_res_groups_category_user___portal,"User / Portal on res.groups.category",res.groups.category,"User / Portal",0,0,0,0
+access_res_partner_administration___system_admin,"Administration / System Admin on res.partner",res.partner,"Administration / System Admin",1,1,1,1
+access_res_partner_project___manager,"Project / Manager on res.partner",res.partner,"Project / Manager",1,0,0,0
+access_res_partner_project___user,"Project / User on res.partner",res.partner,"Project / User",1,0,0,0
+access_res_partner_user___portal,"User / Portal on res.partner",res.partner,"User / Portal",0,0,0,0
+access_res_users_administration___system_admin,"Administration / System Admin on res.users",res.users,"Administration / System Admin",1,1,1,1
+access_res_users_project___manager,"Project / Manager on res.users",res.users,"Project / Manager",1,0,0,0
+access_res_users_project___user,"Project / User on res.users",res.users,"Project / User",1,0,0,0
+access_res_users_user___portal,"User / Portal on res.users",res.users,"User / Portal",0,0,0,0
+access_saved_filter_administration___system_admin,"Administration / System Admin on saved_filter",saved_filter,"Administration / System Admin",1,1,1,1
+access_saved_filter_project___manager,"Project / Manager on saved_filter",saved_filter,"Project / Manager",1,1,1,1
+access_saved_filter_project___user,"Project / User on saved_filter",saved_filter,"Project / User",1,0,0,0
+access_saved_filter_user___portal,"User / Portal on saved_filter",saved_filter,"User / Portal",0,0,0,0

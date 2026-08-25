@@ -1,0 +1,21 @@
+id,name,model,group,perm_read,perm_write,perm_create,perm_unlink
+access_project_project_administration___system_admin,"Administration / System Admin on project.project",project.project,"Administration / System Admin",1,1,1,1
+access_project_project_project___manager,"Project / Manager on project.project",project.project,"Project / Manager",1,1,1,1
+access_project_project_project___user,"Project / User on project.project",project.project,"Project / User",1,0,0,0
+access_project_project_user___portal,"User / Portal on project.project",project.project,"User / Portal",1,0,0,0
+access_project_tag_administration___system_admin,"Administration / System Admin on project.tag",project.tag,"Administration / System Admin",1,1,1,1
+access_project_tag_project___manager,"Project / Manager on project.tag",project.tag,"Project / Manager",1,1,1,1
+access_project_tag_project___user,"Project / User on project.tag",project.tag,"Project / User",1,0,0,0
+access_project_tag_user___portal,"User / Portal on project.tag",project.tag,"User / Portal",0,0,0,0
+access_stage_administration___system_admin,"Administration / System Admin on stage",stage,"Administration / System Admin",1,1,1,1
+access_stage_project___manager,"Project / Manager on stage",stage,"Project / Manager",1,1,1,1
+access_stage_project___user,"Project / User on stage",stage,"Project / User",1,0,0,0
+access_stage_user___portal,"User / Portal on stage",stage,"User / Portal",0,0,0,0
+access_task_administration___system_admin,"Administration / System Admin on task",task,"Administration / System Admin",1,1,1,1
+access_task_project___manager,"Project / Manager on task",task,"Project / Manager",1,1,1,1
+access_task_project___user,"Project / User on task",task,"Project / User",1,1,1,0
+access_task_user___portal,"User / Portal on task",task,"User / Portal",1,0,0,0
+access_task_timesheet_administration___system_admin,"Administration / System Admin on task.timesheet",task.timesheet,"Administration / System Admin",1,1,1,1
+access_task_timesheet_project___manager,"Project / Manager on task.timesheet",task.timesheet,"Project / Manager",1,1,1,1
+access_task_timesheet_project___user,"Project / User on task.timesheet",task.timesheet,"Project / User",1,1,1,0
+access_task_timesheet_user___portal,"User / Portal on task.timesheet",task.timesheet,"User / Portal",0,0,0,0

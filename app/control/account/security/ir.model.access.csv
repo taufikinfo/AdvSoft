@@ -1,0 +1,25 @@
+id,name,model,group,perm_read,perm_write,perm_create,perm_unlink
+access_account_account_administration___system_admin,"Administration / System Admin on account.account",account.account,"Administration / System Admin",1,1,1,1
+access_account_account_project___manager,"Project / Manager on account.account",account.account,"Project / Manager",1,1,1,1
+access_account_account_project___user,"Project / User on account.account",account.account,"Project / User",1,0,0,0
+access_account_account_user___portal,"User / Portal on account.account",account.account,"User / Portal",0,0,0,0
+access_account_journal_administration___system_admin,"Administration / System Admin on account.journal",account.journal,"Administration / System Admin",1,1,1,1
+access_account_journal_project___manager,"Project / Manager on account.journal",account.journal,"Project / Manager",1,1,1,1
+access_account_journal_project___user,"Project / User on account.journal",account.journal,"Project / User",1,0,0,0
+access_account_journal_user___portal,"User / Portal on account.journal",account.journal,"User / Portal",0,0,0,0
+access_account_move_administration___system_admin,"Administration / System Admin on account.move",account.move,"Administration / System Admin",1,1,1,1
+access_account_move_project___manager,"Project / Manager on account.move",account.move,"Project / Manager",1,1,1,1
+access_account_move_project___user,"Project / User on account.move",account.move,"Project / User",1,0,0,0
+access_account_move_user___portal,"User / Portal on account.move",account.move,"User / Portal",0,0,0,0
+access_account_move_line_administration___system_admin,"Administration / System Admin on account.move.line",account.move.line,"Administration / System Admin",1,1,1,1
+access_account_move_line_project___manager,"Project / Manager on account.move.line",account.move.line,"Project / Manager",1,1,1,1
+access_account_move_line_project___user,"Project / User on account.move.line",account.move.line,"Project / User",1,0,0,0
+access_account_move_line_user___portal,"User / Portal on account.move.line",account.move.line,"User / Portal",0,0,0,0
+access_account_payment_administration___system_admin,"Administration / System Admin on account.payment",account.payment,"Administration / System Admin",1,1,1,1
+access_account_payment_project___manager,"Project / Manager on account.payment",account.payment,"Project / Manager",1,1,1,1
+access_account_payment_project___user,"Project / User on account.payment",account.payment,"Project / User",1,0,0,0
+access_account_payment_user___portal,"User / Portal on account.payment",account.payment,"User / Portal",0,0,0,0
+access_account_tax_administration___system_admin,"Administration / System Admin on account.tax",account.tax,"Administration / System Admin",1,1,1,1
+access_account_tax_project___manager,"Project / Manager on account.tax",account.tax,"Project / Manager",1,1,1,1
+access_account_tax_project___user,"Project / User on account.tax",account.tax,"Project / User",1,0,0,0
+access_account_tax_user___portal,"User / Portal on account.tax",account.tax,"User / Portal",0,0,0,0

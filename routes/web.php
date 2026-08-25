@@ -523,3 +523,28 @@ Route::prefix('api/translations')->group(function () {
     });
 });
 
+// Modular Security Management & API
+Route::prefix('api/admin/security')->group(function () {
+    // POST /api/admin/security/sync-modules
+    Route::post('/sync-modules', function (Request $request) {
+        $results = \App\Advsoft\Security\ModuleSecurityLoader::syncAllModules();
+        return response()->json([
+            'success' => true,
+            'message' => 'Modular security access files (ir.model.access.csv) successfully synced to database.',
+            'results' => $results,
+        ]);
+    });
+
+    // POST /api/admin/security/export-csv
+    Route::post('/export-csv', function (Request $request) {
+        $module = $request->input('module', 'account');
+        $csv    = \App\Advsoft\Security\ModuleSecurityLoader::exportModuleAccessToCsv($module);
+        return response()->json([
+            'success' => true,
+            'message' => "Security ACLs for module '{$module}' exported to ir.model.access.csv.",
+            'module'  => $module,
+        ]);
+    });
+});
+
+

@@ -1,0 +1,5 @@
+id,name,model,group,perm_read,perm_write,perm_create,perm_unlink
+access_showcase_model_administration___system_admin,"Administration / System Admin on showcase.model",showcase.model,"Administration / System Admin",1,1,1,1
+access_showcase_model_project___manager,"Project / Manager on showcase.model",showcase.model,"Project / Manager",1,1,1,1
+access_showcase_model_project___user,"Project / User on showcase.model",showcase.model,"Project / User",1,0,0,0
+access_showcase_model_user___portal,"User / Portal on showcase.model",showcase.model,"User / Portal",0,0,0,0

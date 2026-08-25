@@ -1,12 +1,12 @@
 {
     "name": "Project Management",
     "version": "1.0.0",
-    "category": "Project",
+    "category": "Services/Project",
     "depends": ["base"],
     "data": [
         "security/ir.model.access.csv",
-        "data/menu_items.json",
-        "data/stages.json"
+        "i18n/id.xml",
+        "i18n/en.xml"
     ],
     "installable": true,
     "auto_install": false
