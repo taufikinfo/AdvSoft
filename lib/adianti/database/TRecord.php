@@ -315,7 +315,7 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * Returns the primary key value for that Active Record
-     * @return The primary key value
+     * @return mixed The primary key value
      */
     public function getPrimaryKeyValue()
     {
@@ -1785,6 +1785,8 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * Returns the first object
+     * @param bool $withTrashed
+     * @return static|null
      */
     public static function first($withTrashed = FALSE)
     {
@@ -1796,6 +1798,8 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * First record or a new one
+     * @param mixed $filters
+     * @return static
      */
     public static function firstOrNew($filters = NULL)
     {
@@ -1820,6 +1824,8 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * First record or persist a new one
+     * @param mixed $filters
+     * @return static
      */
     public static function firstOrCreate($filters = NULL)
     {
@@ -1830,6 +1836,8 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * Returns the last object
+     * @param bool $withTrashed
+     * @return static|null
      */
     public static function last($withTrashed = FALSE)
     {
@@ -1841,7 +1849,9 @@ abstract class TRecord implements IteratorAggregate
     
     /**
      * Find a Active Record and returns it
-     * @return The Active Record itself or NULL when not found
+     * @param mixed $id
+     * @param bool $withTrashed
+     * @return static|null The Active Record itself or NULL when not found
      */
     public static function find($id, $withTrashed = FALSE)
     {

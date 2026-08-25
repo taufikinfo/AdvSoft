@@ -63,6 +63,9 @@ abstract class BaseModel extends TRecord
 
     /**
      * Find a record by ID
+     * @param mixed $id
+     * @param bool $withTrashed
+     * @return static|null
      */
     public static function find($id, $withTrashed = false)
     {
@@ -177,6 +180,16 @@ abstract class BaseModel extends TRecord
     public static function with(mixed $relations): QueryBuilder
     {
         return static::query()->with($relations);
+    }
+
+    /**
+     * Get first record
+     * @param bool $withTrashed
+     * @return static|null
+     */
+    public static function first($withTrashed = false)
+    {
+        return static::query()->first();
     }
 
     /**

@@ -19,8 +19,8 @@ class AdiantiRecordService implements AdiantiRestService
 {
     /**
      * Find a Active Record and returns it
-     * @return The Active Record itself as array
-     * @param $param HTTP parameter
+     * @param mixed $param HTTP parameter
+     * @return array|null The Active Record itself as array
      */
     public function load($param)
     {
@@ -38,7 +38,7 @@ class AdiantiRecordService implements AdiantiRestService
     
     /**
      * Delete an Active Record object from the database
-     * @param [$id]     HTTP parameter
+     * @param mixed $param HTTP parameter
      */
     public function delete($param)
     {
@@ -56,7 +56,7 @@ class AdiantiRecordService implements AdiantiRestService
     
     /**
      * Store the objects into the database
-     * @param $param HTTP parameter
+     * @param mixed $param HTTP parameter
      */
     public function store($param)
     {
@@ -77,8 +77,8 @@ class AdiantiRecordService implements AdiantiRestService
     
     /**
      * List the Active Records by the filter
-     * @return The Active Record list as array
-     * @param $param HTTP parameter
+     * @param mixed $param HTTP parameter
+     * @return array The Active Record list as array
      */
     public function loadAll($param)
     {
@@ -134,8 +134,8 @@ class AdiantiRecordService implements AdiantiRestService
     
     /**
      * Delete the Active Records by the filter
-     * @return The result of operation
-     * @param $param HTTP parameter
+     * @param mixed $param HTTP parameter
+     * @return mixed The result of operation
      */
     public function deleteAll($param)
     {
@@ -161,8 +161,8 @@ class AdiantiRecordService implements AdiantiRestService
 
     /**
      * Find the count Records by the filter
-     * @return The Active Record list as array
-     * @param $param HTTP parameter
+     * @param mixed $param HTTP parameter
+     * @return int The Active Record count
      */
     public function countAll($param)
     {

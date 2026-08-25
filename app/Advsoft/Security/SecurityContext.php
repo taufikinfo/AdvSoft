@@ -61,8 +61,14 @@ class SecurityContext
     }
 
     // ──────────────── User ────────────────────
-    public function getUser(): ?ResUser { return $this->user; }
-    public function getUserId(): ?int    { return $this->user?->id; }
+    public function getUser(): ?ResUser
+    {
+        return $this->user;
+    }
+    public function getUserId(): ?int
+    {
+        return $this->user?->id;
+    }
 
     public function setUser(ResUser $user): self
     {
@@ -77,7 +83,8 @@ class SecurityContext
         if ($user->company_id) {
             try {
                 $this->company = $user->company;
-            } catch (\Throwable) {}
+            } catch (\Throwable) {
+            }
         }
         app()->instance(SecurityContext::class, $this);
         return $this;
@@ -111,7 +118,10 @@ class SecurityContext
         }
         return $this->company;
     }
-    public function getCompanyId(): ?int { return $this->getCompany()?->id; }
+    public function getCompanyId(): ?int
+    {
+        return $this->getCompany()?->id;
+    }
 
     public function forCompany(int|ResCompany $company): self
     {
@@ -210,7 +220,7 @@ class SecurityContext
             'image'       => $u?->partner?->image ?? null,
             'company_id'  => $this->company?->id,
             'company'     => $this->company?->name,
-            'is_superuser'=> $this->isSuperuser(),
+            'is_superuser' => $this->isSuperuser(),
             'group_ids'   => $this->getGroupIds(),
             'group_names' => $this->getGroupNames(),
         ];
@@ -222,19 +232,24 @@ class SecurityContext
             @session_start();
         }
         return new class {
-            public function get(string $key, mixed $default = null): mixed {
+            public function get(string $key, mixed $default = null): mixed
+            {
                 return $_SESSION[$key] ?? $default;
             }
-            public function set(string $key, mixed $val): void {
+            public function set(string $key, mixed $val): void
+            {
                 $_SESSION[$key] = $val;
             }
-            public function put(string $key, mixed $val): void {
+            public function put(string $key, mixed $val): void
+            {
                 $_SESSION[$key] = $val;
             }
-            public function has(string $key): bool {
+            public function has(string $key): bool
+            {
                 return isset($_SESSION[$key]);
             }
-            public function forget(string $key): void {
+            public function forget(string $key): void
+            {
                 unset($_SESSION[$key]);
             }
         };
