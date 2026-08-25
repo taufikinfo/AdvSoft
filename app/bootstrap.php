@@ -1,7 +1,7 @@
 <?php
 /**
  * AdvSoft Application Bootstrap — Pure Adianti PHP Framework
- * Initializes Adianti Core, Service Container, Security Context, and Odoo Registry.
+ * Initializes Adianti Core, Service Container, Security Context, and AdvSoft Registry.
  */
 
 require_once __DIR__ . '/../init.php';
@@ -23,118 +23,34 @@ if (!class_exists('Illuminate\Support\Facades\Log')) {
     class_alias(Log::class, 'Illuminate\Support\Facades\Log');
 }
 
-// Register domain model, core, and legacy aliases
-$modelAliases = [
-    // Core Aliases
-    'App\Core\Application'                => \App\Advsoft\Core\Application::class,
-    'App\Core\Http\Request'               => \App\Advsoft\Core\Http\Request::class,
-    'App\Core\Http\Response'              => \App\Advsoft\Core\Http\Response::class,
-    'App\Core\Http\JsonResponse'          => \App\Advsoft\Core\Http\JsonResponse::class,
-    'App\Core\Http\Router'                => \App\Advsoft\Core\Http\Router::class,
-    'App\Core\Support\Route'              => \App\Advsoft\Core\Support\Route::class,
-    'App\Core\Support\Log'                => \App\Advsoft\Core\Support\Log::class,
-    'App\Core\Support\Str'                => \App\Advsoft\Core\Support\Str::class,
-    'App\Core\Support\Collection'         => \App\Advsoft\Core\Support\Collection::class,
-    'App\Core\Support\AssetCompiler'      => \App\Advsoft\Core\Support\AssetCompiler::class,
-    'App\Core\View\ViewEngine'            => \App\Advsoft\Core\View\ViewEngine::class,
-    'App\Core\Database\QueryBuilder'      => \App\Advsoft\Core\Database\QueryBuilder::class,
-    'App\Core\Database\SchemaManager'     => \App\Advsoft\Core\Database\SchemaManager::class,
-    'App\Core\Database\Seeder'            => \App\Advsoft\Core\Database\Seeder::class,
-    'App\Core\Database\Migration'         => \App\Advsoft\Core\Database\Migration::class,
-    'App\Core\Database\Blueprint'         => \App\Advsoft\Core\Database\Blueprint::class,
-    'App\Core\Database\Schema'            => \App\Advsoft\Core\Database\Schema::class,
-    'Illuminate\Database\Migrations\Migration'      => \App\Advsoft\Core\Database\Migration::class,
-    'Illuminate\Database\Schema\Blueprint'          => \App\Advsoft\Core\Database\Blueprint::class,
-    'Illuminate\Database\Schema\ColumnDefinition'   => \App\Advsoft\Core\Database\ColumnDefinition::class,
-    'Illuminate\Support\Facades\Schema'             => \App\Advsoft\Core\Database\Schema::class,
-    // Odoo Legacy Aliases
-    'App\Odoo\Registry'                   => \App\Advsoft\Registry::class,
-    'App\Odoo\Field'                      => \App\Advsoft\Field::class,
-    'App\Odoo\Domain'                     => \App\Advsoft\Domain::class,
-    'App\Odoo\ModelDefinition'            => \App\Advsoft\ModelDefinition::class,
-    'App\Odoo\ModuleInstaller'            => \App\Advsoft\ModuleInstaller::class,
-    'App\Odoo\DataFileLoader'             => \App\Advsoft\DataFileLoader::class,
-    'App\Odoo\Security\SecurityContext'   => \App\Advsoft\Security\SecurityContext::class,
-    'App\Odoo\Security\SecurityService'   => \App\Advsoft\Security\SecurityService::class,
-    'App\Odoo\Core\Application'           => \App\Advsoft\Core\Application::class,
-    'App\Odoo\Core\Http\Request'          => \App\Advsoft\Core\Http\Request::class,
-    'App\Odoo\Core\Http\Response'         => \App\Advsoft\Core\Http\Response::class,
-    'App\Odoo\Core\Http\JsonResponse'     => \App\Advsoft\Core\Http\JsonResponse::class,
-    'App\Odoo\Core\Http\Router'           => \App\Advsoft\Core\Http\Router::class,
-    'App\Odoo\Core\Support\Route'         => \App\Advsoft\Core\Support\Route::class,
-    'App\Odoo\Core\Support\Log'           => \App\Advsoft\Core\Support\Log::class,
-    'App\Odoo\Core\Support\Str'           => \App\Advsoft\Core\Support\Str::class,
-    'App\Odoo\Core\Support\Collection'    => \App\Advsoft\Core\Support\Collection::class,
-    'App\Odoo\Core\Support\AssetCompiler' => \App\Advsoft\Core\Support\AssetCompiler::class,
-    'App\Odoo\Core\View\ViewEngine'       => \App\Advsoft\Core\View\ViewEngine::class,
-    'App\Odoo\Core\Database\QueryBuilder' => \App\Advsoft\Core\Database\QueryBuilder::class,
-    'App\Odoo\Core\Database\SchemaManager'=> \App\Advsoft\Core\Database\SchemaManager::class,
-    'App\Odoo\Core\Database\Seeder'       => \App\Advsoft\Core\Database\Seeder::class,
-    // Model Aliases
-    'App\Model\Project'                   => \App\Model\Project\Project::class,
-    'App\Model\Task'                      => \App\Model\Project\Task::class,
-    'App\Model\Stage'                     => \App\Model\Project\Stage::class,
-    'App\Model\Tag'                       => \App\Model\Project\Tag::class,
-    'App\Model\TaskTimesheet'             => \App\Model\Project\TaskTimesheet::class,
-    'App\Model\SpreadsheetDocument'       => \App\Model\Spreadsheet\SpreadsheetDocument::class,
-    'App\Model\SpreadsheetCollaboration'  => \App\Model\Spreadsheet\SpreadsheetCollaboration::class,
-    'App\Model\SpreadsheetOperation'      => \App\Model\Spreadsheet\SpreadsheetOperation::class,
-    'App\Model\Action'                    => \App\Model\Base\Action::class,
-    'App\Model\Menu'                      => \App\Model\Base\Menu::class,
-    'App\Model\SavedFilter'               => \App\Model\Base\SavedFilter::class,
-    'App\Model\Showcase'                  => \App\Model\Base\Showcase::class,
-    'App\Models\Project'                  => \App\Model\Project\Project::class,
-    'App\Models\Task'                     => \App\Model\Project\Task::class,
-    'App\Models\Stage'                    => \App\Model\Project\Stage::class,
-    'App\Models\Tag'                      => \App\Model\Project\Tag::class,
-    'App\Models\TaskTimesheet'            => \App\Model\Project\TaskTimesheet::class,
-    'App\Models\SpreadsheetDocument'      => \App\Model\Spreadsheet\SpreadsheetDocument::class,
-    'App\Models\SpreadsheetCollaboration' => \App\Model\Spreadsheet\SpreadsheetCollaboration::class,
-    'App\Models\SpreadsheetOperation'     => \App\Model\Spreadsheet\SpreadsheetOperation::class,
-    'App\Models\Action'                   => \App\Model\Base\Action::class,
-    'App\Models\Menu'                     => \App\Model\Base\Menu::class,
-    'App\Models\SavedFilter'              => \App\Model\Base\SavedFilter::class,
-    'App\Models\Showcase'                 => \App\Model\Base\Showcase::class,
-    'App\Models\Res\ResUser'              => \App\Model\Res\ResUser::class,
-    'App\Models\Res\ResPartner'           => \App\Model\Res\ResPartner::class,
-    'App\Models\Res\ResCompany'           => \App\Model\Res\ResCompany::class,
-    'App\Models\Res\ResGroup'             => \App\Model\Res\ResGroup::class,
-    'App\Models\Res\ResGroups'            => \App\Model\Res\ResGroup::class,
-    'App\Models\Res\ResGroupsCategory'    => \App\Model\Res\ResGroupsCategory::class,
-    'App\Models\Account\AccountAccount'   => \App\Model\Account\AccountAccount::class,
-    'App\Models\Account\AccountJournal'   => \App\Model\Account\AccountJournal::class,
-    'App\Models\Account\AccountMove'      => \App\Model\Account\AccountMove::class,
-    'App\Models\Account\AccountMoveLine'  => \App\Model\Account\AccountMoveLine::class,
-    'App\Models\Account\AccountPayment'   => \App\Model\Account\AccountPayment::class,
-    'App\Models\Account\AccountTax'       => \App\Model\Account\AccountTax::class,
-    'App\Models\Ir\IrModel'               => \App\Model\Ir\IrModel::class,
-    'App\Models\Ir\IrModelAccess'         => \App\Model\Ir\IrModelAccess::class,
-    'App\Models\Ir\IrRule'                => \App\Model\Ir\IrRule::class,
-    'App\Models\Ir\IrUiView'              => \App\Model\Ir\IrUiView::class,
-    'App\Models\Ir\IrActionReport'        => \App\Model\Ir\IrActionReport::class,
-    'App\Models\Ir\IrConfigParameter'     => \App\Model\Ir\IrConfigParameter::class,
-    'App\Models\Ir\IrSequence'            => \App\Model\Ir\IrSequence::class,
-    'App\Models\Ir\IrSequenceDateRange'   => \App\Model\Ir\IrSequenceDateRange::class,
-    'App\Models\Ir\IrModuleModule'        => \App\Model\Ir\IrModuleModule::class,
-    'App\Http\Controllers\AccountReportController'            => \App\Control\Controllers\AccountReportController::class,
-    'App\Http\Controllers\AuthController'                     => \App\Control\Controllers\AuthController::class,
-    'App\Http\Controllers\Controller'                         => \App\Control\Controllers\Controller::class,
-    'App\Http\Controllers\CustomPageController'               => \App\Control\Controllers\CustomPageController::class,
-    'App\Http\Controllers\HtmlFieldController'                => \App\Control\Controllers\HtmlFieldController::class,
-    'App\Http\Controllers\MenuEditorController'               => \App\Control\Controllers\MenuEditorController::class,
-    'App\Http\Controllers\OrmController'                      => \App\Control\Controllers\OrmController::class,
-    'App\Http\Controllers\ProfileController'                  => \App\Control\Controllers\ProfileController::class,
-    'App\Http\Controllers\QWebController'                     => \App\Control\Controllers\QWebController::class,
-    'App\Http\Controllers\ReportController'                   => \App\Control\Controllers\ReportController::class,
-    'App\Http\Controllers\SecurityController'                 => \App\Control\Controllers\SecurityController::class,
-    'App\Http\Controllers\SpreadsheetCollaborationController' => \App\Control\Controllers\SpreadsheetCollaborationController::class,
-    'App\Http\Controllers\ViewBuilderController'              => \App\Control\Controllers\ViewBuilderController::class,
-];
-foreach ($modelAliases as $alias => $target) {
-    if (!class_exists($alias, false)) {
-        class_alias($target, $alias);
+// Dynamic Class Resolver for Model & Framework namespaces (Pure Adianti / PSR-4)
+spl_autoload_register(function (string $class) {
+    if (str_starts_with($class, 'App\\Core\\')) {
+        $target = 'App\\Advsoft\\' . substr($class, 4);
+        if (class_exists($target)) {
+            class_alias($target, $class);
+            return;
+        }
     }
-}
+    if (str_starts_with($class, 'App\\Http\\Controllers\\')) {
+        $target = 'App\\Control\\Controllers\\' . substr($class, 21);
+        if (class_exists($target)) {
+            class_alias($target, $class);
+            return;
+        }
+    }
+    if (str_starts_with($class, 'App\\Model\\') || str_starts_with($class, 'App\\Models\\')) {
+        $shortName = basename(str_replace('\\', '/', $class));
+        $subfolders = ['Project', 'Base', 'Account', 'Res', 'Ir', 'Spreadsheet'];
+        foreach ($subfolders as $sub) {
+            $candidate = "App\\Model\\{$sub}\\{$shortName}";
+            if (class_exists($candidate)) {
+                class_alias($candidate, $class);
+                return;
+            }
+        }
+    }
+});
 
 // 1. Initialize Dependency Container
 $basePath = realpath(__DIR__ . '/..');
@@ -170,7 +86,7 @@ $app->singleton(SecurityService::class, function ($c) {
     return new SecurityService($c->make(SecurityContext::class));
 });
 
-// 5. Boot Odoo Registry
+// 5. Boot AdvSoft Registry
 Registry::boot();
 
 // 6. Setup Clean RESTful URL Router for Adianti Core

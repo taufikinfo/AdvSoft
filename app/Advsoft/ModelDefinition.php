@@ -1304,8 +1304,8 @@ abstract class ModelDefinition
      */
     protected function sanitizeHtml(string $html, ?Field $field = null): string
     {
-        $sanitizerClass = '\\App\\Odoo\\Field\\Html\\HtmlSanitizer';
-        $configClass    = '\\App\\Odoo\\Field\\Html\\HtmlFieldConfig';
+        $sanitizerClass = '\\App\\Advsoft\\Field\\Html\\HtmlSanitizer';
+        $configClass    = '\\App\\Advsoft\\Field\\Html\\HtmlFieldConfig';
 
         if (class_exists($sanitizerClass) && class_exists($configClass)) {
             $preset = $field?->htmlPreset ?: 'standard';

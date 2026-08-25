@@ -435,7 +435,7 @@ class Field
      */
     protected function buildHtmlFieldConfig(): array
     {
-        $class = '\\App\\Odoo\\Field\\Html\\HtmlFieldConfig';
+        $class = '\\App\\Advsoft\\Field\\Html\\HtmlFieldConfig';
 
         if (!class_exists($class)) {
             return [];

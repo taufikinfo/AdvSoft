@@ -298,7 +298,7 @@ class SecurityService
     {
         // Map 'res.users' → \App\Advsoft\Models\Res\ResUserDef
         $parts = explode('.', $modelName);
-        $ns = 'App\\Odoo\\Models\\' . array_shift($parts);
+        $ns = 'App\\Advsoft\\Models\\' . array_shift($parts);
         $class = $ns . '\\' . implode('', array_map('ucfirst', $parts)) . 'Def';
         if (class_exists($class)) return $class;
         // fallback: try generic
