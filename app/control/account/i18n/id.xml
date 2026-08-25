@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translations lang="id" module="account">
+    <!-- Account Move Line Translations -->
+    <entry name="account.move.line,string" type="view">
+        <src>Journal Items</src>
+        <value>Detail Baris Jurnal</value>
+    </entry>
+    <entry name="account.move.line,debit" type="field">
+        <src>Debit</src>
+        <value>Total Debit</value>
+    </entry>
+    <entry name="account.move.line,credit" type="field">
+        <src>Credit</src>
+        <value>Total Kredit</value>
+    </entry>
+    <entry name="account.move.line,balance" type="field">
+        <src>Balance</src>
+        <value>Saldo</value>
+    </entry>
+    <entry name="account.move.line,reconciled_group" type="view">
+        <src>Reconciliation</src>
+        <value>Rekonsiliasi</value>
+    </entry>
+    <entry name="account.move.line,filter_unreconciled" type="search">
+        <src>Unreconciled</src>
+        <value>Belum Rekonsiliasi</value>
+    </entry>
+    <entry name="account.move.line,group_account" type="search">
+        <src>Account</src>
+        <value>Akun</value>
+    </entry>
+    <entry name="account.move.line,group_partner" type="search">
+        <src>Partner</src>
+        <value>Mitra / Partner</value>
+    </entry>
+    <entry name="account.move.line,group_move" type="search">
+        <src>Journal Entry</src>
+        <value>Entri Jurnal</value>
+    </entry>
+</translations>

@@ -130,15 +130,37 @@ abstract class ModelDefinition
     }
 
     /**
-     * fields_get – Return field metadata (Odoo API).
+     * fields_get – Return field metadata (Odoo API) with dynamic translation.
      */
-    public function fieldsGet(?array $fieldNames = null): array
+    public function fieldsGet(?array $fieldNames = null, ?string $lang = null): array
     {
+        $targetLang = $lang ?: (class_exists(\App\Model\Ir\IrTranslation::class) ? \App\Model\Ir\IrTranslation::getActiveLanguage() : 'en');
         $result = [];
         foreach ($this->fields as $name => $field) {
             if ($fieldNames && !in_array($name, $fieldNames)) continue;
             if ($field->invisible) continue;
-            $result[$name] = $field->toArray();
+            $fMeta = $field->toArray();
+
+            if (class_exists(\App\Model\Ir\IrTranslation::class)) {
+                if (!empty($fMeta['string'])) {
+                    $fMeta['string'] = \App\Model\Ir\IrTranslation::translate($fMeta['string'], $targetLang, 'field', "{$this->_name},{$name}");
+                }
+                if (!empty($fMeta['help'])) {
+                    $fMeta['help'] = \App\Model\Ir\IrTranslation::translate($fMeta['help'], $targetLang, 'help');
+                }
+                if (!empty($fMeta['placeholder'])) {
+                    $fMeta['placeholder'] = \App\Model\Ir\IrTranslation::translate($fMeta['placeholder'], $targetLang, 'field');
+                }
+                if (!empty($fMeta['selection']) && is_array($fMeta['selection'])) {
+                    foreach ($fMeta['selection'] as &$opt) {
+                        if (isset($opt['label'])) {
+                            $opt['label'] = \App\Model\Ir\IrTranslation::translate($opt['label'], $targetLang, 'selection');
+                        }
+                    }
+                }
+            }
+
+            $result[$name] = $fMeta;
         }
         return $result;
     }
@@ -160,9 +182,11 @@ abstract class ModelDefinition
      * get_view – Return complete view definition (Odoo API).
      * Supports: list, form, search, kanban, calendar, graph, pivot
      */
-    public function getView(string $type = 'list'): array
+    public function getView(string $type = 'list', ?string $lang = null): array
     {
-        return match ($type) {
+        $targetLang = $lang ?: (class_exists(\App\Model\Ir\IrTranslation::class) ? \App\Model\Ir\IrTranslation::getActiveLanguage() : 'en');
+
+        $viewDef = match ($type) {
             'list' => $this->mergeSearchView($this->buildListViewDef()),
             'form' => $this->buildFormViewDef(),
             'search' => [
@@ -172,7 +196,7 @@ abstract class ModelDefinition
                 'searchpanel' => $this->searchView['searchpanel'] ?? [],
                 'custom_filter_fields' => $this->searchView['custom_filter_fields']
                     ?? array_keys(array_filter($this->fields, fn(Field $f) => $f->searchable)),
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ],
             'kanban' => $this->mergeSearchView([
                 'type' => 'kanban',
@@ -188,7 +212,7 @@ abstract class ModelDefinition
                 'decoration' => $this->kanbanView['decoration'] ?? [],
                 'aggregates' => $this->kanbanView['aggregates'] ?? [],
                 'fold_field' => $this->kanbanView['fold_field'] ?? null,
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ]),
             'calendar' => $this->mergeSearchView([
                 'type' => 'calendar',
@@ -202,7 +226,7 @@ abstract class ModelDefinition
                 'create_name_field' => $this->calendarView['create_name_field'] ?? null,
                 'date_delay' => $this->calendarView['date_delay'] ?? null,
                 'color_legend' => $this->calendarView['color_legend'] ?? true,
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ]),
             'graph' => $this->mergeSearchView([
                 'type' => 'graph',
@@ -212,7 +236,7 @@ abstract class ModelDefinition
                 'stacked' => $this->graphView['stacked'] ?? false,
                 'measures' => $this->graphView['measures'] ?? $this->getNumericFieldNames(),
                 'dimensions' => $this->graphView['dimensions'] ?? $this->getGroupableFieldNames(),
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ]),
             'pivot' => $this->mergeSearchView([
                 'type' => 'pivot',
@@ -221,7 +245,7 @@ abstract class ModelDefinition
                 'col_groupby_max_depth' => $this->pivotView['col_groupby_max_depth'] ?? 2,
                 'measures' => $this->pivotView['measures'] ?? $this->getNumericFieldNames(),
                 'dimensions' => $this->pivotView['dimensions'] ?? $this->getGroupableFieldNames(),
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ]),
             'spreadsheet' => $this->mergeSearchView([
                 'type' => 'spreadsheet',
@@ -231,10 +255,79 @@ abstract class ModelDefinition
                 'limit' => $this->spreadsheetView['limit'] ?? 1000,
                 'aggregation' => $this->spreadsheetView['aggregation'] ?? 'sum',
                 'readonly' => $this->spreadsheetView['readonly'] ?? false,
-                'field_defs' => $this->fieldsGet(),
+                'field_defs' => $this->fieldsGet(null, $targetLang),
             ]),
             default => [],
         };
+
+        if (class_exists(\App\Model\Ir\IrTranslation::class)) {
+            $this->applyTranslationsToView($viewDef, $targetLang);
+        }
+
+        return $viewDef;
+    }
+
+    /**
+     * Apply translations to view structures.
+     */
+    protected function applyTranslationsToView(array &$view, string $lang): void
+    {
+        if (isset($view['string'])) {
+            $view['string'] = \App\Model\Ir\IrTranslation::translate($view['string'], $lang, 'view', "{$this->_name},string");
+        }
+        if (isset($view['title']) && is_string($view['title']) && !isset($this->fields[$view['title']])) {
+            $view['title'] = \App\Model\Ir\IrTranslation::translate($view['title'], $lang, 'view', "{$this->_name},title");
+        }
+
+        // Columns in list view
+        if (isset($view['columns']) && is_array($view['columns'])) {
+            foreach ($view['columns'] as &$col) {
+                if (isset($col['string'])) {
+                    $col['string'] = \App\Model\Ir\IrTranslation::translate($col['string'], $lang, 'field', "{$this->_name},{$col['name']}");
+                }
+                if (isset($col['aggregation_label'])) {
+                    $col['aggregation_label'] = \App\Model\Ir\IrTranslation::translate($col['aggregation_label'], $lang, 'field');
+                }
+            }
+        }
+
+        // Form groups
+        if (isset($view['groups']) && is_array($view['groups'])) {
+            foreach ($view['groups'] as &$grp) {
+                if (!empty($grp['string'])) {
+                    $grp['string'] = \App\Model\Ir\IrTranslation::translate($grp['string'], $lang, 'view', "{$this->_name},group_{$grp['string']}");
+                }
+            }
+        }
+
+        // Search filters and group_by
+        if (isset($view['search_view'])) {
+            $this->applyTranslationsToSearchView($view['search_view'], $lang);
+        }
+        if (isset($view['type']) && $view['type'] === 'search') {
+            $this->applyTranslationsToSearchView($view, $lang);
+        }
+    }
+
+    /**
+     * Apply translations to search view structures.
+     */
+    protected function applyTranslationsToSearchView(array &$searchView, string $lang): void
+    {
+        if (isset($searchView['filters']) && is_array($searchView['filters'])) {
+            foreach ($searchView['filters'] as &$f) {
+                if (isset($f['label'])) {
+                    $f['label'] = \App\Model\Ir\IrTranslation::translate($f['label'], $lang, 'search', "{$this->_name},filter_{$f['id']}");
+                }
+            }
+        }
+        if (isset($searchView['group_by']) && is_array($searchView['group_by'])) {
+            foreach ($searchView['group_by'] as &$g) {
+                if (isset($g['label'])) {
+                    $g['label'] = \App\Model\Ir\IrTranslation::translate($g['label'], $lang, 'search', "{$this->_name},group_{$g['field']}");
+                }
+            }
+        }
     }
 
     /**

@@ -819,37 +819,39 @@ class ApplicationTranslator
      */
     public static function translate($word, $param1 = NULL, $param2 = NULL, $param3 = NULL)
     {
-        // get the self unique instance
         $instance = self::getInstance();
-        // search by the numeric index of the word
-        
+        $language = self::getLanguage();
+
+        // 1. Try DB / XML Dynamic Translations (IrTranslation)
+        if (class_exists(\App\Model\Ir\IrTranslation::class)) {
+            $translated = \App\Model\Ir\IrTranslation::translate($word, $language);
+            if ($translated !== $word) {
+                if (isset($param1)) $translated = str_replace('^1', $param1, $translated);
+                if (isset($param2)) $translated = str_replace('^2', $param2, $translated);
+                if (isset($param3)) $translated = str_replace('^3', $param3, $translated);
+                return $translated;
+            }
+        }
+
+        // 2. Try static dictionary
         if (isset($instance->enWords[$word]) and !is_null($instance->enWords[$word]))
         {
-            $key = $instance->enWords[$word]; //$key = array_search($word, $instance->messages['en']);
-            
-            // get the target language
-            $language = self::getLanguage();
-            // returns the translated word
-            $message = $instance->messages[$language][$key];
-            
-            if (isset($param1))
-            {
-                $message = str_replace('^1', $param1, $message);
+            $key = $instance->enWords[$word];
+            if (isset($instance->messages[$language][$key])) {
+                $message = $instance->messages[$language][$key];
+                if (isset($param1)) $message = str_replace('^1', $param1, $message);
+                if (isset($param2)) $message = str_replace('^2', $param2, $message);
+                if (isset($param3)) $message = str_replace('^3', $param3, $message);
+                return $message;
             }
-            if (isset($param2))
-            {
-                $message = str_replace('^2', $param2, $message);
-            }
-            if (isset($param3))
-            {
-                $message = str_replace('^3', $param3, $message);
-            }
-            return $message;
         }
-        else
-        {
-            return 'Message not found: '. $word;
-        }
+
+        // 3. Fallback: Return original word with parameters replaced
+        $message = $word;
+        if (isset($param1)) $message = str_replace('^1', $param1, $message);
+        if (isset($param2)) $message = str_replace('^2', $param2, $message);
+        if (isset($param3)) $message = str_replace('^3', $param3, $message);
+        return $message;
     }
     
     /**

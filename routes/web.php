@@ -485,3 +485,41 @@ Route::prefix('api/admin/assets')->group(function () {
         ]);
     });
 });
+
+// Translation Management & API
+Route::prefix('api/translations')->group(function () {
+    // GET /api/translations/bundle?lang=en
+    Route::get('/bundle', function (Request $request) {
+        $lang = $request->input('lang', \App\Model\Ir\IrTranslation::getActiveLanguage());
+        $dictionary = \App\Model\Ir\IrTranslation::loadLanguageDictionary($lang);
+        return response()->json([
+            'lang'       => $lang,
+            'count'      => count($dictionary),
+            'dictionary' => $dictionary,
+        ]);
+    });
+
+    // POST /api/translations/sync-xml
+    Route::post('/sync-xml', function (Request $request) {
+        $results = \App\Advsoft\Translation\XmlTranslationLoader::syncAllModules();
+        return response()->json([
+            'success' => true,
+            'message' => 'Modular XML translations successfully synced to database.',
+            'results' => $results,
+        ]);
+    });
+
+    // POST /api/translations/export-xml
+    Route::post('/export-xml', function (Request $request) {
+        $module = $request->input('module', 'account');
+        $lang   = $request->input('lang', 'en');
+        $xml    = \App\Advsoft\Translation\XmlTranslationLoader::exportDatabaseToXml($module, $lang);
+        return response()->json([
+            'success' => true,
+            'message' => "Translations for module '{$module}' exported to XML.",
+            'module'  => $module,
+            'lang'    => $lang,
+        ]);
+    });
+});
+

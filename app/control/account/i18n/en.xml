@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translations lang="en" module="account">
+    <!-- Account Move Line Translations -->
+    <entry name="account.move.line,string" type="view">
+        <src>Detail Baris Jurnal</src>
+        <value>Journal Items</value>
+    </entry>
+    <entry name="account.move.line,debit" type="field">
+        <src>Total Debit</src>
+        <value>Total Debit</value>
+    </entry>
+    <entry name="account.move.line,credit" type="field">
+        <src>Total Kredit</src>
+        <value>Total Credit</value>
+    </entry>
+    <entry name="account.move.line,balance" type="field">
+        <src>Saldo</src>
+        <value>Balance</value>
+    </entry>
+    <entry name="account.move.line,reconciled_group" type="view">
+        <src>Rekonsiliasi</src>
+        <value>Reconciliation</value>
+    </entry>
+    <entry name="account.move.line,filter_unreconciled" type="search">
+        <src>Belum Rekonsiliasi</src>
+        <value>Unreconciled</value>
+    </entry>
+    <entry name="account.move.line,filter_debit" type="search">
+        <src>Debit</src>
+        <value>Debit</value>
+    </entry>
+    <entry name="account.move.line,filter_credit" type="search">
+        <src>Kredit</src>
+        <value>Credit</value>
+    </entry>
+    <entry name="account.move.line,group_account" type="search">
+        <src>Akun</src>
+        <value>Account</value>
+    </entry>
+    <entry name="account.move.line,group_partner" type="search">
+        <src>Partner</src>
+        <value>Partner</value>
+    </entry>
+    <entry name="account.move.line,group_move" type="search">
+        <src>Jurnal Entry</src>
+        <value>Journal Entry</value>
+    </entry>
+
+    <!-- General Account Terms -->
+    <entry name="account.move,string" type="model">
+        <src>Journal Entry</src>
+        <value>Journal Entry</value>
+    </entry>
+    <entry name="account.account,string" type="model">
+        <src>Chart of Accounts</src>
+        <value>Chart of Accounts</value>
+    </entry>
+</translations>

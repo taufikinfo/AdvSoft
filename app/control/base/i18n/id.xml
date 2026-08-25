@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translations lang="id" module="base">
+    <entry name="base.save" type="code">
+        <src>Save</src>
+        <value>Simpan</value>
+    </entry>
+    <entry name="base.cancel" type="code">
+        <src>Cancel</src>
+        <value>Batal</value>
+    </entry>
+    <entry name="base.delete" type="code">
+        <src>Delete</src>
+        <value>Hapus</value>
+    </entry>
+    <entry name="base.new" type="code">
+        <src>New</src>
+        <value>Baru</value>
+    </entry>
+    <entry name="base.search" type="code">
+        <src>Search</src>
+        <value>Cari</value>
+    </entry>
+    <entry name="base.export" type="code">
+        <src>Export</src>
+        <value>Ekspor</value>
+    </entry>
+    <entry name="base.import" type="code">
+        <src>Import</src>
+        <value>Impor</value>
+    </entry>
+</translations>
