@@ -53,6 +53,15 @@ class AccountMoveLineDef extends ModelDefinition
             'help'       => 'Deskripsi baris jurnal',
         ]);
 
+        $this->addField('display_type', Field::SELECTION, [
+            'string'     => 'Display Type',
+            'selection'  => [
+                'line_section' => 'Section',
+                'line_note'    => 'Note',
+            ],
+            'default'    => null,
+        ]);
+
         $this->addField('debit', Field::MONETARY, [
             'string'        => 'Debit',
             'digits'        => [16, 2],

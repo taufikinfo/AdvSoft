@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-25 14:45:17
+ * Generated: 2026-08-25 18:19:04
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -9283,7 +9283,7 @@ window.AddFromListDialog = AddFromListDialog;
 /* --- [FILE: js/widgets/inline-tree/owl-inline-tree-row.js] --- */
 // ══════════════════════════════════════════════════════════════
 //  InlineTree — Row Component
-//  Presentational row that delegates cells to CellEditors
+//  Presentational row with support for Sections & Notes (Odoo parity)
 // ══════════════════════════════════════════════════════════════
 (function () {
 const { Component, xml } = owl;
@@ -9310,16 +9310,60 @@ class InlineTreeRow extends Component {
               t-on-dragover="(ev) => ev.preventDefault()"
               title="Drag to reorder">☰</span>
     </td>
-    <!-- Data cells -->
-    <t t-foreach="props.columns" t-as="col" t-key="col.name + '_' + (line.id || line.__temp_id)">
-        <td t-att-class="cellClass(col)"
-            t-att-data-field="col.name"
-            t-att-data-type="col.type"
-            t-att-title="getCellTitle(line, col)"
-            t-on-click.stop="(ev) => this.onCellClick(line, col, ev)">
-            <t t-out="renderCell(line, col)"/>
+
+    <!-- ── SECTION ROW (display_type == 'line_section') ── -->
+    <t t-if="isSection">
+        <td t-att-colspan="props.columns.length" class="ls-it-td-section"
+            t-on-click.stop="(ev) => this.onSectionClick(ev)">
+            <t t-if="isEditing()">
+                <input type="text" class="ls-it-input ls-it-section-input"
+                       t-att-data-line-id="line.id || line.__temp_id"
+                       data-field="name"
+                       t-att-value="line.name || ''"
+                       t-on-input="(ev) => this.onNameInput(ev)"
+                       t-on-change="(ev) => this.onNameChange(ev)"
+                       t-on-blur="(ev) => this.onNameChange(ev)"
+                       placeholder="Section title..."/>
+            </t>
+            <t t-else="">
+                <strong class="ls-it-section-title" t-esc="line.name || 'Untitled Section'"/>
+            </t>
         </td>
     </t>
+
+    <!-- ── NOTE ROW (display_type == 'line_note') ── -->
+    <t t-elif="isNote">
+        <td t-att-colspan="props.columns.length" class="ls-it-td-note"
+            t-on-click.stop="(ev) => this.onNoteClick(ev)">
+            <t t-if="isEditing()">
+                <textarea class="ls-it-input ls-it-note-input"
+                          t-att-data-line-id="line.id || line.__temp_id"
+                          data-field="name"
+                          rows="1"
+                          t-on-input="(ev) => this.onNameInput(ev)"
+                          t-on-change="(ev) => this.onNameChange(ev)"
+                          t-on-blur="(ev) => this.onNameChange(ev)"
+                          placeholder="Note description..."><t t-esc="line.name || ''"/></textarea>
+            </t>
+            <t t-else="">
+                <em class="ls-it-note-text" t-esc="line.name || 'Note'"/>
+            </t>
+        </td>
+    </t>
+
+    <!-- ── STANDARD DATA CELLS ── -->
+    <t t-else="">
+        <t t-foreach="props.columns" t-as="col" t-key="col.name + '_' + (line.id || line.__temp_id)">
+            <td t-att-class="cellClass(col)"
+                t-att-data-field="col.name"
+                t-att-data-type="col.type"
+                t-att-title="getCellTitle(line, col)"
+                t-on-click.stop="(ev) => this.onCellClick(line, col, ev)">
+                <t t-out="renderCell(line, col)"/>
+            </td>
+        </t>
+    </t>
+
     <!-- Row status indicator -->
     <td class="ls-it-td-status" t-if="!state.readOnly">
         <span t-att-class="'ls-it-status-dot ' + (state.rowStatus[line.id || line.__temp_id] || '')"
@@ -9360,8 +9404,8 @@ class InlineTreeRow extends Component {
         onDragOver: { type: Function, optional: true },
         onCellClick: { type: Function, optional: true },
         onButtonClick: { type: Function, optional: true },
-        onTabOut: { type: Function, optional: true },   // called when Tab goes past last cell
-        onTabIn: { type: Function, optional: true },    // called when Shift+Tab goes before first cell
+        onTabOut: { type: Function, optional: true },
+        onTabIn: { type: Function, optional: true },
     };
 
     get line() { return this.props.line; }
@@ -9369,11 +9413,15 @@ class InlineTreeRow extends Component {
     get hasSequence() { return this.props.hasSequence; }
     get rowButtons() { return this.props.rowButtons || []; }
     get canDelete() { return this.props.canDelete; }
+    get isSection() { return this.line.display_type === 'line_section' || this.line.display_type === 'section'; }
+    get isNote() { return this.line.display_type === 'line_note' || this.line.display_type === 'note'; }
 
     rowClass() {
         const line = this.props.line;
         const id = line.id || line.__temp_id;
         const cls = ['ls-it-row'];
+        if (this.isSection) cls.push('ls-it-section-row o_is_line_section');
+        if (this.isNote) cls.push('ls-it-note-row o_is_line_note');
         if (this.props.state.isSelected(line)) cls.push('selected');
         if (this.props.state.editingIds.includes(id)) cls.push('editing');
         const decClass = this.computeDecorationClass();
@@ -9395,7 +9443,6 @@ class InlineTreeRow extends Component {
 
     getCellTitle(line, col) {
         if (col.help) return col.help;
-        // For text-overflow cells, show full value as tooltip
         const val = line[col.name];
         if (typeof val === 'string' && val.length > 40) return val;
         if (Array.isArray(val)) return val[1] || '';
@@ -9415,7 +9462,6 @@ class InlineTreeRow extends Component {
             'decoration-info': 'ls-it-row-info',
             'decoration-primary': 'ls-it-primary',
             'decoration-muted': 'ls-it-muted',
-            // Legacy short keys (kept for compat)
             bf: 'ls-it-bold',
             it: 'ls-it-italic',
             danger: 'ls-it-danger',
@@ -9450,6 +9496,37 @@ class InlineTreeRow extends Component {
         if (this.props.onRowClick) this.props.onRowClick(this.props.line, ev);
     }
 
+    onSectionClick(ev) {
+        const id = this.line.id || this.line.__temp_id;
+        this.props.state.enterEdit(id);
+        setTimeout(() => {
+            const el = document.querySelector(`input[data-line-id="${id}"][data-field="name"]`);
+            if (el) el.focus();
+        }, 20);
+    }
+
+    onNoteClick(ev) {
+        const id = this.line.id || this.line.__temp_id;
+        this.props.state.enterEdit(id);
+        setTimeout(() => {
+            const el = document.querySelector(`textarea[data-line-id="${id}"][data-field="name"]`);
+            if (el) el.focus();
+        }, 20);
+    }
+
+    onNameInput(ev) {
+        this.line.name = ev.target.value;
+    }
+
+    onNameChange(ev) {
+        const val = ev.target.value;
+        const lineId = this.line.id || this.line.__temp_id;
+        this.line.name = val;
+        if (this.props.onLineUpdate) {
+            this.props.onLineUpdate(lineId, 'name', val, val);
+        }
+    }
+
     onCellClick(line, col, ev) {
         if (this.props.onCellClick) this.props.onCellClick(line, col, ev);
     }
@@ -9459,42 +9536,69 @@ class InlineTreeRow extends Component {
     }
 
     onKeydown(ev) {
+        const lineId = this.props.line.id || this.props.line.__temp_id;
+
         if (ev.key === 'Tab') {
-            const td = ev.target.closest('td.ls-it-td');
+            const td = ev.target.closest('td.ls-it-td, td.ls-it-td-section, td.ls-it-td-note');
             if (!td) return;
             const row = td.parentElement;
-            const cells = Array.from(row.querySelectorAll('td.ls-it-td:not(.ls-it-readonly)'));
+            const cells = Array.from(row.querySelectorAll('td.ls-it-td:not(.ls-it-readonly), td.ls-it-td-section, td.ls-it-td-note'));
             const idx = cells.indexOf(td);
+
             if (!ev.shiftKey && idx === cells.length - 1) {
-                // Moving past last editable cell → notify parent to move to next row
                 if (this.props.onTabOut) {
                     ev.preventDefault();
                     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
                     this.props.onTabOut(this.props.line, this.props.index);
                 } else {
                     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-                    this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);
+                    this.props.state.exitEdit(lineId);
                 }
             } else if (ev.shiftKey && idx === 0) {
-                // Moving before first editable cell → notify parent to move to prev row
                 if (this.props.onTabIn) {
                     ev.preventDefault();
                     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
                     this.props.onTabIn(this.props.line, this.props.index);
                 } else {
                     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-                    this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);
+                    this.props.state.exitEdit(lineId);
                 }
             }
         } else if (ev.key === 'Enter') {
-            // Commit current cell and exit edit mode (AdvSoft behaviour)
+            // In note textarea, Shift+Enter makes newline; Enter confirms
+            if (ev.target.tagName === 'TEXTAREA' && ev.shiftKey) {
+                return;
+            }
             ev.preventDefault();
             if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-            this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);
+            if (this.props.onTabOut) {
+                this.props.onTabOut(this.props.line, this.props.index);
+            } else {
+                this.props.state.exitEdit(lineId);
+            }
         } else if (ev.key === 'Escape') {
-            // Discard pending input and exit edit mode
             ev.preventDefault();
-            this.props.state.exitEdit(this.props.line.id || this.props.line.__temp_id);
+            this.props.state.exitEdit(lineId);
+        } else if (ev.key === 'ArrowDown' && !ev.shiftKey && !ev.altKey) {
+            if (ev.target.tagName !== 'SELECT' && ev.target.tagName !== 'TEXTAREA') {
+                const curRow = ev.target.closest('tr.ls-it-row');
+                const nextRow = curRow?.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('ls-it-row')) {
+                    ev.preventDefault();
+                    const targetInput = nextRow.querySelector('input:not([type="checkbox"]), select, textarea');
+                    if (targetInput) targetInput.focus();
+                }
+            }
+        } else if (ev.key === 'ArrowUp' && !ev.shiftKey && !ev.altKey) {
+            if (ev.target.tagName !== 'SELECT' && ev.target.tagName !== 'TEXTAREA') {
+                const curRow = ev.target.closest('tr.ls-it-row');
+                const prevRow = curRow?.previousElementSibling;
+                if (prevRow && prevRow.classList.contains('ls-it-row')) {
+                    ev.preventDefault();
+                    const targetInput = prevRow.querySelector('input:not([type="checkbox"]), select, textarea');
+                    if (targetInput) targetInput.focus();
+                }
+            }
         }
     }
 
@@ -9746,9 +9850,15 @@ class InlineTreeWidget extends Component {
 
     <!-- ── Add line + info ── -->
     <div class="ls-it-controls" t-if="!state.readOnly">
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             <button class="ls-it-add-line" t-if="canCreate" t-on-click="addLine">
                 <span class="ls-it-add-icon">+</span> Add a line
+            </button>
+            <button class="ls-it-add-line ls-it-add-section-btn" t-if="canCreate &amp;&amp; hasSections" t-on-click="addSection">
+                <span class="ls-it-add-icon">§</span> Add a section
+            </button>
+            <button class="ls-it-add-line ls-it-add-note-btn" t-if="canCreate &amp;&amp; hasSections" t-on-click="addNote">
+                <span class="ls-it-add-icon">✎</span> Add a note
             </button>
             <button class="ls-it-add-line" t-if="props.tabDef.add_from_list &amp;&amp; !isMany2Many" t-on-click="openAddFromList">
                 <span class="ls-it-add-icon">⊕</span> Add from list
@@ -9939,6 +10049,11 @@ class InlineTreeWidget extends Component {
 
     get canDelete() {
         return this._tab.delete !== false && !this.state.readOnly;
+    }
+
+    get hasSections() {
+        if (this._tab.has_sections === false || this.isMany2Many) return false;
+        return true;
     }
 
     get hasAggregates() {
@@ -10260,7 +10375,7 @@ class InlineTreeWidget extends Component {
         }
     }
 
-    async addLine() {
+    async addLine(customDefaults = {}) {
         if (this.isMany2Many) {
             this.openAddFromList();
             return;
@@ -10281,7 +10396,7 @@ class InlineTreeWidget extends Component {
         const today = new Date().toISOString().slice(0, 10);
         const inverseField = this._tab.inverse_field;
         const childDefs = this._childDefs;
-        const defaults = {};
+        const defaults = { ...customDefaults };
         if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
 
         // ── Server-side default_get (AdvSoft parity) ──────────
@@ -10292,6 +10407,8 @@ class InlineTreeWidget extends Component {
                 const serverDefaults = await RPC.defaultGet(childModel, this._tab.tree_fields);
                 if (serverDefaults && typeof serverDefaults === 'object') {
                     Object.assign(defaults, serverDefaults);
+                    // Re-assert customDefaults over serverDefaults
+                    Object.assign(defaults, customDefaults);
                     // Re-assert inverse field (server defaults may not include it)
                     if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
                 }
@@ -10310,6 +10427,14 @@ class InlineTreeWidget extends Component {
             else if (['float', 'integer', 'monetary'].includes(cdef.type) && defaults[fname] == null) defaults[fname] = 0;
             else if (cdef.type === 'boolean' && defaults[fname] == null) defaults[fname] = false;
             else if (defaults[fname] == null) defaults[fname] = cdef.default ?? '';
+        }
+
+        // Apply customDefaults explicitly
+        Object.assign(defaults, customDefaults);
+
+        // Safe fallback for name field
+        if (!defaults.name) {
+            defaults.name = defaults.display_type === 'line_section' ? 'New Section' : (defaults.display_type === 'line_note' ? 'Note' : 'New Line');
         }
 
         // ── Propagate parent context fields to child ──────
@@ -10357,6 +10482,14 @@ class InlineTreeWidget extends Component {
                 }
             }, 0);
         }
+    }
+
+    async addSection() {
+        await this.addLine({ display_type: 'line_section', name: 'Section' });
+    }
+
+    async addNote() {
+        await this.addLine({ display_type: 'line_note', name: '' });
     }
 
     async deleteLine(line) {

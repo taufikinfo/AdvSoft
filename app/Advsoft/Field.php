@@ -361,14 +361,22 @@ class Field
         if ($this->help) $result['help'] = $this->help;
         if ($this->widget) $result['widget'] = $this->widget;
         if ($this->selection) {
-            // Normalize legacy & new format to consistent dict shape (A3)
-            $result['selection'] = array_map(function ($item) {
-                if (count($item) === 2) return ['value' => $item[0], 'label' => $item[1]];
-                if (count($item) === 3) {
-                    return ['value' => $item[0], 'label' => $item[1], 'groups' => (array) $item[2]];
+            // Normalize legacy [k => v], tuple [[k, v]], and dict [{value, label}] to consistent dict shape
+            $normSelection = [];
+            foreach ($this->selection as $k => $item) {
+                if (is_array($item)) {
+                    if (count($item) === 2 && isset($item[0], $item[1])) {
+                        $normSelection[] = ['value' => $item[0], 'label' => $item[1]];
+                    } elseif (count($item) === 3 && isset($item[0], $item[1])) {
+                        $normSelection[] = ['value' => $item[0], 'label' => $item[1], 'groups' => (array) $item[2]];
+                    } else {
+                        $normSelection[] = $item;
+                    }
+                } else {
+                    $normSelection[] = ['value' => (string) $k, 'label' => (string) $item];
                 }
-                return $item;
-            }, $this->selection);
+            }
+            $result['selection'] = $normSelection;
         }
         if ($this->relation) $result['relation'] = $this->relation;
         if ($this->inverseField) $result['inverse_field'] = $this->inverseField;

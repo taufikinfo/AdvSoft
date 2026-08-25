@@ -49,6 +49,14 @@ class TaskDef extends ModelDefinition
             'groupable' => true,
             'searchable' => true,
         ]);
+        $this->addField('display_type', Field::SELECTION, [
+            'string' => 'Display Type',
+            'selection' => [
+                'line_section' => 'Section',
+                'line_note' => 'Note',
+            ],
+            'default' => null,
+        ]);
         $this->addField('assignee', Field::CHAR, [
             'string' => 'Assignee',
             'searchable' => true,
@@ -127,6 +135,7 @@ class TaskDef extends ModelDefinition
             'string' => 'Stage',
             'relation' => 'stage',
             'required' => true,
+            'default' => 1,
             'searchable' => true,
             'sortable' => true,
             'groupable' => true,
@@ -599,7 +608,12 @@ class TaskDef extends ModelDefinition
     {
         // Auto-set deadline to 7 days from now if not provided
         if (empty($vals['deadline'])) {
-            $vals['deadline'] = now()->addDays(7)->format('Y-m-d');
+            $vals['deadline'] = date('Y-m-d', strtotime('+7 days'));
+        }
+
+        // Auto-set stage_id to 1 (New) if not provided
+        if (empty($vals['stage_id'])) {
+            $vals['stage_id'] = 1;
         }
     }
 

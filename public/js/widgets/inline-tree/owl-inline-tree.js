@@ -224,9 +224,15 @@ class InlineTreeWidget extends Component {
 
     <!-- ── Add line + info ── -->
     <div class="ls-it-controls" t-if="!state.readOnly">
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             <button class="ls-it-add-line" t-if="canCreate" t-on-click="addLine">
                 <span class="ls-it-add-icon">+</span> Add a line
+            </button>
+            <button class="ls-it-add-line ls-it-add-section-btn" t-if="canCreate &amp;&amp; hasSections" t-on-click="addSection">
+                <span class="ls-it-add-icon">§</span> Add a section
+            </button>
+            <button class="ls-it-add-line ls-it-add-note-btn" t-if="canCreate &amp;&amp; hasSections" t-on-click="addNote">
+                <span class="ls-it-add-icon">✎</span> Add a note
             </button>
             <button class="ls-it-add-line" t-if="props.tabDef.add_from_list &amp;&amp; !isMany2Many" t-on-click="openAddFromList">
                 <span class="ls-it-add-icon">⊕</span> Add from list
@@ -417,6 +423,11 @@ class InlineTreeWidget extends Component {
 
     get canDelete() {
         return this._tab.delete !== false && !this.state.readOnly;
+    }
+
+    get hasSections() {
+        if (this._tab.has_sections === false || this.isMany2Many) return false;
+        return true;
     }
 
     get hasAggregates() {
@@ -738,7 +749,7 @@ class InlineTreeWidget extends Component {
         }
     }
 
-    async addLine() {
+    async addLine(customDefaults = {}) {
         if (this.isMany2Many) {
             this.openAddFromList();
             return;
@@ -759,7 +770,7 @@ class InlineTreeWidget extends Component {
         const today = new Date().toISOString().slice(0, 10);
         const inverseField = this._tab.inverse_field;
         const childDefs = this._childDefs;
-        const defaults = {};
+        const defaults = { ...customDefaults };
         if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
 
         // ── Server-side default_get (AdvSoft parity) ──────────
@@ -770,6 +781,8 @@ class InlineTreeWidget extends Component {
                 const serverDefaults = await RPC.defaultGet(childModel, this._tab.tree_fields);
                 if (serverDefaults && typeof serverDefaults === 'object') {
                     Object.assign(defaults, serverDefaults);
+                    // Re-assert customDefaults over serverDefaults
+                    Object.assign(defaults, customDefaults);
                     // Re-assert inverse field (server defaults may not include it)
                     if (inverseField) defaults[inverseField] = this.props.parentRecord?.id;
                 }
@@ -788,6 +801,14 @@ class InlineTreeWidget extends Component {
             else if (['float', 'integer', 'monetary'].includes(cdef.type) && defaults[fname] == null) defaults[fname] = 0;
             else if (cdef.type === 'boolean' && defaults[fname] == null) defaults[fname] = false;
             else if (defaults[fname] == null) defaults[fname] = cdef.default ?? '';
+        }
+
+        // Apply customDefaults explicitly
+        Object.assign(defaults, customDefaults);
+
+        // Safe fallback for name field
+        if (!defaults.name) {
+            defaults.name = defaults.display_type === 'line_section' ? 'New Section' : (defaults.display_type === 'line_note' ? 'Note' : 'New Line');
         }
 
         // ── Propagate parent context fields to child ──────
@@ -835,6 +856,14 @@ class InlineTreeWidget extends Component {
                 }
             }, 0);
         }
+    }
+
+    async addSection() {
+        await this.addLine({ display_type: 'line_section', name: 'Section' });
+    }
+
+    async addNote() {
+        await this.addLine({ display_type: 'line_note', name: '' });
     }
 
     async deleteLine(line) {

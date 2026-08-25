@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Stylesheet
- * Generated: 2026-08-25 14:45:17
+ * Generated: 2026-08-25 18:19:04
  */
 
 /* --- [FILE: css/advsoft-layout.css] --- */
@@ -8873,6 +8873,109 @@ html[data-theme="dark"] .ls-ss-input { background: #1e1e2e; border-color: #3a3a5
     from { opacity: 0.5; transform: translateY(-2px); }
     to   { opacity: 1;   transform: translateY(0); }
 }
+
+/* ── Section & Note Rows (Odoo Parity) ── */
+.ls-it-section-row,
+.ls-it-row.o_is_line_section {
+    background: #f1f5f9 !important;
+    font-weight: 700;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+}
+.ls-it-section-row:hover,
+.ls-it-row.o_is_line_section:hover {
+    background: #e2e8f0 !important;
+}
+.ls-it-td-section {
+    padding: 8px 12px !important;
+    color: #1e293b;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+}
+.ls-it-section-title {
+    font-weight: 700;
+    color: #0f172a;
+}
+.ls-it-section-input {
+    width: 100%;
+    font-weight: 700;
+    background: #ffffff;
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+}
+
+.ls-it-note-row,
+.ls-it-row.o_is_line_note {
+    background: #fafafa !important;
+    font-style: italic;
+    color: #64748b;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.ls-it-note-row:hover,
+.ls-it-row.o_is_line_note:hover {
+    background: #f1f5f9 !important;
+}
+.ls-it-td-note {
+    padding: 6px 12px !important;
+    font-size: 12.5px;
+}
+.ls-it-note-text {
+    color: #475569;
+}
+.ls-it-note-input {
+    width: 100%;
+    font-style: italic;
+    background: #ffffff;
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.ls-it-add-section-btn {
+    border-color: #cbd5e1 !important;
+    color: #475569 !important;
+    background: #f8fafc !important;
+}
+.ls-it-add-section-btn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+.ls-it-add-note-btn {
+    border-color: #cbd5e1 !important;
+    color: #64748b !important;
+    font-style: italic !important;
+    background: #fdfdfd !important;
+}
+.ls-it-add-note-btn:hover {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+}
+
+/* Dark mode for section and note */
+[data-theme="dark"] .ls-it-section-row,
+.dark .ls-it-section-row {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+[data-theme="dark"] .ls-it-td-section,
+.dark .ls-it-td-section {
+    color: #f1f5f9 !important;
+}
+[data-theme="dark"] .ls-it-note-row,
+.dark .ls-it-note-row {
+    background: #0f172a !important;
+    border-color: #1e293b !important;
+}
+[data-theme="dark"] .ls-it-note-text,
+.dark .ls-it-note-text {
+    color: #94a3b8 !important;
+}
+
 
 
 /* --- [FILE: css/advsoft-security.css] --- */

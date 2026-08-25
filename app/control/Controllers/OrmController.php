@@ -1120,6 +1120,20 @@ class OrmController extends Controller
             $scalar[$field->inverseField] = $values[$field->inverseField] ?? null;
         }
 
+        // Provide safe defaults for required name field on newly added inline rows
+        if (empty($scalar['name']) && isset($childDef->getFields()['name'])) {
+            $displayType = $values['display_type'] ?? null;
+            $scalar['name'] = $displayType === 'line_section' ? 'New Section' : ($displayType === 'line_note' ? 'Note' : 'New Task / Line');
+        }
+
+        // Merge child model defaults for any unsupplied fields
+        $childDefaults = $childDef->defaultGet(array_keys($childDef->getFields()));
+        foreach ($childDefaults as $k => $v) {
+            if (!isset($scalar[$k]) || $scalar[$k] === null || $scalar[$k] === '') {
+                $scalar[$k] = $v;
+            }
+        }
+
         // Apply default + onchange + constraint
         $scalar = $childDef->applyOnchangeMulti(array_keys($scalar), $scalar);
 

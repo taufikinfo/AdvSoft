@@ -325,6 +325,7 @@ class AccountMoveDef extends ModelDefinition
                     'type'     => 'one2many',
                     'field'    => 'line_ids',
                     'editable' => 'bottom',
+                    'has_sections' => true,
                     'sequence_field' => 'sequence',
                     'tree_fields' => [
                         'sequence',
