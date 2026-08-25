@@ -234,8 +234,24 @@ class Domain
     /**
      * Apply domain conditions to an object/query.
      */
-    public static function apply(mixed $query, array $domain, ModelDefinition $modelDef): mixed
+    public static function apply(mixed $query, mixed $domain, ModelDefinition $modelDef): mixed
     {
+        if (is_string($domain)) {
+            $trimmed = trim($domain);
+            if ($trimmed === '' || $trimmed === '[]') {
+                $domain = [];
+            } else {
+                $decoded = json_decode($trimmed, true);
+                if (is_array($decoded)) {
+                    $domain = $decoded;
+                } else {
+                    $domain = self::parse($trimmed);
+                }
+            }
+        } elseif (!is_array($domain)) {
+            $domain = [];
+        }
+
         if (is_object($query) && method_exists($query, 'where')) {
             foreach ($domain as $condition) {
                 if (!is_array($condition) || count($condition) < 3) continue;

@@ -99,6 +99,21 @@ class OrmController extends Controller
         return $this->security->filterRecordData($modelName, $record);
     }
 
+    /**
+     * Safely parse domain input from array, JSON string, or python domain string.
+     */
+    private function parseDomainInput(mixed $domain): array
+    {
+        if (is_string($domain)) {
+            $trimmed = trim($domain);
+            if ($trimmed === '' || $trimmed === '[]') return [];
+            $decoded = json_decode($trimmed, true);
+            if (is_array($decoded)) return $decoded;
+            return Domain::parse($trimmed);
+        }
+        return is_array($domain) ? $domain : [];
+    }
+
     // ================================================================
     //  Aggregation endpoint (for Graph/Pivot views)
     // ================================================================
@@ -111,7 +126,7 @@ class OrmController extends Controller
     {
         $def = $this->resolveModel($request, 'read');
         $modelName = $def->_name ?? null;
-        $domain = $request->input('domain', []);
+        $domain = $this->parseDomainInput($request->input('domain', []));
         $groupBy = $request->input('groupby', $request->input('group_by', []));
         if (is_string($groupBy)) {
             $groupBy = array_filter(array_map('trim', explode(',', $groupBy)));
@@ -208,7 +223,7 @@ class OrmController extends Controller
     {
         $def = $this->resolveModel($request, 'read');
         $modelName = $def->_name ?? null;
-        $domain = $request->input('domain', []);
+        $domain = $this->parseDomainInput($request->input('domain', []));
         $orderBy = $request->input('order', $def->_order);
         $limit = $request->input('limit', 80);
         $offset = $request->input('offset', 0);
@@ -977,7 +992,7 @@ class OrmController extends Controller
     public function aggregate(Request $request): JsonResponse
     {
         $def = $this->resolveModel($request, 'read');
-        $domain = $request->input('domain', []);
+        $domain = $this->parseDomainInput($request->input('domain', []));
         $measures = $request->input('measures', []); // [{field, type}]
 
         $query = $def->newQuery();
@@ -1256,7 +1271,7 @@ class OrmController extends Controller
         $parentModel = $request->input('parent_model');
         $fieldName = $request->input('field');
         $parentId = $request->input('parent_id');
-        $domain = $request->input('domain', []);
+        $domain = $this->parseDomainInput($request->input('domain', []));
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 80);
         $order = $request->input('order', null);
@@ -1309,7 +1324,7 @@ class OrmController extends Controller
         $parentId = $request->input('parent_id');
         $groupByField = $request->input('group_by');
         $aggregateFields = $request->input('aggregate_fields', []);
-        $domain = $request->input('domain', []);
+        $domain = $this->parseDomainInput($request->input('domain', []));
         $loadRecords = $request->boolean('load_records', false);
         $limit = $request->input('limit', 40);
 
