@@ -32,14 +32,41 @@ class SecurityService
     {
         return app(SecurityContext::class);
     }
+
+    /**
+     * Authenticate user with password verification, timing attack mitigation,
+     * and automatic bcrypt hash migration.
+     */
     public function authenticate(string $login, string $password): ?ResUser
     {
         $user = ResUser::where('login', '=', $login)->first();
         if (!$user) {
+            // Constant-time dummy verification to mitigate timing attacks
+            password_verify($password, '$2y$10$dummyhashfortimingattackmitigationabcdef1234567890');
             return null;
         }
 
-        if (password_verify($password, $user->password) || $password === $user->password) {
+        $valid = false;
+        $needsRehash = false;
+
+        if (password_verify($password, $user->password)) {
+            $valid = true;
+            if (password_needs_rehash($user->password, PASSWORD_BCRYPT)) {
+                $needsRehash = true;
+            }
+        } elseif (hash_equals((string)$user->password, (string)$password)) {
+            // Legacy plaintext fallback - migrate immediately to bcrypt
+            $valid = true;
+            $needsRehash = true;
+        }
+
+        if ($valid) {
+            if ($needsRehash) {
+                try {
+                    $user->password = password_hash($password, PASSWORD_BCRYPT);
+                    $user->save();
+                } catch (\Throwable) {}
+            }
             return $user;
         }
 
@@ -70,11 +97,9 @@ class SecurityService
 
     protected function extractModelName(string $class): ?string
     {
-        // Heuristic: 'App\Advsoft\Models\Res\ResUserDef' → 'res.user'
-        $short = class_basename($class);            // ResUserDef
-        $short = preg_replace('/Def$/', '', $short); // ResUser
+        $short = class_basename($class);
+        $short = preg_replace('/Def$/', '', $short);
 
-        // Try to find _name property source — fall back to snake_case
         try {
             $ref = new \ReflectionClass($class);
             if ($ref->hasProperty('_name')) {
@@ -85,7 +110,6 @@ class SecurityService
             }
         } catch (\Throwable) {}
 
-        // Heuristic camel→snake
         return strtolower(preg_replace('/(?<!^)([A-Z])/', '.$1', $short));
     }
 
@@ -94,7 +118,7 @@ class SecurityService
     // ─────────────────────────────────────────────────────────
 
     /**
-     * check_access_rights — Odoo: returns bool, raise AccessDenied if raise_exception.
+     * check_access_rights — returns bool, raise AccessDenied if raise_exception.
      *  $operation: 'read' | 'write' | 'create' | 'unlink'
      */
     public function checkAccessRights(string $modelName, string $operation, bool $raise = true): bool
@@ -145,7 +169,6 @@ class SecurityService
 
     /**
      * check_access_rule — returns true if all $ids pass active rules.
-     *  In Odoo: combines all read rules with AND; for write/unlink combines write rules.
      */
     public function checkAccessRule(string $modelName, string $operation, array $ids, bool $raise = true): bool
     {
@@ -153,9 +176,8 @@ class SecurityService
         if (empty($ids)) return true;
 
         $rules = $this->getRulesForModel($modelName, $operation);
-        if (empty($rules)) return true;  // no rules → no restriction
+        if (empty($rules)) return true;
 
-        // Each rule = "id in {ids matching domain}"
         $allowedIds = $this->applyRules($modelName, $rules);
         $diff = array_diff($ids, $allowedIds);
 
@@ -174,9 +196,6 @@ class SecurityService
     /**
      * Build a single combined domain that filters records
      * to those the current user is allowed to read/operate.
-     *
-     * In Odoo: per-model read rules AND-combined using OR for same-perm rules
-     * within same group. We use simpler approach: OR-combined across all rules.
      */
     public function filterDomain(string $modelName, string $operation = 'read'): array
     {
@@ -196,7 +215,6 @@ class SecurityService
         if (count($resolvedDomains) === 1) {
             return $resolvedDomains[0];
         }
-        // OR-combine: ['|', dom1, dom2, dom3, ...]
         return array_merge(['|'], $resolvedDomains[0], ...array_slice($resolvedDomains, 1));
     }
 
@@ -240,7 +258,6 @@ class SecurityService
 
     public function applyRules(string $modelName, array $rules): array
     {
-        // Returns the set of record IDs allowed by these rules.
         $union = [];
         foreach ($rules as $rule) {
             $dom = $this->resolveDomainPlaceholders($rule->domain_force);
@@ -249,7 +266,6 @@ class SecurityService
                 $ids = $this->queryModel($modelName, $parsed)->pluck('id')->all();
                 $union = array_unique(array_merge($union, $ids));
             } catch (\Throwable) {
-                // If model has no DB table, skip
                 continue;
             }
         }
@@ -293,12 +309,10 @@ class SecurityService
 
     protected function resolveModelClass(string $modelName): string
     {
-        // Map 'res.users' → \App\Advsoft\Models\Res\ResUserDef
         $parts = explode('.', $modelName);
         $ns = 'App\\Advsoft\\Models\\' . array_shift($parts);
         $class = $ns . '\\' . implode('', array_map('ucfirst', $parts)) . 'Def';
         if (class_exists($class)) return $class;
-        // fallback: try generic
         $class2 = str_replace('Def', '', class_basename($modelName));
         return $class2;
     }
@@ -307,10 +321,6 @@ class SecurityService
     //  LAYER 6: field-level groups= / readonly / invisible
     // ─────────────────────────────────────────────────────────
 
-    /**
-     * Filter the field metadata returned by fieldsGet().
-     * In Odoo: fields with groups= are hidden from users not in those groups.
-     */
     public function filterFieldsMetadata(string $modelName, array $fields): array
     {
         if ($this->live()->isSuperuser()) return $fields;
@@ -322,16 +332,10 @@ class SecurityService
                 unset($fields[$name]);
                 continue;
             }
-            // For visible fields, set readonly per user groups
-            // (Laravel-side: we just clean the field; UI handles readonly state)
         }
         return $fields;
     }
 
-    /**
-     * Filter record data: strip fields the user cannot read.
-     * Used after read/search_read before returning JSON.
-     */
     public function filterRecordData(string $modelName, array $record): array
     {
         if ($this->live()->isSuperuser()) return $record;
@@ -349,7 +353,6 @@ class SecurityService
 
     protected function userMatchesGroups(mixed $groupSpec, array $userGroupIds): bool
     {
-        // groupSpec can be: 'group.name' (string) | ['group.a', 'group.b'] (array) | comma-separated string
         if (is_string($groupSpec)) {
             $groupSpec = array_map('trim', explode(',', $groupSpec));
         }

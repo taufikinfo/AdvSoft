@@ -36,12 +36,15 @@ class AuthController extends Controller
 
         $this->ctx->setUser($user);
 
-        if (php_sapi_name() !== 'cli' && session_status() !== PHP_SESSION_ACTIVE) {
-            @session_start();
-        }
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $_SESSION['res_user_id'] = $user->id;
-            $_SESSION['res_company_id'] = $user->company_id ?: 1;
+        if (php_sapi_name() !== 'cli') {
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                @session_start();
+            }
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                @session_regenerate_id(true);
+                $_SESSION['res_user_id'] = $user->id;
+                $_SESSION['res_company_id'] = $user->company_id ?: 1;
+            }
         }
 
         return new JsonResponse([

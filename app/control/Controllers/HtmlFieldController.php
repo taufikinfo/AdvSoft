@@ -60,26 +60,53 @@ class HtmlFieldController extends Controller
         }
 
         $files = $_FILES['file'] ?? $_FILES['image'] ?? null;
-        if (!$files || empty($files['tmp_name'])) {
-            return new JsonResponse(['error' => 'No file uploaded.'], 400);
+        if (!$files || empty($files['tmp_name']) || !is_uploaded_file($files['tmp_name'])) {
+            return new JsonResponse(['error' => 'No valid uploaded file found.'], 400);
         }
 
-        $ext = strtolower(pathinfo($files['name'], PATHINFO_EXTENSION) ?: 'jpg');
-        $fileName = bin2hex(random_bytes(8)) . '.' . $ext;
+        // Limit file size to 10MB
+        $maxSize = 10 * 1024 * 1024;
+        if (($files['size'] ?? 0) > $maxSize) {
+            return new JsonResponse(['error' => 'File exceeds maximum allowed size of 10MB.'], 400);
+        }
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+        $ext = strtolower(pathinfo($files['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($ext, $allowedExtensions, true)) {
+            return new JsonResponse(['error' => 'Invalid file extension. Allowed: jpg, jpeg, png, gif, webp, svg.'], 422);
+        }
+
+        // MIME type validation via finfo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $files['tmp_name']);
+        finfo_close($finfo);
+
+        $allowedMimes = [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'text/plain', 'text/html'
+        ];
+        if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'], true)) {
+            return new JsonResponse(['error' => 'File is not a valid image.'], 422);
+        }
+
+        // Generate cryptographically secure filename
+        $fileName = bin2hex(random_bytes(16)) . '.' . $ext;
         $dir = base_path('storage/uploads/rte/' . date('Y/m'));
         if (!is_dir($dir)) {
-            @mkdir($dir, 0777, true);
+            @mkdir($dir, 0755, true);
         }
         $targetPath = $dir . '/' . $fileName;
-        move_uploaded_file($files['tmp_name'], $targetPath);
+        if (!move_uploaded_file($files['tmp_name'], $targetPath)) {
+            return new JsonResponse(['error' => 'Failed to save uploaded file.'], 500);
+        }
 
         $relUrl = '/storage/uploads/rte/' . date('Y/m') . '/' . $fileName;
 
         return new JsonResponse([
             'url'  => $relUrl,
             'path' => $relUrl,
-            'name' => $files['name'],
-            'size' => $files['size'],
+            'name' => htmlspecialchars($files['name'], ENT_QUOTES, 'UTF-8'),
+            'size' => (int) $files['size'],
         ]);
     }
 

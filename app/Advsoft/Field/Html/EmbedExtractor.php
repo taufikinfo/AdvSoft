@@ -116,7 +116,7 @@ class EmbedExtractor
 
     /**
      * Fetch OpenGraph / Twitter card metadata from a URL.
-     * Uses cURL with a strict timeout and a safe user-agent.
+     * Uses cURL with strict SSRF validation, timeout and safe user-agent.
      */
     protected function fetchOpenGraph(string $url): array
     {
@@ -128,20 +128,46 @@ class EmbedExtractor
             'video_id'    => '',
         ];
 
+        // 1. Validate Scheme
+        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME) ?? '');
+        if (!in_array($scheme, ['http', 'https'], true)) {
+            return $meta;
+        }
+
+        // 2. Validate Host and Prevent SSRF
+        $host = parse_url($url, PHP_URL_HOST);
+        if (!$host) {
+            return $meta;
+        }
+
+        $ip = gethostbyname($host);
+        if (!$ip || !filter_var($ip, FILTER_VALIDATE_IP)) {
+            return $meta;
+        }
+
+        // Block private, loopback, link-local, and reserved IP ranges (SSRF protection)
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+            || str_starts_with($ip, '127.')
+            || $ip === '::1'
+            || $ip === '0.0.0.0'
+            || str_starts_with($ip, '169.254.')
+        ) {
+            return $meta;
+        }
+
         if (!function_exists('curl_init')) {
-            return $meta; // Fall back to empty if cURL is not available.
+            return $meta;
         }
 
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS      => 3,
+            CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_TIMEOUT        => $this->timeout,
             CURLOPT_CONNECTTIMEOUT => $this->timeout,
             CURLOPT_USERAGENT      => $this->userAgent,
-            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYPEER => true,
         ]);
         $body = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -158,7 +184,7 @@ class EmbedExtractor
             $meta['video_id'] = $m[1];
         }
 
-        // Pull OG/Twitter tags via regex (no DOM parsing here for speed).
+        // Pull OG/Twitter tags via regex
         $patterns = [
             'title'       => '/<meta[^>]+(?:property|name)=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']/i',
             'title_alt'   => '/<meta[^>]+(?:property|name)=["\']twitter:title["\'][^>]+content=["\']([^"\']+)["\']/i',
@@ -173,7 +199,6 @@ class EmbedExtractor
             }
         }
 
-        // Fallback: <title> if no og:title
         if (empty($meta['title']) && preg_match('/<title>([^<]+)<\/title>/i', (string) $body, $m)) {
             $meta['title'] = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }

@@ -1594,7 +1594,9 @@ abstract class ModelDefinition
             }
         }
 
-        $stmt = $pdo->query("SELECT {$selects} FROM {$table} GROUP BY {$groupBy}");
+        $safeTable = '`' . str_replace('`', '', (string)$table) . '`';
+        $safeGroupBy = '`' . str_replace('`', '', (string)$groupBy) . '`';
+        $stmt = $pdo->query("SELECT {$selects} FROM {$safeTable} GROUP BY {$safeGroupBy}");
         $groups = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         TTransaction::close();
 

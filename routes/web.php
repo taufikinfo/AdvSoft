@@ -448,8 +448,23 @@ Route::prefix('api/qweb')->group(function () {
     Route::post('/clear-cache',     [QWebController::class, 'clearCache']);
 });
 
+// Helper for administrative API authorization
+$ensureAdminAccess = function () {
+    if (app()->isLocal() || php_sapi_name() === 'cli') {
+        return null;
+    }
+    $ctx = app(\App\Advsoft\Security\SecurityContext::class);
+    if ($ctx->isSuperuser() || $ctx->hasGroup('Administration / System Admin') || $ctx->hasGroup('Administration / Access Rights')) {
+        return null;
+    }
+    return response()->json([
+        'success' => false,
+        'error'   => 'Unauthorized. Administrative privileges required.',
+    ], 403);
+};
+
 // Assets Management & Compilation API
-Route::prefix('api/admin/assets')->group(function () {
+Route::prefix('api/admin/assets')->group(function () use ($ensureAdminAccess) {
     Route::get('/status', function (Request $request) {
         $mode = config('advsoft.assets.mode', 'development');
         $env = config('advsoft.environment', app()->environment());
@@ -476,7 +491,8 @@ Route::prefix('api/admin/assets')->group(function () {
         ]);
     });
 
-    Route::post('/compile', function (Request $request) {
+    Route::post('/compile', function (Request $request) use ($ensureAdminAccess) {
+        if ($deny = $ensureAdminAccess()) return $deny;
         $result = \App\Advsoft\Core\Support\AssetCompiler::compileAll();
         return response()->json([
             'success' => true,
@@ -487,7 +503,7 @@ Route::prefix('api/admin/assets')->group(function () {
 });
 
 // Translation Management & API
-Route::prefix('api/translations')->group(function () {
+Route::prefix('api/translations')->group(function () use ($ensureAdminAccess) {
     // GET /api/translations/bundle?lang=en
     Route::get('/bundle', function (Request $request) {
         $lang = $request->input('lang', \App\Model\Ir\IrTranslation::getActiveLanguage());
@@ -500,7 +516,8 @@ Route::prefix('api/translations')->group(function () {
     });
 
     // POST /api/translations/sync-xml
-    Route::post('/sync-xml', function (Request $request) {
+    Route::post('/sync-xml', function (Request $request) use ($ensureAdminAccess) {
+        if ($deny = $ensureAdminAccess()) return $deny;
         $results = \App\Advsoft\Translation\XmlTranslationLoader::syncAllModules();
         return response()->json([
             'success' => true,
@@ -510,7 +527,8 @@ Route::prefix('api/translations')->group(function () {
     });
 
     // POST /api/translations/export-xml
-    Route::post('/export-xml', function (Request $request) {
+    Route::post('/export-xml', function (Request $request) use ($ensureAdminAccess) {
+        if ($deny = $ensureAdminAccess()) return $deny;
         $module = $request->input('module', 'account');
         $lang   = $request->input('lang', 'en');
         $xml    = \App\Advsoft\Translation\XmlTranslationLoader::exportDatabaseToXml($module, $lang);
@@ -524,9 +542,10 @@ Route::prefix('api/translations')->group(function () {
 });
 
 // Modular Security Management & API
-Route::prefix('api/admin/security')->group(function () {
+Route::prefix('api/admin/security')->group(function () use ($ensureAdminAccess) {
     // POST /api/admin/security/sync-modules
-    Route::post('/sync-modules', function (Request $request) {
+    Route::post('/sync-modules', function (Request $request) use ($ensureAdminAccess) {
+        if ($deny = $ensureAdminAccess()) return $deny;
         $results = \App\Advsoft\Security\ModuleSecurityLoader::syncAllModules();
         return response()->json([
             'success' => true,
@@ -536,7 +555,8 @@ Route::prefix('api/admin/security')->group(function () {
     });
 
     // POST /api/admin/security/export-csv
-    Route::post('/export-csv', function (Request $request) {
+    Route::post('/export-csv', function (Request $request) use ($ensureAdminAccess) {
+        if ($deny = $ensureAdminAccess()) return $deny;
         $module = $request->input('module', 'account');
         $csv    = \App\Advsoft\Security\ModuleSecurityLoader::exportModuleAccessToCsv($module);
         return response()->json([
@@ -546,5 +566,6 @@ Route::prefix('api/admin/security')->group(function () {
         ]);
     });
 });
+
 
 
