@@ -12,19 +12,14 @@ use App\Advsoft\Concerns\HasInheritance;
 use App\Advsoft\Concerns\HasAccessControl;
 
 /**
- * ModelDefinition – AdvSoft-style model configuration + business logic.
+ * ModelDefinition
  *
- * ╔══════════════════════════════════════════════════════════════╗
- * ║  models.Model — definisi tabel + logika bisnis              ║
- * ║  _name · _description · _order · _rec_name · _table         ║
- * ║  _inherit · _inherits                                        ║
- * ╚══════════════════════════════════════════════════════════════╝
- *
- * Integrates all four concerns from AdvSoft's model architecture:
- *   - HasLifecycleHooks:  create() / write() / unlink() / name_get()
- *   - HasApiDecorators:   @api.depends / @api.constrains / @api.onchange / @api.model
- *   - HasInheritance:     _inherit / _inherits / _inherit + _name
- *   - HasAccessControl:   ir.model.access / ir.rule / field-level access
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 abstract class ModelDefinition
 {

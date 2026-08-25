@@ -3,15 +3,14 @@
 namespace App\Advsoft\Field\Html;
 
 /**
- * EmbedExtractor – AdvSoft-style URL metadata / oEmbed extraction.
+ * EmbedExtractor
  *
- *  Used by the RTE to render link previews (cards) for:
- *   - YouTube / Vimeo  → rich player embed
- *   - Twitter / X     → tweet card
- *   - Generic URLs    → OpenGraph preview (og:title / og:image / og:description)
- *
- *  This service never executes remote JavaScript and only fetches metadata,
- *  making it safe to call server-side.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class EmbedExtractor
 {

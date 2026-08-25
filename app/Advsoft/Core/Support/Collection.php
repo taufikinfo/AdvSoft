@@ -10,7 +10,14 @@ use JsonSerializable;
 use Traversable;
 
 /**
- * Lightweight Collection for Adianti PHP backend without Laravel/Illuminate.
+ * Collection
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {

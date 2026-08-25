@@ -5,7 +5,14 @@ namespace App\Advsoft\Core\Database;
 use Adianti\Database\TTransaction;
 
 /**
- * Pure Adianti Database Schema & Migration Manager.
+ * SchemaManager
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class SchemaManager
 {

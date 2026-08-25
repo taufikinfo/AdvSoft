@@ -5,7 +5,14 @@ namespace App\Advsoft\Core\Support;
 use App\Advsoft\Core\Http\Router;
 
 /**
- * Route static facade for pure Adianti router.
+ * Route
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Route
 {

@@ -3,7 +3,14 @@
 namespace App\Advsoft\Core\View;
 
 /**
- * Lightweight Blade & PHP View Engine for Pure Adianti Backend.
+ * ViewEngine
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class ViewEngine
 {

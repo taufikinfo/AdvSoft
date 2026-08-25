@@ -6,19 +6,14 @@ use App\Model\Ir\IrModuleModule;
 use App\Advsoft\Core\Support\Log;
 
 /**
- * ModuleInstaller — AdvSoft-style addon lifecycle manager.
+ * ModuleInstaller
  *
- * Handles:
- *   1. Discovery: scan addons/ directory for AdvSoft.json manifests
- *   2. Install: load data files, update module state
- *   3. Upgrade: re-load data files, update version
- *   4. Dependency resolution: install dependencies first
- *
- * Usage:
- *   $installer = app(ModuleInstaller::class);
- *   $installer->install('account');
- *   $installer->upgrade('account');
- *   $installer->discoverAll();
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class ModuleInstaller
 {

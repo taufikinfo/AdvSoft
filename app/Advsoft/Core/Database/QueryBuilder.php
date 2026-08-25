@@ -6,8 +6,14 @@ use App\Advsoft\Core\Support\Collection;
 use Adianti\Database\TTransaction;
 
 /**
- * Lightweight, high-performance PDO QueryBuilder for Adianti Framework.
- * Provides fluent interface with zero external dependencies.
+ * QueryBuilder
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class QueryBuilder
 {

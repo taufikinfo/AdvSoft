@@ -7,19 +7,14 @@ use App\Model\Res\ResGroup;
 use App\Model\Res\ResCompany;
 
 /**
- * SecurityContext — request-scoped security state.
+ * SecurityContext
  *
- * Mirrors AdvSoft's `request.env` and `recordset.env`:
- *  - $env.user          → getUser() / setUser()
- *  - $env.su            → isSuperuser() (set by sudo())
- *  - $env.company       → getCompany()
- *  - $env['res.company']→ forCompany()
- *  - record.with_user(u)→ withUser()
- *  - record.sudo()      → sudo()
- *  - record.sudo(flag)  → sudo(bool) — toggleable
- *
- * Stored on the ServiceContainer so every part of the request
- * (controllers, models, jobs) sees the same user.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class SecurityContext
 {

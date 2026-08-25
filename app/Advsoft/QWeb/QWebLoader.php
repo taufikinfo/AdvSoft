@@ -5,7 +5,14 @@ namespace App\Advsoft\QWeb;
 use Adianti\Database\TTransaction;
 
 /**
- * QWebLoader - Loads QWeb templates from DB (ir_ui_views) and addon files.
+ * QWebLoader
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class QWebLoader
 {

@@ -4,19 +4,14 @@ namespace App\Advsoft\QWeb;
 
 
 /**
- * QWeb – Main QWeb template engine (ir.qweb equivalent).
+ * QWeb
  *
- * ╔══════════════════════════════════════════════════════════════╗
- * ║  QWeb Engine — Server-side XML template rendering           ║
- * ║                                                              ║
- * ║  Templates stored in ir_ui_views (type='qweb')              ║
- * ║  Inheritance via inherit_id + XPath transformations          ║
- * ║  Compiled to PHP closures and cached                         ║
- * ╚══════════════════════════════════════════════════════════════╝
- *
- * Usage:
- *   $qweb = app(QWeb::class);
- *   $html = $qweb->render('my.template', ['record' => $data]);
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class QWeb
 {

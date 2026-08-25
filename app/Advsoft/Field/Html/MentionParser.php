@@ -7,16 +7,14 @@ use DOMElement;
 use DOMXPath;
 
 /**
- * MentionParser – AdvSoft-style @mention parser/extractor.
+ * MentionParser
  *
- *  Mention link shape (in HTML):
- *      <a href="#" data-mention-id="42" data-mention-model="res.partner"
- *         class="o_mention">@John Doe</a>
- *
- *  This service:
- *   - Extract mentions from a sanitized HTML string
- *   - Resolve (replace) plain "@Name" with rich <a> mentions
- *   - Provide a JSON-friendly list of mentioned records (for chatter)
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class MentionParser
 {

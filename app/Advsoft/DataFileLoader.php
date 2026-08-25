@@ -6,23 +6,14 @@ use Adianti\Database\TTransaction;
 use App\Advsoft\Core\Support\Log;
 
 /**
- * DataFileLoader — Loads XML and CSV data files from addon modules.
+ * DataFileLoader
  *
- * AdvSoft equivalent: The data file loading pipeline triggered on module install/upgrade.
- *
- * Supports:
- *   - <record model="ir.ui.menu"> — Create/update any ORM record
- *   - <menuitem> — Shortcut for ir.ui.menu records
- *   - <act_window> — Shortcut for ir.actions.act_window records
- *   - <record model="ir.sequence"> — Sequence definitions
- *   - <record model="ir.config_parameter"> — System parameters
- *   - <delete> — Delete records by XML ID
- *   - CSV files — Bulk import (ir.model.access.csv format)
- *
- * XML IDs:
- *   - Each <record> has an id="module.xml_id" attribute
- *   - Mapped to DB IDs via ir_model_data (external_id → db_id)
- *   - Enables cross-module references (e.g. ref="base.main_company")
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class DataFileLoader
 {

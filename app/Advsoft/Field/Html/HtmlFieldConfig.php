@@ -3,24 +3,14 @@
 namespace App\Advsoft\Field\Html;
 
 /**
- * HtmlFieldConfig – AdvSoft-style configuration for HTML/Rich-Text fields.
+ * HtmlFieldConfig
  *
- * Mirrors AdvSoft's `ir.fields.html` configuration pipeline:
- *   - Define allowed tags / attributes (CSS classes whitelist)
- *   - Configure toolbar buttons (bold/italic/.../table/.../mention)
- *   - Enable / disable plugins (link, image, mention, code-view, source, ...)
- *   - Set image upload endpoint and constraints
- *   - Set sanitization policy and CSP-like sandbox
- *   - Configure placeholder, height, and read-only mode
- *
- * The class is intentionally immutable: `with*` helpers return a NEW instance,
- * making it safe to share base configs across fields.
- *
- *  ┌──────────────────────────────────────────────────────────────┐
- *  │  HtmlField (UI/Owl widget)  ──driven by──►  HtmlFieldConfig   │
- *  │  HtmlFieldController  (image upload, embeds, mentions)        │
- *  │  Sanitizer                (server-side html_sanitize)         │
- *  └──────────────────────────────────────────────────────────────┘
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class HtmlFieldConfig
 {

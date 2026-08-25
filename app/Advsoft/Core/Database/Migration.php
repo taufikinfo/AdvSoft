@@ -3,7 +3,14 @@
 namespace App\Advsoft\Core\Database;
 
 /**
- * Migration Base Class — Drop-in replacement for Illuminate\Database\Migrations\Migration
+ * Migration
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 abstract class Migration
 {

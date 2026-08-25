@@ -5,17 +5,14 @@ namespace App\Advsoft\Concerns;
 use Adianti\Database\TTransaction;
 
 /**
- * Trait HasLifecycleHooks — AdvSoft-style Model Lifecycle Hooks.
+ * HasLifecycleHooks
  *
- * Provides:
- *   - beforeCreate(&$values)   — Validate or transform values before insert
- *   - afterCreate($record, $values) — Trigger side effects (events, logging)
- *   - beforeWrite($record, &$values) — Validate state transitions, transform
- *   - afterWrite($record, $values)   — Recalculate dependents, cascade
- *   - beforeUnlink($record)    — Guard against deletion (return error string to block)
- *   - afterUnlink($id)         — Cleanup related resources
- *   - nameGet($record)         — Custom display name generator
- *   - nameSearch($query)       — Custom search logic for M2O dropdowns
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 trait HasLifecycleHooks
 {

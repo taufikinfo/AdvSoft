@@ -3,25 +3,14 @@
 namespace App\Advsoft;
 
 /**
- * Field – Complete AdvSoft-style field definition.
+ * Field
  *
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║  Fields — unit data terkecil, satu kolom di PostgreSQL          ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  Scalar:    Char · Text · Html · Integer · Float · Monetary     ║
- * ║             Boolean · Date · Datetime · Selection · Binary      ║
- * ║  Relational: Many2one (FK) · One2many (virtual) · Many2many     ║
- * ║              Reference (dynamic FK ke model apapun)             ║
- * ║  Special:   Computed (@api.depends, store=True/False)           ║
- * ║             Related (shortcut ke field lain)                    ║
- * ║  Attributes: required · domain · context · ondelete             ║
- * ║  Widget:    widget="X" → OWL component di browser               ║
- * ╚══════════════════════════════════════════════════════════════════╝
- *
- * Pipeline: Field → Column PostgreSQL · Widget → Komponen OWL di browser
- *   - widget="X" di XML view memilih widget
- *   - tanpa widget= maka Odoo pilih default otomatis
- *   - store=False pada computed field = tidak masuk database
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Field
 {

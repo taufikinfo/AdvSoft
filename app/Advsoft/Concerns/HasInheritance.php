@@ -5,22 +5,14 @@ namespace App\Advsoft\Concerns;
 use App\Advsoft\{Registry, Field};
 
 /**
- * HasInheritance — AdvSoft-style model inheritance engine.
+ * HasInheritance
  *
- * Three types of inheritance (matching Odoo exactly):
- *
- * 1. _inherit = "model.x" (same _name)
- *    → Class extension: merges fields/views/logic into the SAME table.
- *    → Most common. Like Python's class Child(Model): _inherit = 'parent'.
- *
- * 2. _inherits = { "res.partner" => "partner_id" }
- *    → Delegation: two tables, FK auto-created.
- *    → Child can read/write parent fields transparently.
- *    → Like Python's _inherits = { 'res.partner': 'partner_id' }.
- *
- * 3. _inherit = "model.x" + different _name
- *    → Copy: creates a NEW model with its own table, copying all fields/logic.
- *    → Rarely used in practice.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 trait HasInheritance
 {

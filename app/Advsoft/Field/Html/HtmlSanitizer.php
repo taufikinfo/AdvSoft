@@ -8,23 +8,14 @@ use DOMNode;
 use DOMXPath;
 
 /**
- * HtmlSanitizer – AdvSoft-style HTML sanitizer.
+ * HtmlSanitizer
  *
- * Mirrors AdvSoft's `odoo.tools.html_sanitize()` pipeline:
- *   1.  Parse HTML with DOMDocument (libxml)
- *   2.  Walk the tree, dropping disallowed tags
- *   3.  For allowed tags, strip disallowed attributes
- *   4.  Whitelist CSS classes (supports `prefix-*` wildcards)
- *   5.  Whitelist inline styles
- *   6.  Whitelist URL schemes (http, https, mailto, tel, …)
- *   7.  Forbid event-handler attributes (onclick, onerror, …)
- *   8.  Forbid <script>, <style>, <iframe>, <object>, <embed> (or allow if listed)
- *   9.  Normalize <a> links — strip javascript: pseudo-URLs
- *  10.  Return sanitized HTML string
- *
- *  Usage:
- *      $san = new HtmlSanitizer($config);
- *      $clean = $san->sanitize($dirtyHtml);
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class HtmlSanitizer
 {

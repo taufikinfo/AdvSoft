@@ -3,7 +3,14 @@
 namespace App\Advsoft\Core\Support;
 
 /**
- * AssetCompiler — Compiles, concatenates, and minifies JS and CSS for Production.
+ * AssetCompiler
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class AssetCompiler
 {

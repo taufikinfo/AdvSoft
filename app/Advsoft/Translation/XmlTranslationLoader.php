@@ -9,9 +9,14 @@ use Exception;
 use PDO;
 
 /**
- * XmlTranslationLoader — Modular XML Translation File Parser, Importer, and Exporter.
+ * XmlTranslationLoader
  *
- * Handles per-module XML translations in `app/control/{module}/i18n/{lang}.xml`.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class XmlTranslationLoader
 {

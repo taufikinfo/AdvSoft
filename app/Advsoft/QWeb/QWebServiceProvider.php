@@ -5,7 +5,14 @@ namespace App\Advsoft\QWeb;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * QWebServiceProvider – Registers the QWeb engine in the Laravel container.
+ * QWebServiceProvider
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class QWebServiceProvider extends ServiceProvider
 {

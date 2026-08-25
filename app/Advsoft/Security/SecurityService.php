@@ -10,17 +10,14 @@ use App\Advsoft\Domain;
 use App\Advsoft\Exceptions\AccessDenied;
 
 /**
- * SecurityService — the enforcement brain of AdvSoft security.
+ * SecurityService
  *
- * Implements the 6 layers from odoo2.png:
- *   1. res.users            → identify caller
- *   2. res.groups           → resolve user's group set
- *   3. ir.model.access      → model-level CRUD permission
- *   4. ir.rule              → record-level (row) domain restriction
- *   5. record.sudo() / .with_user() → context switching
- *   6. field groups= / readonly / invisible → field-level stripping
- *
- * Plus: dynamic model registry sync from AdvSoft's Registry.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class SecurityService
 {

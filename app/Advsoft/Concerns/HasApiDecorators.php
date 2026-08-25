@@ -4,20 +4,14 @@ namespace App\Advsoft\Concerns;
 
 
 /**
- * HasApiDecorators — AdvSoft-style API decorator registration system.
+ * HasApiDecorators
  *
- * Provides fluent registration for:
- *   @api.depends   — trigger field recomputation when dependencies change
- *   @api.constrains — validate on write/create
- *   @api.onchange   — UI-only logic, not stored
- *   @api.model      — class-level method (no self record needed)
- *
- * Usage in defineBusinessLogic():
- *
- *   $this->apiDepends('_compute_total', ['quantity', 'unit_price']);
- *   $this->apiConstrains('_check_deadline', ['deadline']);
- *   $this->apiOnchange('_onchange_project', ['project_id']);
- *   $this->apiModel('_default_get', []);
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 trait HasApiDecorators
 {

@@ -3,10 +3,14 @@
 namespace App\Advsoft;
 
 /**
- * Registry – Singleton model registry (like AdvSoft's registry).
+ * Registry
  *
- * All models register themselves here. The ORM controller resolves everything through this.
- * On boot: auto-discover → register → resolve inheritance chains.
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Registry
 {

@@ -6,11 +6,14 @@ use Closure;
 use Exception;
 
 /**
- * Pure Adianti HTTP Router with support for:
- *  - get, post, put, delete, patch, any
- *  - Route groups, prefixes, and middleware
- *  - Named parameters: /api/security/groups/{id}/users
- *  - Controller dispatching: [Controller::class, 'method'] or 'Controller@method'
+ * Router
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Router
 {

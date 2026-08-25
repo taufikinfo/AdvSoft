@@ -6,8 +6,14 @@ use Adianti\Database\TCriteria;
 use Adianti\Database\TFilter;
 
 /**
- * Domain – AdvSoft-style domain expression parser and query applier for Adianti.
- * Converts [['field','op','value'], ...] to SQL where clauses, TCriteria, or query builders.
+ * Domain
+ *
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class Domain
 {

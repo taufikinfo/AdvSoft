@@ -6,37 +6,14 @@ use App\Advsoft\{Registry, Domain, Field, Security\SecurityContext, Security\Sec
 use App\Advsoft\Exceptions\AccessDenied;
 
 /**
- * HasAccessControl — AdvSoft-style security system (full odoo2.png parity).
+ * HasAccessControl
  *
- * Six layers of enforcement (matches odoo2.png diagram):
- *   1. res.users / res.groups         → identify caller & groups
- *   2. ir.model.access                → model-level CRUD per group
- *   3. ir.rule                        → record-level domain restriction
- *   4. with_user() / sudo() / for_company() → context switching
- *   5. Field groups= / readonly / invisible → field-level stripping
- *   6. PostgreSQL row-level rules     → enforced by Eloquent + where clauses
- *
- * Two ways to declare ACLs:
- *   A. In-code DSL  (old way, still works — declarative in *Def.php)
- *      $this->setAccess([...])
- *      $this->addAccessRule('group', [...])
- *      $this->addRecordRule(...)
- *      $this->setFieldAccess(...)
- *
- *   B. Database-driven (Odoo standard — ir.model.access + ir.rule tables)
- *      Auto-synced from Registry; managed via UI or seeder.
- *
- * At runtime, BOTH are checked. DB ACLs take precedence (explicit data wins).
- *
- * Instance methods (AdvSoft parity):
- *   $rec->check_access_rights('write', raise=true)
- *   $rec->check_access_rule('read')
- *   $rec->check_access('write')                 → convenience: rights + rule
- *   $rec->sudo()                                 → bypass ACL
- *   $rec->sudo(false)                            → drop sudo
- *   $rec->with_user($user)                       → impersonate
- *   $rec->with_context(['company_id' => 5])
- *   $rec->get_metadata('res.users')              → fields_get filtered
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 trait HasAccessControl
 {

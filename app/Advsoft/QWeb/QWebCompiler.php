@@ -3,18 +3,14 @@
 namespace App\Advsoft\QWeb;
 
 /**
- * QWebCompiler – Compiles QWeb XML templates into PHP render functions.
+ * QWebCompiler
  *
- * Supported directives:
- *   t-out / t-esc    – Output with HTML escaping
- *   t-if / t-elif / t-else – Conditionals
- *   t-foreach / t-as – Loops (with automatic: _index, _value, _first, _last, _odd, _even, _size)
- *   t-set / t-value  – Variable assignment
- *   t-call           – Sub-template call
- *   t-att-*          – Dynamic single attribute
- *   t-attf-*         – Dynamic format-string attribute
- *   t-att            – Dynamic attribute dict
- *   t-field          – Field rendering with widget
+ * @version    2.0.0
+ * @package    Advsoft
+ * @author     Taufik
+ * @author     AdvSoft Team
+ * @copyright  Copyright (c) 2026 AdvSoft Technologies
+ * @license    https://opensource.org/licenses/MIT MIT License
  */
 class QWebCompiler
 {
