@@ -28,13 +28,15 @@ AdvSoft is an enterprise-grade business application framework built on top of **
 12. [Business Logic & API Decorators](#12-business-logic--api-decorators)
 13. [QWeb Report Engine & Document Printing](#13-qweb-report-engine--document-printing)
 14. [Realtime Collaborative Spreadsheet Engine](#14-realtime-collaborative-spreadsheet-engine)
-15. [Routing & Generic ORM Controller](#15-routing--generic-orm-controller)
-16. [Building a Complete Module from Zero to Hero](#16-building-a-complete-module-from-zero-to-hero)
-17. [Database Migration, Seeding & DDL/DML](#17-database-migration-seeding--ddldml)
-18. [Frontend Integration & Design System](#18-frontend-integration--design-system)
-19. [Testing & Quality Assurance](#19-testing--quality-assurance)
-20. [Deployment & Production Tuning](#20-deployment--production-tuning)
-21. [Complete API & Helper Reference](#21-complete-api--helper-reference)
+15. [Internationalization & Dynamic Translation (i18n & ir_translation)](#15-internationalization--dynamic-translation-i18n--ir_translation)
+16. [Routing & Generic ORM Controller](#16-routing--generic-orm-controller)
+17. [Building a Complete Module from Zero to Hero](#17-building-a-complete-module-from-zero-to-hero)
+18. [Database Migration, Seeding & DDL/DML](#18-database-migration-seeding--ddldml)
+19. [Frontend Integration & Design System](#19-frontend-integration--design-system)
+20. [Testing & Quality Assurance](#20-testing--quality-assurance)
+21. [Deployment & Production Tuning](#21-deployment--production-tuning)
+22. [Complete API & Helper Reference](#22-complete-api--helper-reference)
+23. [Detailed Developer Cheat Sheet](#23-detailed-developer-cheat-sheet)
 
 ---
 
@@ -196,7 +198,106 @@ AdvSoft/
 
 ## 4. Configuration & Environment
 
-The database connection is defined in `app/config/advsoft.ini`:
+AdvSoft uses a centralized, modern configuration system located in `app/config/`.
+
+### 4.1 Application Configuration (`app/config/application.php`)
+
+`app/config/application.php` is the master configuration file governing application parameters, environment modes, asset pipelines, internationalization, database connectivity, and security:
+
+```php
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | General Application Configuration (Adianti Core Standard)
+    |--------------------------------------------------------------------------
+    */
+    'general' => [
+        'timezone'        => 'Asia/Jakarta',
+        'language'        => 'id', // 'id' | 'en' | 'ar' | 'es' | 'pt'
+        'application'     => 'advsoft',
+        'title'           => 'AdvSoft — All-in-One Business Applications Platform',
+        'theme'           => 'metronic',
+        'debug'           => '1',
+        'strict_request'  => '1',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AdvSoft Extended Architecture Configuration
+    |--------------------------------------------------------------------------
+    */
+    'advsoft' => [
+        // ── Application Information & Branding ───────────────────────
+        'app' => [
+            'name'        => 'AdvSoft',
+            'version'     => '2.0.0',
+            'description' => 'Modern Business Suite with Odoo-style Views, Spreadsheets & Dynamic Translations',
+            'company'     => 'AdvSoft Technologies',
+            'support_url' => 'https://advsoft.local',
+        ],
+
+        // ── Environment Mode ─────────────────────────────────────────
+        // 'development' : Development mode (enables debug tools & uncompiled raw assets)
+        // 'production'  : Production mode (maximum performance & pre-compiled bundles)
+        'environment' => 'development',
+
+        // ── Asset Pipeline & JS/CSS Bundler ──────────────────────────
+        'assets' => [
+            // 'development' -> loads original individual JS/CSS files (easier debugging)
+            // 'production'  -> loads single pre-compiled bundles (app.bundle.js & app.bundle.css)
+            'mode'         => 'development',
+            'bundle_js'    => 'js/app.bundle.js',
+            'bundle_css'   => 'css/app.bundle.css',
+            'auto_compile' => true,  // Automatically compile bundle if missing
+            'versioning'   => true,  // Append timestamp query string to prevent stale browser cache
+        ],
+
+        // ── International Translation (i18n & ir_translation) ────────
+        'i18n' => [
+            'default_locale'    => 'id',      // Default user interface locale
+            'fallback_locale'   => 'en',      // Fallback locale if translation is missing
+            'available_locales' => [
+                'id' => 'Bahasa Indonesia',
+                'en' => 'English (US)',
+                'ar' => 'العربية (Arabic)',
+                'es' => 'Español',
+                'pt' => 'Português',
+            ],
+            'xml_i18n_path'     => 'i18n',    // Subdirectory for module XML translations: app/control/{module}/i18n/
+            'auto_sync_xml'     => true,      // Automatically sync module XML files into ir_translations table
+        ],
+
+        // ── Multi-Company & Database ─────────────────────────────────
+        'database' => [
+            'default_connection' => 'advsoft',
+            'multi_company'      => true,
+            'multi_branch'       => true,
+        ],
+
+        // ── UI, OWL Components & Views Engine ────────────────────────
+        'ui' => [
+            'default_view'   => 'list',  // Default view type: 'list' | 'kanban' | 'form'
+            'page_limit'     => 80,      // Default pagination record limit per page
+            'theme_mode'     => 'light', // Theme mode: 'light' | 'dark'
+            'dialog_system'  => 'owl',   // Dialog renderer: 'owl' | 'sweetalert'
+            'animations'     => true,
+        ],
+
+        // ── Security & Request Handling ──────────────────────────────
+        'security' => [
+            'csrf_protection'   => true,
+            'strict_request'    => true,
+            'session_lifetime'  => 7200, // Session lifetime in seconds (2 hours)
+        ],
+    ],
+];
+```
+
+### 4.2 Database Connection Profile (`app/config/advsoft.ini`)
+
+Database credentials and driver options are configured in `app/config/advsoft.ini`:
 
 ```ini
 ; MySQL / MariaDB (Production & Standard Development)
@@ -207,18 +308,23 @@ user   = "root"
 pass   = ""
 type   = "mysql"
 prep   = "1"
-
-; SQLite (Alternative Local Development)
-; host   = ""
-; port   = ""
-; name   = "database/database.sqlite"
-; user   = ""
-; pass   = ""
-; type   = "sqlite"
-; prep   = "1"
 ```
 
-The system initializes transactions via Adianti `TTransaction::open('advsoft')`, which automatically configures PDO parameter binding and charset settings.
+Transactions are managed through `\Adianti\Database\TTransaction::open('advsoft')` with automatic parameter binding and UTF-8 charset handling.
+
+### 4.3 Asset Compilation & Production Optimization
+
+To generate minified production bundles:
+
+```bash
+# Compile JS and CSS bundles via CLI:
+php compile_assets.php
+
+# Or trigger compilation via HTTP REST API:
+curl -X POST http://localhost:8000/api/admin/assets/compile
+```
+
+The system automatically switches between individual source files (`development`) and single bundles `app.bundle.js` / `app.bundle.css` (`production`) based on `config('advsoft.assets.mode')`.
 
 ---
 
@@ -909,7 +1015,127 @@ Endpoints:
 
 ---
 
-## 15. Routing & Generic ORM Controller
+## 15. Internationalization & Dynamic Translation (i18n & ir_translation)
+
+AdvSoft incorporates an Odoo-style enterprise internationalization architecture combining:
+1. **Dynamic Database Translations (`ir_translations` table)**: Allows live translation editing from the application UI per language and user.
+2. **Modular XML Files (`app/control/{module}/i18n/{lang}.xml`)**: Allows developer-managed, version-controlled translations packaged with each addon module.
+3. **In-Memory Dictionary Caching**: Zero SQL queries on subsequent translations with fast in-memory map resolution.
+
+### 15.1 Modular XML Translation File Structure
+
+Store module-specific translations in `app/control/{module}/i18n/{lang}.xml`:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<translations lang="en" module="account">
+    <!-- View & Model Titles -->
+    <entry name="account.move.line,string" type="view">
+        <src>Detail Baris Jurnal</src>
+        <value>Journal Items</value>
+    </entry>
+
+    <!-- Field Labels & Column Headers -->
+    <entry name="account.move.line,debit" type="field">
+        <src>Total Debit</src>
+        <value>Total Debit</value>
+    </entry>
+    <entry name="account.move.line,credit" type="field">
+        <src>Total Kredit</src>
+        <value>Total Credit</value>
+    </entry>
+    <entry name="account.move.line,balance" type="field">
+        <src>Saldo</src>
+        <value>Balance</value>
+    </entry>
+
+    <!-- Search Filters & GroupBy -->
+    <entry name="account.move.line,filter_unreconciled" type="search">
+        <src>Belum Rekonsiliasi</src>
+        <value>Unreconciled</value>
+    </entry>
+    <entry name="account.move.line,group_account" type="search">
+        <src>Akun</src>
+        <value>Account</value>
+    </entry>
+</translations>
+```
+
+### 15.2 Synchronizing Modular XML Files to Database
+
+To import all XML translation files into the database:
+
+```bash
+# Via PHP CLI / Script:
+php -r "require 'app/bootstrap.php'; \App\Advsoft\Translation\XmlTranslationLoader::syncAllModules();"
+
+# Via REST API Endpoint:
+curl -X POST http://localhost:8000/api/translations/sync-xml
+```
+
+To export database modifications back into a module's XML file:
+
+```bash
+curl -X POST http://localhost:8000/api/translations/export-xml \
+  -H "Content-Type: application/json" \
+  -d '{"module": "account", "lang": "en"}'
+```
+
+### 15.3 Automatic Model Definition & View Translation
+
+The AdvSoft engine automatically translates:
+- Field labels (`string`, `help`, `placeholder`, `selection` options) via `ModelDefinition::fieldsGet(?array $fieldNames, ?string $lang)`
+- View titles and group headers via `ModelDefinition::getView(string $type, ?string $lang)`
+- Aggregation column labels (`sum`, `avg`, etc.)
+- Search view filter labels and group-by titles
+
+```php
+// In PHP code:
+$accountMoveLineDef = \App\Advsoft\Registry::get('account.move.line');
+
+// Fetch list view in English (automatically translates 'Detail Baris Jurnal' -> 'Journal Items')
+$listViewEn = $accountMoveLineDef->getView('list', 'en');
+
+// Fetch list view in Indonesian
+$listViewId = $accountMoveLineDef->getView('list', 'id');
+```
+
+### 15.4 Using Global Helper `_t()`
+
+Use `_t($message, $param1, ...)` in server-side PHP templates, controllers, and dialogs:
+
+```php
+// Translates dynamically based on active user/session language:
+$title = _t('Journal Items');
+$error = _t('The field ^1 is required', 'Debit');
+```
+
+### 15.5 Fetching Frontend Translation Bundles (OWL SPA Client)
+
+The OWL client fetches the translation dictionary for the active language:
+
+```bash
+GET /api/translations/bundle?lang=en
+```
+
+Response:
+```json
+{
+    "lang": "en",
+    "count": 20,
+    "dictionary": {
+        "Detail Baris Jurnal": "Journal Items",
+        "Total Kredit": "Total Credit",
+        "Saldo": "Balance",
+        "Simpan": "Save",
+        "Batal": "Cancel"
+    }
+}
+```
+
+---
+
+## 16. Routing & Generic ORM Controller
 
 All registered models automatically gain a full JSON-RPC/REST API via `OrmController`:
 
@@ -953,7 +1179,7 @@ Route::post('/api/orm/call_button', [OrmController::class, 'callButton']);
 
 ---
 
-## 16. Building a Complete Module from Zero to Hero
+## 17. Building a Complete Module from Zero to Hero
 
 Here is the step-by-step procedure to build the **Fleet Management** module:
 
@@ -987,7 +1213,41 @@ CREATE TABLE `fleet_vehicle_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
-### Step 2: Active Record Classes
+### Step 2: Module Manifest (`app/control/fleet/advsoft.json`)
+
+```json
+{
+    "name": "Fleet Management",
+    "version": "1.0.0",
+    "category": "Operations",
+    "description": "Manage vehicles, drivers, fuel logs, and service history.",
+    "depends": ["base"],
+    "data": [
+        "i18n/id.xml",
+        "i18n/en.xml"
+    ],
+    "installable": true,
+    "auto_install": false
+}
+```
+
+### Step 3: Modular XML Translations (`app/control/fleet/i18n/en.xml`)
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<translations lang="en" module="fleet">
+    <entry name="fleet.vehicle,string" type="view">
+        <src>Kendaraan Armada</src>
+        <value>Fleet Vehicles</value>
+    </entry>
+    <entry name="fleet.vehicle,license_plate" type="field">
+        <src>Plat Nomor</src>
+        <value>License Plate</value>
+    </entry>
+</translations>
+```
+
+### Step 4: Active Record Classes
 
 ```php
 // app/model/Fleet/Vehicle.php
@@ -1013,7 +1273,7 @@ class VehicleLogService extends BaseModel {
 }
 ```
 
-### Step 3: Model Definition
+### Step 5: Model Definition
 
 ```php
 // app/control/fleet/Models/VehicleDef.php
@@ -1033,45 +1293,56 @@ class VehicleDef extends ModelDefinition
 
     protected function defineFields(): void
     {
-        $this->addField('license_plate', Field::CHAR, ['string' => 'Plate Number', 'required' => true]);
-        $this->addField('driver_id', Field::MANY2ONE, ['string' => 'Driver', 'relation' => 'res.partner']);
-        $this->addField('seats', Field::INTEGER, ['string' => 'Seats', 'default' => 5]);
-        $this->addField('odometer', Field::FLOAT, ['string' => 'Odometer (km)']);
+        $this->addField('license_plate', Field::CHAR, [
+            'string'     => 'License Plate',
+            'required'   => true,
+            'searchable' => true,
+        ]);
+        $this->addField('driver_id', Field::MANY2ONE, [
+            'string'   => 'Driver',
+            'relation' => 'res.partner',
+        ]);
+        $this->addField('odometer', Field::FLOAT, [
+            'string' => 'Odometer (km)',
+        ]);
         $this->addField('state', Field::SELECTION, [
-            'string' => 'State',
-            'selection' => [['new', 'New'], ['registered', 'Registered'], ['maintenance', 'Maintenance']],
+            'string'    => 'Status',
+            'selection' => [
+                ['new', 'New'],
+                ['registered', 'Registered'],
+                ['maintenance', 'Under Maintenance'],
+            ],
             'default' => 'new',
         ]);
-        $this->addField('active', Field::BOOLEAN, ['string' => 'Active', 'default' => true]);
     }
 
     protected function defineViews(): void
     {
         $this->listView = [
-            'fields' => ['license_plate', 'driver_id', 'seats', 'odometer', 'state'],
+            'string' => 'Vehicles',
+            'fields' => ['license_plate', 'driver_id', 'odometer', 'state'],
+            'column_config' => [
+                'odometer' => ['sum' => 'Total Odometer'],
+            ],
         ];
+
         $this->formView = [
             'title' => 'license_plate',
-            'statusbar' => 'state',
             'groups' => [
-                ['col' => 2, 'columns' => [
-                    ['license_plate', 'driver_id'],
-                    ['seats', 'odometer', 'state'],
-                ]],
+                [
+                    'col' => 2,
+                    'columns' => [
+                        ['license_plate', 'driver_id'],
+                        ['odometer', 'state'],
+                    ],
+                ],
             ],
         ];
     }
-
-    protected function defineSecurity(): void
-    {
-        $this->setAccess(['read' => true, 'write' => true, 'create' => true, 'unlink' => true]);
-    }
-
-    protected function defineBusinessLogic(): void {}
 }
 ```
 
-### Step 4: Add Navigation Menus
+### Step 6: Add Navigation Menus
 
 ```sql
 INSERT INTO menus (name, label, controller, icon, parent_id, `order`, module)
@@ -1083,7 +1354,7 @@ VALUES ('fleet_vehicles', 'Vehicles', 'fleet.vehicle', 'car', (SELECT id FROM me
 
 ---
 
-## 17. Database Migration, Seeding & DDL/DML
+## 18. Database Migration, Seeding & DDL/DML
 
 AdvSoft includes complete SQL dumps in `app/database/`:
 
@@ -1103,7 +1374,7 @@ php app/database/migrate_to_mysql.php
 
 ---
 
-## 18. Frontend Integration & Design System
+## 19. Frontend Integration & Design System
 
 AdvSoft's frontend is powered by **OWL (Odoo Web Library)** and standard vanilla CSS tokens (`adianti-design-system.css`). It operates with zero external CDN dependencies:
 
@@ -1117,7 +1388,7 @@ AdvSoft's frontend is powered by **OWL (Odoo Web Library)** and standard vanilla
 
 ---
 
-## 19. Testing & Quality Assurance
+## 20. Testing & Quality Assurance
 
 Run the automated integration test suite:
 
@@ -1150,7 +1421,7 @@ php test_api.php
 
 ---
 
-## 20. Deployment & Production Tuning
+## 21. Deployment & Production Tuning
 
 ### Production Optimization Checklist
 
@@ -1164,7 +1435,10 @@ php compile_assets.php
 # 3. Seed Security & Initial Permissions
 php seed_security.php
 
-# 4. Set Directory Permissions (Linux)
+# 4. Sync Modular XML Translations
+php -r "require 'app/bootstrap.php'; \App\Advsoft\Translation\XmlTranslationLoader::syncAllModules();"
+
+# 5. Set Directory Permissions (Linux)
 chmod -R 775 app/output storage database
 ```
 
@@ -1198,7 +1472,7 @@ server {
 
 ---
 
-## 21. Complete API & Helper Reference
+## 22. Complete API & Helper Reference
 
 ### Global Helper Functions
 
@@ -1206,6 +1480,8 @@ server {
 app(?string $abstract = null)            // Resolve service or singleton from IoC Container
 app_path(string $path = '')              // Absolute path to app/ directory
 base_path(string $path = '')             // Absolute path to project root
+config(string $key = null, $default = null) // Read dot-notation config from application.php
+_t(string $message, $p1 = null, ...)     // Dynamic multi-language translator
 view(string $template, array $data = []) // Render Blade server-side template
 response()                               // Create HTTP ResponseBuilder instance
 abort(int $status, string $message = '') // Terminate request with HTTP error code
@@ -1250,7 +1526,7 @@ $collection->toJson();                    // Encode to JSON string
 
 ---
 
-## 22. Detailed Developer Cheat Sheet
+## 23. Detailed Developer Cheat Sheet
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════╗
