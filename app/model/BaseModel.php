@@ -17,17 +17,37 @@ abstract class BaseModel extends TRecord
 {
     const PRIMARYKEY = 'id';
     const IDPOLICY   = 'serial';
+    const DATABASE   = 'advsoft';
 
     protected array $relations = [];
 
     /**
+     * Get configured database connection name for this model
+     */
+    public static function getDatabaseName(): string
+    {
+        return defined("static::DATABASE") ? static::DATABASE : 'advsoft';
+    }
+
+    /**
      * Ensure active Adianti transaction
      */
-    public static function openTransaction(): void
+    public static function openTransaction(?string $database = null): void
     {
+        $db = $database ?: static::getDatabaseName();
         if (!TTransaction::get()) {
-            TTransaction::open('advsoft');
+            TTransaction::open($db);
         }
+    }
+
+    /**
+     * Start a new query builder on a specific connection
+     */
+    public static function onConnection(string $database): QueryBuilder
+    {
+        $qb = new QueryBuilder(static::class);
+        $qb->setConnectionName($database);
+        return $qb;
     }
 
     /**
@@ -36,7 +56,9 @@ abstract class BaseModel extends TRecord
     public static function query(): QueryBuilder
     {
         self::openTransaction();
-        return new QueryBuilder(static::class);
+        $qb = new QueryBuilder(static::class);
+        $qb->setConnectionName(static::getDatabaseName());
+        return $qb;
     }
 
     /**

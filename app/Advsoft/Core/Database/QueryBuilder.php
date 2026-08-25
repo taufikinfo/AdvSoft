@@ -22,6 +22,7 @@ class QueryBuilder
     protected ?int $offset = null;
     protected array $selects = ['*'];
     protected int $paramCounter = 0;
+    protected ?string $connectionName = null;
 
     public function __construct(string $modelClass)
     {
@@ -29,10 +30,28 @@ class QueryBuilder
         $this->table = defined("{$modelClass}::TABLENAME") ? $modelClass::TABLENAME : strtolower((new \ReflectionClass($modelClass))->getShortName()) . 's';
     }
 
+    public function setConnectionName(string $connection): static
+    {
+        $this->connectionName = $connection;
+        return $this;
+    }
+
+    public function getConnectionName(): string
+    {
+        if ($this->connectionName) {
+            return $this->connectionName;
+        }
+        if (defined("{$this->modelClass}::DATABASE")) {
+            return $this->modelClass::DATABASE;
+        }
+        return 'advsoft';
+    }
+
     protected function getPdo(): \PDO
     {
+        $db = $this->getConnectionName();
         if (!TTransaction::get()) {
-            TTransaction::open('advsoft');
+            TTransaction::open($db);
         }
         return TTransaction::get();
     }

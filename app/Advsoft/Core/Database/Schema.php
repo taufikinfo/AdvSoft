@@ -11,11 +11,18 @@ class Schema
 {
     protected static ?\PDO $customPdo = null;
     protected static string $customDriver = 'sqlite';
+    protected static ?string $targetConnection = null;
 
     public static function setConnection(\PDO $pdo, string $driver = 'sqlite'): void
     {
         self::$customPdo = $pdo;
         self::$customDriver = $driver;
+    }
+
+    public static function connection(string $database): self
+    {
+        self::$targetConnection = $database;
+        return new self;
     }
 
     public static function getConnection(): array
@@ -24,8 +31,10 @@ class Schema
             return [self::$customPdo, self::$customDriver];
         }
 
+        $db = self::$targetConnection ?: 'advsoft';
+
         try {
-            TTransaction::open('advsoft');
+            TTransaction::open($db);
             $pdo = TTransaction::get();
             $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
             return [$pdo, strtolower($driver)];
