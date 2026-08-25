@@ -265,11 +265,18 @@ class OrmController extends Controller
             $query->with($eagerLoads);
         }
 
-        $records = $query->get()->map(fn($r) => $def->transformRecord($r));
+        $requestedFields = $request->input('fields', []);
+        if (is_string($requestedFields)) {
+            $requestedFields = array_filter(array_map('trim', explode(',', $requestedFields)));
+        }
+        $fieldsToTransform = !empty($requestedFields) ? $requestedFields : null;
+
+        $rawRecords = $query->get();
+        $records = $def->transformRecords($rawRecords, $fieldsToTransform);
 
         // L6: strip fields user cannot read (groups=)
         if ($modelName) {
-            $records = $records->map(fn($r) => $this->sanitizeRecord($modelName, $r));
+            $records = array_map(fn($r) => $this->sanitizeRecord($modelName, $r), $records);
         }
 
         return response()->json([

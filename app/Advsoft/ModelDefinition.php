@@ -677,10 +677,157 @@ abstract class ModelDefinition
     }
 
     /**
+     * Transform a collection / list of records with batch preloading to eliminate N+1 queries.
+     */
+    public function transformRecords(iterable $records, ?array $fieldNames = null): array
+    {
+        if (empty($records)) {
+            return [];
+        }
+
+        $recordsArray = is_array($records) ? $records : (method_exists($records, 'all') ? $records->all() : iterator_to_array($records));
+        if (empty($recordsArray)) {
+            return [];
+        }
+
+        $fields = $fieldNames
+            ? array_intersect_key($this->fields, array_flip($fieldNames))
+            : $this->fields;
+
+        $batchCache = [
+            'm2o' => [],
+            'm2m' => [],
+        ];
+
+        // 1. Batch preload Many2one relations
+        $m2oLookups = [];
+        foreach ($fields as $name => $field) {
+            if ($field->type === Field::MANY2ONE && !empty($field->relation)) {
+                $relDef = Registry::get($field->relation);
+                if ($relDef && $relDef->modelClass && class_exists($relDef->modelClass)) {
+                    $neededIds = [];
+                    foreach ($recordsArray as $record) {
+                        $val = $record->$name ?? null;
+                        if ($val && is_numeric($val)) {
+                            $neededIds[] = (int) $val;
+                        }
+                    }
+                    if (!empty($neededIds)) {
+                        $m2oLookups[$field->relation] = [
+                            'class' => $relDef->modelClass,
+                            'recName' => $relDef->_rec_name ?? 'name',
+                            'ids' => array_values(array_unique($neededIds))
+                        ];
+                    }
+                }
+            }
+        }
+
+        foreach ($m2oLookups as $relKey => $info) {
+            try {
+                $targetClass = $info['class'];
+                $objs = $targetClass::whereIn('id', $info['ids'])->get();
+                foreach ($objs as $obj) {
+                    $batchCache['m2o'][$relKey][$obj->id] = $obj;
+                }
+            } catch (\Throwable $e) {}
+        }
+
+        // 2. Batch preload Many2many pivot mappings
+        $recIds = [];
+        foreach ($recordsArray as $r) {
+            if (!empty($r->id)) $recIds[] = (int)$r->id;
+        }
+        $recIds = array_unique($recIds);
+
+        if (!empty($recIds)) {
+            foreach ($fields as $name => $field) {
+                if ($field->type === Field::MANY2MANY && !empty($field->relation)) {
+                    $relDef = Registry::get($field->relation);
+                    if ($relDef && $relDef->modelClass && class_exists($relDef->modelClass)) {
+                        $pivotTable = $field->relationTable ?: ($field->pivot ?: null);
+                        if ($pivotTable) {
+                            $defaultCol1 = !empty($this->_table) ? (preg_replace('/s$/', '', $this->_table) . '_id') : (str_replace('.', '_', $this->_name) . '_id');
+                            $col1 = $field->column1 ?: ($field->foreignKey ?: $defaultCol1);
+                            $col1 = str_replace('.', '_', $col1);
+
+                            $defaultCol2 = $relDef ? (!empty($relDef->_table) ? (preg_replace('/s$/', '', $relDef->_table) . '_id') : (str_replace('.', '_', $relDef->_name) . '_id')) : (preg_replace('/_ids?$/', '', $name) . '_id');
+                            $col2 = $field->column2 ?: ($field->relatedKey ?: $defaultCol2);
+                            $col2 = str_replace('.', '_', $col2);
+
+                            $hasTx = (bool) TTransaction::get();
+                            if (!$hasTx) TTransaction::open('advsoft');
+                            $conn = TTransaction::get();
+                            try {
+                                $inPlaceholders = implode(',', array_fill(0, count($recIds), '?'));
+                                $stmt = $conn->prepare("SELECT {$col1} as rec_id, {$col2} as target_id FROM {$pivotTable} WHERE {$col1} IN ({$inPlaceholders})");
+                                $stmt->execute($recIds);
+                                $pivots = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+                                
+                                $allTargetIds = [];
+                                $mapping = [];
+                                foreach ($pivots as $p) {
+                                    $rId = (int)$p['rec_id'];
+                                    $tId = (int)$p['target_id'];
+                                    $mapping[$rId][] = $tId;
+                                    $allTargetIds[] = $tId;
+                                }
+
+                                if (!empty($allTargetIds)) {
+                                    $targetClass = $relDef->modelClass;
+                                    $recNameField = $relDef->_rec_name ?? 'name';
+                                    $targetObjs = $targetClass::whereIn('id', array_unique($allTargetIds))->get();
+                                    $targetMap = [];
+                                    foreach ($targetObjs as $tObj) {
+                                        $targetMap[$tObj->id] = $tObj;
+                                    }
+
+                                    foreach ($recIds as $rId) {
+                                        $tIds = $mapping[$rId] ?? [];
+                                        $items = [];
+                                        foreach ($tIds as $tId) {
+                                            if (isset($targetMap[$tId])) {
+                                                $tObj = $targetMap[$tId];
+                                                $item = ['id' => $tObj->id, 'name' => $tObj->$recNameField ?? ''];
+                                                if (isset($tObj->color)) $item['color'] = $tObj->color;
+                                                $items[] = $item;
+                                            }
+                                        }
+                                        $batchCache['m2m'][$name][$rId] = $items;
+                                    }
+                                }
+                            } catch (\Throwable $e) {
+                                error_log("M2M batch preload error on {$name}: " . $e->getMessage());
+                            }
+                            if (!$hasTx) TTransaction::close();
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. Transform each record using the preloaded batch cache
+        $this->currentBatchCache = $batchCache;
+        $output = [];
+        try {
+            foreach ($recordsArray as $record) {
+                $output[] = $this->transformRecord($record, $fieldNames);
+            }
+        } finally {
+            $this->currentBatchCache = [];
+        }
+
+        return $output;
+    }
+
+    protected array $currentBatchCache = [];
+
+    /**
      * Transform a single Eloquent record to AdvSoft-style read format.
      */
     public function transformRecord(object $record, ?array $fieldNames = null): array
     {
+        $batchCache = $this->currentBatchCache;
         $result = ['id' => $record->id];
         $fields = $fieldNames
             ? array_intersect_key($this->fields, array_flip($fieldNames))
@@ -703,23 +850,40 @@ abstract class ModelDefinition
                         $result[$name] = [$rel->id, $recName];
                         if (isset($rel->color)) $result[$name . '_color'] = $rel->color;
                     } elseif ($record->$name) {
-                        $relDef = Registry::get($field->relation);
-                        $recNameField = $relDef?->_rec_name ?? 'name';
-                        $relModelClass = $relDef?->modelClass;
+                        $valId = (int)$record->$name;
                         $recName = '';
-                        if ($relModelClass && class_exists($relModelClass)) {
-                            $targetObj = $relModelClass::find($record->$name);
-                            if ($targetObj) {
-                                $recName = $targetObj->$recNameField ?? '';
+                        $color = null;
+                        if (isset($batchCache['m2o'][$field->relation][$valId])) {
+                            $targetObj = $batchCache['m2o'][$field->relation][$valId];
+                            $relDef = Registry::get($field->relation);
+                            $recNameField = $relDef?->_rec_name ?? 'name';
+                            $recName = $targetObj->$recNameField ?? '';
+                            if (isset($targetObj->color)) $color = $targetObj->color;
+                        } else {
+                            $relDef = Registry::get($field->relation);
+                            $recNameField = $relDef?->_rec_name ?? 'name';
+                            $relModelClass = $relDef?->modelClass;
+                            if ($relModelClass && class_exists($relModelClass)) {
+                                $targetObj = $relModelClass::find($valId);
+                                if ($targetObj) {
+                                    $recName = $targetObj->$recNameField ?? '';
+                                    if (isset($targetObj->color)) $color = $targetObj->color;
+                                }
                             }
                         }
-                        $result[$name] = [(int)$record->$name, $recName];
+                        $result[$name] = [$valId, $recName];
+                        if ($color !== null) $result[$name . '_color'] = $color;
                     } else {
                         $result[$name] = false;
                     }
                     break;
 
                 case Field::MANY2MANY:
+                    if (isset($batchCache['m2m'][$name][$record->id])) {
+                        $result[$name] = $batchCache['m2m'][$name][$record->id];
+                        break;
+                    }
+
                     $baseName = preg_replace('/_ids?$/', '', $name);
                     $o1 = \App\Advsoft\Core\Support\Str::camel($baseName . 's');
                     $o2 = \App\Advsoft\Core\Support\Str::camel($baseName);

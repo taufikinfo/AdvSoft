@@ -323,11 +323,22 @@ class QueryBuilder
         foreach ($this->withs as $with) {
             $parts = explode(':', $with, 2);
             $relName = $parts[0];
+            $loadedCache = [];
+
             foreach ($records as $record) {
+                $fkVal = $record->{$relName . '_id'} ?? null;
+                if ($fkVal && isset($loadedCache[$fkVal])) {
+                    $record->setRelation($relName, $loadedCache[$fkVal]);
+                    continue;
+                }
+
                 if (method_exists($record, $relName)) {
                     $relVal = $record->$relName();
                     if ($relVal instanceof QueryBuilder) {
                         $relVal = $relVal->get();
+                    }
+                    if ($fkVal) {
+                        $loadedCache[$fkVal] = $relVal;
                     }
                     $record->setRelation($relName, $relVal);
                 } elseif (method_exists($record, 'get_' . $relName)) {
@@ -335,6 +346,9 @@ class QueryBuilder
                     $relVal = $record->$m();
                     if ($relVal instanceof QueryBuilder) {
                         $relVal = $relVal->get();
+                    }
+                    if ($fkVal) {
+                        $loadedCache[$fkVal] = $relVal;
                     }
                     $record->setRelation($relName, $relVal);
                 }
