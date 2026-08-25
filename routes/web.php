@@ -16,13 +16,118 @@ use App\Control\Controllers\CustomPageController;
 use App\Control\Controllers\HtmlFieldController;
 use App\Control\Controllers\QWebController;
 
+// Helper function to dispatch standard/legacy Adianti controllers
+function handleAdiantiClassRoute(Request $request, string $class, ?string $method = null): mixed
+{
+    $cleanClass = str_replace(['/', '.'], ['\\', ''], $class);
+
+    // Resolve class with fallback namespaces
+    $resolvedClass = null;
+    $candidates = [
+        $cleanClass,
+        "App\\Control\\{$cleanClass}",
+        "App\\Control\\Controllers\\{$cleanClass}",
+        "Addons\\Base\\Models\\{$cleanClass}",
+    ];
+
+    foreach ($candidates as $candidate) {
+        if (class_exists($candidate)) {
+            $resolvedClass = $candidate;
+            break;
+        }
+    }
+
+    if (!$resolvedClass) {
+        return new \App\Advsoft\Core\Http\Response(
+            "Adianti controller or page class '{$class}' not found.",
+            404,
+            ['Content-Type' => 'text/plain; charset=utf-8']
+        );
+    }
+
+    // If it is an AdvSoft REST controller (instance of Controller)
+    if (is_subclass_of($resolvedClass, \App\Control\Controllers\Controller::class)) {
+        $methodName = $method ?: ($request->input('method') ?: 'index');
+        $instance = new $resolvedClass();
+        if (method_exists($instance, $methodName)) {
+            return $instance->$methodName($request);
+        }
+    }
+
+    // Set standard Adianti execution parameters
+    $_GET['class'] = $resolvedClass;
+    $_REQUEST['class'] = $resolvedClass;
+
+    $methodName = $method ?: $request->input('method');
+    if ($methodName) {
+        $_GET['method'] = $methodName;
+        $_REQUEST['method'] = $methodName;
+    }
+
+    if ($request->input('static')) {
+        $_GET['static'] = '1';
+        $_REQUEST['static'] = '1';
+    }
+
+    $hasTx = (bool) \Adianti\Database\TTransaction::get();
+    if (!$hasTx) {
+        try {
+            \Adianti\Database\TTransaction::open('advsoft');
+        } catch (\Throwable $e) {}
+    }
+
+    try {
+        ob_start();
+        \Adianti\Core\AdiantiCoreApplication::run();
+        $output = ob_get_clean();
+
+        if (\Adianti\Database\TTransaction::get()) {
+            \Adianti\Database\TTransaction::close();
+        }
+
+        return new \App\Advsoft\Core\Http\Response(
+            $output,
+            200,
+            ['Content-Type' => 'text/html; charset=utf-8']
+        );
+    } catch (\Throwable $e) {
+        if (\Adianti\Database\TTransaction::get()) {
+            \Adianti\Database\TTransaction::rollback();
+        }
+        throw $e;
+    }
+}
+
+// Fallback Dynamic Class Loader for Standard Adianti Controllers
+Route::any('/page/{class}/{method}', function (Request $request, string $class, string $method) {
+    return handleAdiantiClassRoute($request, $class, $method);
+});
+
+Route::any('/page/{class}', function (Request $request, string $class) {
+    return handleAdiantiClassRoute($request, $class);
+});
+
+Route::any('/adianti/{class}/{method}', function (Request $request, string $class, string $method) {
+    return handleAdiantiClassRoute($request, $class, $method);
+});
+
+Route::any('/adianti/{class}', function (Request $request, string $class) {
+    return handleAdiantiClassRoute($request, $class);
+});
+
+Route::any('/app/{class}/{method}', function (Request $request, string $class, string $method) {
+    return handleAdiantiClassRoute($request, $class, $method);
+});
+
+Route::any('/app/{class}', function (Request $request, string $class) {
+    return handleAdiantiClassRoute($request, $class);
+});
+
 // Main SPA & Standard Adianti Controller entry point
 Route::any('/engine.php', function (Request $request) {
     $class = $request->input('class');
     if ($class) {
-        ob_start();
-        \Adianti\Core\AdiantiCoreApplication::run();
-        return ob_get_clean();
+        return handleAdiantiClassRoute($request, $class, $request->input('method'));
     }
     return response()->json(['status' => 'ok']);
 });
@@ -31,9 +136,7 @@ Route::any('/index.php', function (Request $request) {
     $class = $request->input('class');
     if ($class) {
         if ($request->ajax() || $request->input('static') || $request->isMethod('POST')) {
-            ob_start();
-            \Adianti\Core\AdiantiCoreApplication::run();
-            return ob_get_clean();
+            return handleAdiantiClassRoute($request, $class, $request->input('method'));
         }
         $query = http_build_query($_GET);
         header("Location: /#{$query}");
@@ -41,8 +144,7 @@ Route::any('/index.php', function (Request $request) {
     }
     $user = app(\App\Advsoft\Security\SecurityContext::class)->getUser();
     if (!$user) {
-        header('Location: /login');
-        exit;
+        return view('landing');
     }
     return view('welcome');
 });

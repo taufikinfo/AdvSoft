@@ -173,4 +173,20 @@ $app->singleton(SecurityService::class, function ($c) {
 // 5. Boot Odoo Registry
 Registry::boot();
 
+// 6. Setup Clean RESTful URL Router for Adianti Core
+\Adianti\Core\AdiantiCoreApplication::setRouter(function (string $url, bool $isAction = true) {
+    parse_str($url, $params);
+    $class = $params['class'] ?? null;
+    $method = $params['method'] ?? null;
+    unset($params['class'], $params['method']);
+
+    if ($class) {
+        $path = "/page/{$class}" . ($method ? "/{$method}" : "");
+        $queryString = http_build_query($params);
+        return $queryString ? "{$path}?{$queryString}" : $path;
+    }
+
+    return 'engine.php?' . $url;
+});
+
 return $app;
