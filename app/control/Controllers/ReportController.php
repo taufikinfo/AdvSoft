@@ -55,7 +55,14 @@ class ReportController extends Controller
             $titlePrefix = $reportConfig->name;
         } else {
             $model = $report_id;
-            $viewName = 'reports.' . str_replace('.', '_', $model);
+            $reportDef = Registry::get('ir.actions.report');
+            $reportConfig = $reportDef ? $reportDef->newQuery()->where('model', $model)->first() : null;
+            if ($reportConfig && !empty($reportConfig->report_name)) {
+                $viewName = $reportConfig->report_name;
+                $titlePrefix = $reportConfig->name;
+            } else {
+                $viewName = $model . '.report_document';
+            }
         }
 
         $def = Registry::get($model);
@@ -96,7 +103,7 @@ class ReportController extends Controller
             $fields = $def->fieldsGet();
             $fieldList = array_map(fn($name, $fdef) => array_merge($fdef, ['name' => $name]), array_keys($fields), $fields);
 
-            $html = $qweb->render($viewName, [
+            $payload = [
                 'docs' => $records,
                 'doc_ids' => $records->pluck('id')->toArray(),
                 'doc_model' => $model,
@@ -109,7 +116,14 @@ class ReportController extends Controller
                 'company' => $company,
                 'user' => app(SecurityContext::class)->getUser(),
                 'time' => time(),
-            ]);
+            ];
+
+            try {
+                $html = $qweb->render($viewName, $payload);
+            } catch (\InvalidArgumentException $e) {
+                // If model-specific template not found, fall back to web.generic_report
+                $html = $qweb->render('web.generic_report', $payload);
+            }
         } catch (\Throwable $e) {
             $html = "<html><head><title>{$title}</title></head><body><h1>{$title}</h1><p>" . count($records) . " records</p></body></html>";
         }

@@ -40,7 +40,7 @@ class QWebController extends Controller
     {
         TTransaction::open('advsoft');
         $conn = TTransaction::get();
-        $stmt = $conn->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND (id = :id OR name = :name OR key = :key) LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND (id = :id OR name = :name OR `key` = :key) LIMIT 1");
         $stmt->execute([':id' => $id, ':name' => $id, ':key' => $id]);
         $template = $stmt->fetch(\PDO::FETCH_ASSOC);
 

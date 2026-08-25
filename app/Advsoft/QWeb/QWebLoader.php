@@ -33,7 +33,7 @@ class QWebLoader
             $opened = true;
         }
         $pdo = TTransaction::get();
-        $stmt = $pdo->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND active = 1 AND (key = :k OR name = :n) ORDER BY priority ASC LIMIT 1");
+        $stmt = $pdo->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND active = 1 AND (`key` = :k OR name = :n) ORDER BY priority ASC LIMIT 1");
         $stmt->execute([':k' => $templateName, ':n' => $templateName]);
         $record = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -131,7 +131,7 @@ class QWebLoader
         }
 
         $pdo = $this->getPdo();
-        $stmt = $pdo->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND (key = :k OR name = :n) LIMIT 1");
+        $stmt = $pdo->prepare("SELECT * FROM ir_ui_views WHERE type = 'qweb' AND (`key` = :k OR name = :n) LIMIT 1");
         $stmt->execute([':k' => $parentName, ':n' => $parentName]);
         $parent = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -163,7 +163,7 @@ class QWebLoader
 
         $now = date('Y-m-d H:i:s');
         if ($existing) {
-            $stmtU = $pdo->prepare("UPDATE ir_ui_views SET arch = :arch, key = :key, priority = :priority, inherit_id = :inherit_id, primary = :primary, updated_at = :updated_at WHERE id = :id");
+            $stmtU = $pdo->prepare("UPDATE ir_ui_views SET arch = :arch, `key` = :key, priority = :priority, inherit_id = :inherit_id, `primary` = :primary, updated_at = :updated_at WHERE id = :id");
             $stmtU->execute([
                 ':id'         => $existing['id'],
                 ':arch'       => $xml,
@@ -176,7 +176,7 @@ class QWebLoader
             return (int)$existing['id'];
         }
 
-        $stmtI = $pdo->prepare("INSERT INTO ir_ui_views (name, model, type, arch, key, priority, inherit_id, primary, active, created_at, updated_at) VALUES (:name, '', 'qweb', :arch, :key, :priority, :inherit_id, :primary, 1, :created_at, :updated_at)");
+        $stmtI = $pdo->prepare("INSERT INTO ir_ui_views (name, model, type, arch, `key`, priority, inherit_id, `primary`, active, created_at, updated_at) VALUES (:name, '', 'qweb', :arch, :key, :priority, :inherit_id, :primary, 1, :created_at, :updated_at)");
         $stmtI->execute([
             ':name'       => $name,
             ':arch'       => $xml,
