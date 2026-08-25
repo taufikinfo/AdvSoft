@@ -624,16 +624,18 @@ class FormView extends Component {
             const widget = target.closest('.ls-m2m-checkboxes-widget');
             if (widget) {
                 const fieldName = widget.getAttribute('data-field');
-                let current = this.state.record[fieldName] || [];
+                let current = this.state.record[fieldName] ? [...this.state.record[fieldName]] : [];
                 if (target.checked) {
                     const opts = this.state.relOptions[fieldName] || [];
                     const opt = opts.find(t => t.id === tagId);
-                    if (opt) current.push(opt);
+                    const exists = current.some(t => (typeof t === 'object' && t !== null ? t.id : t) === tagId);
+                    if (!exists) {
+                        current.push(opt || { id: tagId });
+                    }
                 } else {
-                    current = current.filter(t => t.id !== tagId);
+                    current = current.filter(t => (typeof t === 'object' && t !== null ? t.id : t) !== tagId);
                 }
-                this.state.record[fieldName] = current;
-                this.state.dirty = true;
+                this.updateField(fieldName, current);
             }
         }
     }
@@ -1013,6 +1015,18 @@ class FormView extends Component {
                         if (effectiveDef.type === 'many2many' && tabDef.add_from_list === undefined) {
                             tabDef.add_from_list = true;
                         }
+                        if (!tabDef.tree_fields || !tabDef.tree_fields.length) {
+                            tabDef.tree_fields = ['name'];
+                        }
+                        if (!tabDef.child_field_defs) {
+                            tabDef.child_field_defs = {
+                                name: { type: 'char', string: 'Name' },
+                                color: { type: 'char', string: 'Color', widget: 'color' }
+                            };
+                        }
+                        if (!tabDef.child_model && tabDef.relation) {
+                            tabDef.child_model = tabDef.relation;
+                        }
                         component = window.InlineTreeWidget; // Pass constructor directly for OWL t-component
                         props = {
                             tabDef: tabDef,
@@ -1134,6 +1148,18 @@ class FormView extends Component {
                         const tabDef = { ...effectiveDef, field: fname };
                         if (effectiveDef.type === 'many2many' && tabDef.add_from_list === undefined) {
                             tabDef.add_from_list = true;
+                        }
+                        if (!tabDef.tree_fields || !tabDef.tree_fields.length) {
+                            tabDef.tree_fields = ['name'];
+                        }
+                        if (!tabDef.child_field_defs) {
+                            tabDef.child_field_defs = {
+                                name: { type: 'char', string: 'Name' },
+                                color: { type: 'char', string: 'Color', widget: 'color' }
+                            };
+                        }
+                        if (!tabDef.child_model && tabDef.relation) {
+                            tabDef.child_model = tabDef.relation;
                         }
                         component = window.InlineTreeWidget; // Pass constructor directly for OWL t-component
                         props = {
@@ -1465,10 +1491,10 @@ class FormView extends Component {
         try {
             if (tab.type === 'many2many') {
                 // Just remove from local state
-                this.state.record[tab.field] = (this.state.record[tab.field] || []).filter(
-                    l => l.id !== numId && l.id !== lineId && l.__temp_id !== lineId
+                const current = (this.state.record[tab.field] || []).filter(
+                    l => (typeof l === 'object' && l !== null ? l.id : l) !== numId && (typeof l === 'object' && l !== null ? l.id : l) !== lineId && l.__temp_id !== lineId
                 );
-                this.state.dirty = true;
+                this.updateField(tab.field, current);
                 return;
             }
             await RPC.deleteChild(childModel, numId);
@@ -1483,14 +1509,14 @@ class FormView extends Component {
     linkO2mRecords(tab, records) {
         if (!this.state.record[tab.field]) this.state.record[tab.field] = [];
         const current = this.state.record[tab.field];
-        const existingIds = new Set(current.map(l => l.id));
+        const existingIds = new Set(current.map(l => (typeof l === 'object' && l !== null ? l.id : l)));
         for (const r of records) {
-            if (!existingIds.has(r.id)) {
+            const rId = typeof r === 'object' && r !== null ? r.id : r;
+            if (!existingIds.has(rId)) {
                 current.push(r);
             }
         }
-        this.state.record[tab.field] = [...current];
-        this.state.dirty = true;
+        this.updateField(tab.field, [...current]);
     }
 
     // Legacy addTimesheet/updateTimesheet/deleteTimesheet removed — InlineTreeWidget handles its own CRUD.

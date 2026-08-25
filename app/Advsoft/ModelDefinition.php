@@ -728,12 +728,13 @@ abstract class ModelDefinition
                     $relDef = Registry::get($field->relation);
                     $recNameField = $relDef?->_rec_name ?? 'name';
 
-                    if ($record->relationLoaded($relName)) {
+                    if (method_exists($record, 'relationLoaded') && $record->relationLoaded($relName)) {
                         $result[$name] = $record->getRelation($relName)->map(function ($r) use ($recNameField) {
                             $item = ['id' => $r->id, 'name' => $r->$recNameField ?? ''];
                             if (isset($r->color)) $item['color'] = $r->color;
                             return $item;
                         })->values()->toArray();
+                    } elseif (!empty($record->id) && $relDef) {
                         // Load directly from pivot table
                         $pivotTable = $field->relationTable ?: ($field->pivot ?: null);
                         $defaultCol1 = !empty($this->_table) ? (preg_replace('/s$/', '', $this->_table) . '_id') : (str_replace('.', '_', $this->_name) . '_id');
@@ -763,7 +764,8 @@ abstract class ModelDefinition
                                     }
                                 }
                             } catch (\Throwable $e) {
-                                // ignore
+                                // Log or output error for diagnostics
+                                error_log("M2M transform error on {$name}: " . $e->getMessage());
                             }
                             if (!$hasTx) TTransaction::close();
                         }

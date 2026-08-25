@@ -387,7 +387,7 @@ window.Many2manyTagsWidget = Many2manyTagsWidget;
 W.many2many_tags = (f) => '<div class="ls-m2m-widget" data-field="' + f.name + '">Many2many Tags Component</div>';
 
 W.many2many_checkboxes = (f) => {
-    const selected = (f._val || []).map(t => t.id);
+    const selected = (f._val || []).map(t => typeof t === 'object' && t !== null ? t.id : t);
     const all = f._relOptions || [];
     let html = '<div class="ls-m2m-checkboxes-widget" data-field="' + f.name + '">';
     all.forEach(o => {

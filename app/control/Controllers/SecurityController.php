@@ -304,6 +304,8 @@ class SecurityController extends Controller
             }
         }
 
+        TTransaction::close();
+
         return new JsonResponse([
             'group' => ['id' => $group->id, 'name' => $group->name],
             'users' => $users,

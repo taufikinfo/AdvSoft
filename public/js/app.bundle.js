@@ -1,6 +1,6 @@
 /**
  * AdvSoft Compiled Production Bundle
- * Generated: 2026-08-24 08:35:31
+ * Generated: 2026-08-24 09:59:26
  */
 
 /* --- [FILE: js/core/owl-dialog-system.js] --- */
@@ -4420,7 +4420,7 @@ window.Many2manyTagsWidget = Many2manyTagsWidget;
 W.many2many_tags = (f) => '<div class="ls-m2m-widget" data-field="' + f.name + '">Many2many Tags Component</div>';
 
 W.many2many_checkboxes = (f) => {
-    const selected = (f._val || []).map(t => t.id);
+    const selected = (f._val || []).map(t => typeof t === 'object' && t !== null ? t.id : t);
     const all = f._relOptions || [];
     let html = '<div class="ls-m2m-checkboxes-widget" data-field="' + f.name + '">';
     all.forEach(o => {
@@ -8326,7 +8326,13 @@ function resolveColumns(tabDef, parentRecord) {
     const optionalHide = new Set(tabDef.optional_hide || []);
     const userHidden = loadUserHidden(tabDef.field);
     const treeAttrs = tabDef.tree_field_attrs || {};
-    const order = loadUserOrder(tabDef.field, tabDef.tree_fields || []);
+    let order = loadUserOrder(tabDef.field, tabDef.tree_fields || []);
+    if ((!order || !order.length) && Object.keys(defs).length) {
+        order = Object.keys(defs).filter(k => !k.startsWith('_') && k !== 'id');
+    }
+    if ((!order || !order.length) && (!Object.keys(defs).length)) {
+        order = ['name'];
+    }
     const userWidths = loadUserWidths(tabDef.field);
 
     const columns = [];
@@ -8334,8 +8340,7 @@ function resolveColumns(tabDef, parentRecord) {
         if (staticHidden.has(fname)) continue;
         if (optionalHide.has(fname) && userHidden.has(fname)) continue;
 
-        const fdef = defs[fname];
-        if (!fdef) continue;
+        const fdef = defs[fname] || { string: humanize(fname), type: 'char' };
 
         const cc = config[fname] || {};
         const fa = treeAttrs[fname] || {};
@@ -9745,7 +9750,7 @@ class InlineTreeWidget extends Component {
             <button class="ls-it-add-line" t-if="canCreate" t-on-click="addLine">
                 <span class="ls-it-add-icon">+</span> Add a line
             </button>
-            <button class="ls-it-add-line" t-if="props.tabDef.add_from_list" t-on-click="openAddFromList">
+            <button class="ls-it-add-line" t-if="props.tabDef.add_from_list &amp;&amp; !isMany2Many" t-on-click="openAddFromList">
                 <span class="ls-it-add-icon">⊕</span> Add from list
             </button>
         </div>
@@ -9922,6 +9927,10 @@ class InlineTreeWidget extends Component {
 
     get hasSequence() {
         return !!this._tab.sequence_field;
+    }
+
+    get isMany2Many() {
+        return this._tab.type === 'many2many' || this._tab.widget === 'many2many' || (!this._tab.child_model && this._tab.relation && !this._tab.inverse_field);
     }
 
     get canCreate() {
@@ -10252,6 +10261,11 @@ class InlineTreeWidget extends Component {
     }
 
     async addLine() {
+        if (this.isMany2Many) {
+            this.openAddFromList();
+            return;
+        }
+
         if (!this.props.onLineAdd) return;
 
         if (!this._tab.editable && window.FormViewDialog) {
@@ -12772,16 +12786,18 @@ class FormView extends Component {
             const widget = target.closest('.ls-m2m-checkboxes-widget');
             if (widget) {
                 const fieldName = widget.getAttribute('data-field');
-                let current = this.state.record[fieldName] || [];
+                let current = this.state.record[fieldName] ? [...this.state.record[fieldName]] : [];
                 if (target.checked) {
                     const opts = this.state.relOptions[fieldName] || [];
                     const opt = opts.find(t => t.id === tagId);
-                    if (opt) current.push(opt);
+                    const exists = current.some(t => (typeof t === 'object' && t !== null ? t.id : t) === tagId);
+                    if (!exists) {
+                        current.push(opt || { id: tagId });
+                    }
                 } else {
-                    current = current.filter(t => t.id !== tagId);
+                    current = current.filter(t => (typeof t === 'object' && t !== null ? t.id : t) !== tagId);
                 }
-                this.state.record[fieldName] = current;
-                this.state.dirty = true;
+                this.updateField(fieldName, current);
             }
         }
     }
@@ -13161,6 +13177,18 @@ class FormView extends Component {
                         if (effectiveDef.type === 'many2many' && tabDef.add_from_list === undefined) {
                             tabDef.add_from_list = true;
                         }
+                        if (!tabDef.tree_fields || !tabDef.tree_fields.length) {
+                            tabDef.tree_fields = ['name'];
+                        }
+                        if (!tabDef.child_field_defs) {
+                            tabDef.child_field_defs = {
+                                name: { type: 'char', string: 'Name' },
+                                color: { type: 'char', string: 'Color', widget: 'color' }
+                            };
+                        }
+                        if (!tabDef.child_model && tabDef.relation) {
+                            tabDef.child_model = tabDef.relation;
+                        }
                         component = window.InlineTreeWidget; // Pass constructor directly for OWL t-component
                         props = {
                             tabDef: tabDef,
@@ -13282,6 +13310,18 @@ class FormView extends Component {
                         const tabDef = { ...effectiveDef, field: fname };
                         if (effectiveDef.type === 'many2many' && tabDef.add_from_list === undefined) {
                             tabDef.add_from_list = true;
+                        }
+                        if (!tabDef.tree_fields || !tabDef.tree_fields.length) {
+                            tabDef.tree_fields = ['name'];
+                        }
+                        if (!tabDef.child_field_defs) {
+                            tabDef.child_field_defs = {
+                                name: { type: 'char', string: 'Name' },
+                                color: { type: 'char', string: 'Color', widget: 'color' }
+                            };
+                        }
+                        if (!tabDef.child_model && tabDef.relation) {
+                            tabDef.child_model = tabDef.relation;
                         }
                         component = window.InlineTreeWidget; // Pass constructor directly for OWL t-component
                         props = {
@@ -13613,10 +13653,10 @@ class FormView extends Component {
         try {
             if (tab.type === 'many2many') {
                 // Just remove from local state
-                this.state.record[tab.field] = (this.state.record[tab.field] || []).filter(
-                    l => l.id !== numId && l.id !== lineId && l.__temp_id !== lineId
+                const current = (this.state.record[tab.field] || []).filter(
+                    l => (typeof l === 'object' && l !== null ? l.id : l) !== numId && (typeof l === 'object' && l !== null ? l.id : l) !== lineId && l.__temp_id !== lineId
                 );
-                this.state.dirty = true;
+                this.updateField(tab.field, current);
                 return;
             }
             await RPC.deleteChild(childModel, numId);
@@ -13631,14 +13671,14 @@ class FormView extends Component {
     linkO2mRecords(tab, records) {
         if (!this.state.record[tab.field]) this.state.record[tab.field] = [];
         const current = this.state.record[tab.field];
-        const existingIds = new Set(current.map(l => l.id));
+        const existingIds = new Set(current.map(l => (typeof l === 'object' && l !== null ? l.id : l)));
         for (const r of records) {
-            if (!existingIds.has(r.id)) {
+            const rId = typeof r === 'object' && r !== null ? r.id : r;
+            if (!existingIds.has(rId)) {
                 current.push(r);
             }
         }
-        this.state.record[tab.field] = [...current];
-        this.state.dirty = true;
+        this.updateField(tab.field, [...current]);
     }
 
     // Legacy addTimesheet/updateTimesheet/deleteTimesheet removed — InlineTreeWidget handles its own CRUD.
@@ -29273,7 +29313,7 @@ window.TEMPLATES.groupsView = xml`
                     <tr>
                         <td><strong t-esc="r.name"/></td>
                         <td>
-                            <t t-if="r.category_id" t-esc="r.category_id[1]"/>
+                            <t t-if="r.category_id" t-esc="Array.isArray(r.category_id) ? r.category_id[1] : (r.category_id.name || r.category_id)"/>
                             <t t-else="" t-esc="'—'"/>
                         </td>
                         <td t-esc="r.description || ''"/>
@@ -29297,7 +29337,7 @@ window.TEMPLATES.groupsView = xml`
                 <button type="button" class="ls-btn" t-on-click="backToList">
                     <t t-out="window.lucideIcon('arrow-left', 14)"/> Back
                 </button>
-                <h2 t-esc="state.current.id ? 'Edit Group' : 'New Group'"/>
+                <h2 t-esc="state.current &amp;&amp; state.current.id ? 'Edit Group' : 'New Group'"/>
                 <div style="flex:1"></div>
                 <button type="submit" class="ls-btn ls-btn-primary" t-att-disabled="state.saving">Save</button>
             </div>
@@ -29340,7 +29380,7 @@ window.TEMPLATES.groupsView = xml`
                         <t t-if="!state.current.id || g.id !== state.current.id">
                             <label class="ls-checkbox-item">
                                 <input type="checkbox"
-                                       t-att-checked="state.current.implied_ids.includes(g.id) ? 'checked' : null"
+                                       t-att-checked="state.current.implied_ids &amp;&amp; state.current.implied_ids.includes(g.id) ? 'checked' : null"
                                        t-on-change="() => this.toggleImplied(g.id)"/>
                                 <span t-esc="g.name"/>
                             </label>
@@ -29349,12 +29389,12 @@ window.TEMPLATES.groupsView = xml`
                 </div>
             </div>
 
-            <div t-if="state.current.id &amp;&amp; state.groupUsers" class="ls-group-users">
-                <h3>Members (<t t-esc="state.groupUsers.users.length"/>)</h3>
+            <div t-if="state.current &amp;&amp; state.current.id &amp;&amp; state.groupUsers &amp;&amp; state.groupUsers.users" class="ls-group-users">
+                <h3>Members (<t t-esc="(state.groupUsers.users || []).length"/>)</h3>
                 <div class="ls-member-grid">
-                    <t t-foreach="state.groupUsers.users" t-as="u" t-key="u.id">
+                    <t t-foreach="state.groupUsers.users || []" t-as="u" t-key="u.id">
                         <div class="ls-member-chip">
-                            <span class="ls-avatar-mini" t-esc="(u.name || u.login).charAt(0).toUpperCase()"/>
+                            <span class="ls-avatar-mini" t-esc="(u.name || u.login || '?').charAt(0).toUpperCase()"/>
                             <div>
                                 <div t-esc="u.name || u.login"/>
                                 <div class="ls-member-meta">
@@ -29365,7 +29405,7 @@ window.TEMPLATES.groupsView = xml`
                         </div>
                     </t>
                 </div>
-                <p t-if="state.groupUsers.users.length === 0" class="ls-empty-inline">No members yet.</p>
+                <p t-if="(state.groupUsers.users || []).length === 0" class="ls-empty-inline">No members yet.</p>
             </div>
         </form>
     </div>
@@ -31915,7 +31955,16 @@ window.RecordRules = RecordRules;
 // ═══════════════════════════════════════════════════════════════
 class GroupsView extends Component {
     static template = window.TEMPLATES.groupsView;
-    static props = {};
+    _emptyForm() {
+        return {
+            id: null,
+            name: '',
+            description: '',
+            category_id: false,
+            share: false,
+            implied_ids: [],
+        };
+    }
 
     setup() {
         this.state = useState({
@@ -31923,7 +31972,7 @@ class GroupsView extends Component {
             records: [],
             loading: true,
             search: '',
-            current: null,
+            current: this._emptyForm(),
             categories: [],
             groups: [],
             error: '',
@@ -31960,13 +32009,7 @@ class GroupsView extends Component {
     }
 
     newRecord() {
-        this.state.current = {
-            name: '',
-            description: '',
-            category_id: false,
-            share: false,
-            implied_ids: [],
-        };
+        this.state.current = this._emptyForm();
         this.state.mode = 'form';
         this.state.error = '';
         this.state.groupUsers = null;
@@ -31989,13 +32032,13 @@ class GroupsView extends Component {
     async loadGroupUsers(gid) {
         try {
             const res = await RPC.get('/api/security/groups/' + gid + '/users');
-            this.state.groupUsers = res;
-        } catch { this.state.groupUsers = null; }
+            this.state.groupUsers = res && typeof res === 'object' ? res : { users: [] };
+        } catch { this.state.groupUsers = { users: [] }; }
     }
 
     backToList() {
         this.state.mode = 'list';
-        this.state.current = null;
+        this.state.current = this._emptyForm();
         this.state.groupUsers = null;
     }
 

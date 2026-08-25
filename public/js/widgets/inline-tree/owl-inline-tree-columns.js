@@ -61,7 +61,13 @@ function resolveColumns(tabDef, parentRecord) {
     const optionalHide = new Set(tabDef.optional_hide || []);
     const userHidden = loadUserHidden(tabDef.field);
     const treeAttrs = tabDef.tree_field_attrs || {};
-    const order = loadUserOrder(tabDef.field, tabDef.tree_fields || []);
+    let order = loadUserOrder(tabDef.field, tabDef.tree_fields || []);
+    if ((!order || !order.length) && Object.keys(defs).length) {
+        order = Object.keys(defs).filter(k => !k.startsWith('_') && k !== 'id');
+    }
+    if ((!order || !order.length) && (!Object.keys(defs).length)) {
+        order = ['name'];
+    }
     const userWidths = loadUserWidths(tabDef.field);
 
     const columns = [];
@@ -69,8 +75,7 @@ function resolveColumns(tabDef, parentRecord) {
         if (staticHidden.has(fname)) continue;
         if (optionalHide.has(fname) && userHidden.has(fname)) continue;
 
-        const fdef = defs[fname];
-        if (!fdef) continue;
+        const fdef = defs[fname] || { string: humanize(fname), type: 'char' };
 
         const cc = config[fname] || {};
         const fa = treeAttrs[fname] || {};

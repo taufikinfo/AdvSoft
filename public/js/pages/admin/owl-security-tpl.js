@@ -340,7 +340,7 @@ window.TEMPLATES.groupsView = xml`
                     <tr>
                         <td><strong t-esc="r.name"/></td>
                         <td>
-                            <t t-if="r.category_id" t-esc="r.category_id[1]"/>
+                            <t t-if="r.category_id" t-esc="Array.isArray(r.category_id) ? r.category_id[1] : (r.category_id.name || r.category_id)"/>
                             <t t-else="" t-esc="'—'"/>
                         </td>
                         <td t-esc="r.description || ''"/>
@@ -364,7 +364,7 @@ window.TEMPLATES.groupsView = xml`
                 <button type="button" class="ls-btn" t-on-click="backToList">
                     <t t-out="window.lucideIcon('arrow-left', 14)"/> Back
                 </button>
-                <h2 t-esc="state.current.id ? 'Edit Group' : 'New Group'"/>
+                <h2 t-esc="state.current &amp;&amp; state.current.id ? 'Edit Group' : 'New Group'"/>
                 <div style="flex:1"></div>
                 <button type="submit" class="ls-btn ls-btn-primary" t-att-disabled="state.saving">Save</button>
             </div>
@@ -407,7 +407,7 @@ window.TEMPLATES.groupsView = xml`
                         <t t-if="!state.current.id || g.id !== state.current.id">
                             <label class="ls-checkbox-item">
                                 <input type="checkbox"
-                                       t-att-checked="state.current.implied_ids.includes(g.id) ? 'checked' : null"
+                                       t-att-checked="state.current.implied_ids &amp;&amp; state.current.implied_ids.includes(g.id) ? 'checked' : null"
                                        t-on-change="() => this.toggleImplied(g.id)"/>
                                 <span t-esc="g.name"/>
                             </label>
@@ -416,12 +416,12 @@ window.TEMPLATES.groupsView = xml`
                 </div>
             </div>
 
-            <div t-if="state.current.id &amp;&amp; state.groupUsers" class="ls-group-users">
-                <h3>Members (<t t-esc="state.groupUsers.users.length"/>)</h3>
+            <div t-if="state.current &amp;&amp; state.current.id &amp;&amp; state.groupUsers &amp;&amp; state.groupUsers.users" class="ls-group-users">
+                <h3>Members (<t t-esc="(state.groupUsers.users || []).length"/>)</h3>
                 <div class="ls-member-grid">
-                    <t t-foreach="state.groupUsers.users" t-as="u" t-key="u.id">
+                    <t t-foreach="state.groupUsers.users || []" t-as="u" t-key="u.id">
                         <div class="ls-member-chip">
-                            <span class="ls-avatar-mini" t-esc="(u.name || u.login).charAt(0).toUpperCase()"/>
+                            <span class="ls-avatar-mini" t-esc="(u.name || u.login || '?').charAt(0).toUpperCase()"/>
                             <div>
                                 <div t-esc="u.name || u.login"/>
                                 <div class="ls-member-meta">
@@ -432,7 +432,7 @@ window.TEMPLATES.groupsView = xml`
                         </div>
                     </t>
                 </div>
-                <p t-if="state.groupUsers.users.length === 0" class="ls-empty-inline">No members yet.</p>
+                <p t-if="(state.groupUsers.users || []).length === 0" class="ls-empty-inline">No members yet.</p>
             </div>
         </form>
     </div>

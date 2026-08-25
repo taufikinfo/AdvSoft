@@ -82,12 +82,20 @@ $showcaseWriteReq = makeReq('/api/orm/write', 'POST', [
     'model' => 'showcase.model',
     'ids'   => [3],
     'values' => [
-        'name' => 'Upcoming Feature C (Updated)',
-        'tags' => [[6, 0, [1, 2]]],
+        'name'           => 'Upcoming Feature C (Updated)',
+        'tags'           => [[6, 0, [1, 2]]],
+        'tag_checkboxes' => [1, 2],
+        'tag_list'       => [2, 3],
     ]
 ]);
 $res = $orm->write($showcaseWriteReq);
 echo "Showcase write (id=3) status: " . $res->getStatusCode() . " body: " . $res->getContent() . "\n";
+
+$res = $orm->read($showcaseReadReq);
+$readData = json_decode($res->getContent(), true);
+echo "After write, tag_list: " . json_encode(array_column($readData['tag_list'] ?? [], 'id')) . "\n";
+echo "After write, tag_checkboxes: " . json_encode(array_column($readData['tag_checkboxes'] ?? [], 'id')) . "\n";
+echo "After write, tags: " . json_encode(array_column($readData['tags'] ?? [], 'id')) . "\n";
 
 echo "\n=== 4. Testing Accounting Controller (Trial Balance) ===\n";
 $acc = app(AccountReportController::class);
@@ -150,6 +158,21 @@ echo "\n=== 11. Testing Module Installer (discoverAll) ===\n";
 $mi = app(\App\Advsoft\ModuleInstaller::class);
 $modules = $mi->discoverAll();
 echo "\n=== 12. Testing ORM write on res.users (Many2Many groups_id) ===\n";
+$grpReq = makeReq('/api/orm/search_read', 'POST', [
+    'model' => 'res.groups',
+    'domain' => [],
+    'fields' => ['id', 'name', 'category_id', 'description', 'share', 'implied_ids']
+]);
+$res = $orm->searchRead($grpReq);
+echo "res.groups searchRead: " . $res->getContent() . "\n";
+
+$nsReq = makeReq('/api/orm/name_search', 'POST', [
+    'model' => 'res.groups',
+    'name' => '',
+    'limit' => 200
+]);
+$res = $orm->nameSearch($nsReq);
+echo "res.groups nameSearch: " . $res->getContent() . "\n";
 $userWriteReq = makeReq('/api/orm/write', 'POST', [
     'model' => 'res.users',
     'id' => 1,
@@ -266,5 +289,10 @@ $res = $orm->aggregate($aggReq);
 echo "Aggregate status: " . $res->getStatusCode() . "\n";
 $aggData = json_decode($res->getContent(), true);
 echo "Aggregate response: " . json_encode($aggData) . "\n";
+
+echo "\n=== 21. Recompiling Frontend Assets ===\n";
+$compiled = \App\Advsoft\Core\Support\AssetCompiler::compileAll();
+echo "Compiled JS bundle: {$compiled['js_size']} bytes\n";
+echo "Compiled CSS bundle: {$compiled['css_size']} bytes\n";
 
 echo "\n=== ALL PURE ADIANTI TESTS PASSED! ===\n";

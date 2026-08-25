@@ -315,7 +315,16 @@ window.RecordRules = RecordRules;
 // ═══════════════════════════════════════════════════════════════
 class GroupsView extends Component {
     static template = window.TEMPLATES.groupsView;
-    static props = {};
+    _emptyForm() {
+        return {
+            id: null,
+            name: '',
+            description: '',
+            category_id: false,
+            share: false,
+            implied_ids: [],
+        };
+    }
 
     setup() {
         this.state = useState({
@@ -323,7 +332,7 @@ class GroupsView extends Component {
             records: [],
             loading: true,
             search: '',
-            current: null,
+            current: this._emptyForm(),
             categories: [],
             groups: [],
             error: '',
@@ -360,13 +369,7 @@ class GroupsView extends Component {
     }
 
     newRecord() {
-        this.state.current = {
-            name: '',
-            description: '',
-            category_id: false,
-            share: false,
-            implied_ids: [],
-        };
+        this.state.current = this._emptyForm();
         this.state.mode = 'form';
         this.state.error = '';
         this.state.groupUsers = null;
@@ -389,13 +392,13 @@ class GroupsView extends Component {
     async loadGroupUsers(gid) {
         try {
             const res = await RPC.get('/api/security/groups/' + gid + '/users');
-            this.state.groupUsers = res;
-        } catch { this.state.groupUsers = null; }
+            this.state.groupUsers = res && typeof res === 'object' ? res : { users: [] };
+        } catch { this.state.groupUsers = { users: [] }; }
     }
 
     backToList() {
         this.state.mode = 'list';
-        this.state.current = null;
+        this.state.current = this._emptyForm();
         this.state.groupUsers = null;
     }
 

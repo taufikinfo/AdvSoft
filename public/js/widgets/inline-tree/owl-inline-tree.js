@@ -228,7 +228,7 @@ class InlineTreeWidget extends Component {
             <button class="ls-it-add-line" t-if="canCreate" t-on-click="addLine">
                 <span class="ls-it-add-icon">+</span> Add a line
             </button>
-            <button class="ls-it-add-line" t-if="props.tabDef.add_from_list" t-on-click="openAddFromList">
+            <button class="ls-it-add-line" t-if="props.tabDef.add_from_list &amp;&amp; !isMany2Many" t-on-click="openAddFromList">
                 <span class="ls-it-add-icon">⊕</span> Add from list
             </button>
         </div>
@@ -405,6 +405,10 @@ class InlineTreeWidget extends Component {
 
     get hasSequence() {
         return !!this._tab.sequence_field;
+    }
+
+    get isMany2Many() {
+        return this._tab.type === 'many2many' || this._tab.widget === 'many2many' || (!this._tab.child_model && this._tab.relation && !this._tab.inverse_field);
     }
 
     get canCreate() {
@@ -735,6 +739,11 @@ class InlineTreeWidget extends Component {
     }
 
     async addLine() {
+        if (this.isMany2Many) {
+            this.openAddFromList();
+            return;
+        }
+
         if (!this.props.onLineAdd) return;
 
         if (!this._tab.editable && window.FormViewDialog) {
