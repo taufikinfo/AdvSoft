@@ -115,6 +115,7 @@
         </form>
         <p class="hint">Default: <code>admin / admin</code> · <code>demo / demo</code></p>
         <p class="hint" style="margin-top: 8px;">Don't have an account? <a href="/register" style="color: #fff; text-decoration: underline; font-weight: 500;">Sign up</a></p>
+        <p class="hint" style="margin-top: 14px;"><a href="/landing" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 11px;">← Back to Home Page</a></p>
     </div>
 
     <script>

@@ -61,11 +61,14 @@ Route::get('/', function (Request $request) {
     }
     $user = app(\App\Advsoft\Security\SecurityContext::class)->getUser();
     if (!$user) {
-        header('Location: /login');
-        exit;
+        return view('landing');
     }
     return view('welcome');
 });
+
+Route::get('/landing', function (Request $request) {
+    return view('landing');
+})->name('landing');
 
 Route::get('/login', function (Request $request) {
     if (app(\App\Advsoft\Security\SecurityContext::class)->getUser()) {
