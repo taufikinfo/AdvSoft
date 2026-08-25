@@ -9,6 +9,23 @@ return [
         'debug' => '1',
         'strict_request' => '1'
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | AdvSoft Environment & Asset Configuration
+    |--------------------------------------------------------------------------
+    | - 'environment': 'development' (Source JS asli) | 'production' (JS terkompilasi bundle)
+    | - 'assets.mode': 'development' -> load script asli satu per satu
+    |                  'production'  -> load bundle terkompilasi (js/app.bundle.js & css/app.bundle.css)
+    */
+    'advsoft' => [
+        'environment' => 'development', // 'development' | 'production'
+        'assets' => [
+            'mode'        => 'development', // 'development' (source asli) | 'production' (terkompilasi)
+            'bundle_js'   => 'js/app.bundle.js',
+            'bundle_css'  => 'css/app.bundle.css',
+            'auto_compile'=> true,
+        ],
+    ],
     'highlight' => [
         'comment' => '#808080',
         'default' => '#FFFFFF',

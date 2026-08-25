@@ -447,3 +447,41 @@ Route::prefix('api/qweb')->group(function () {
     Route::post('/validate',        [QWebController::class, 'validate']);
     Route::post('/clear-cache',     [QWebController::class, 'clearCache']);
 });
+
+// Assets Management & Compilation API
+Route::prefix('api/admin/assets')->group(function () {
+    Route::get('/status', function (Request $request) {
+        $mode = config('advsoft.assets.mode', 'development');
+        $env = config('advsoft.environment', app()->environment());
+        $bundleJs = public_path(config('advsoft.assets.bundle_js', 'js/app.bundle.js'));
+        $bundleCss = public_path(config('advsoft.assets.bundle_css', 'css/app.bundle.css'));
+
+        return response()->json([
+            'environment' => $env,
+            'asset_mode'  => $mode,
+            'is_local'    => app()->isLocal(),
+            'is_production' => app()->isProduction(),
+            'bundle_js'   => [
+                'path'    => $bundleJs,
+                'exists'  => file_exists($bundleJs),
+                'size'    => file_exists($bundleJs) ? filesize($bundleJs) : 0,
+                'updated' => file_exists($bundleJs) ? date('Y-m-d H:i:s', filemtime($bundleJs)) : null,
+            ],
+            'bundle_css'  => [
+                'path'    => $bundleCss,
+                'exists'  => file_exists($bundleCss),
+                'size'    => file_exists($bundleCss) ? filesize($bundleCss) : 0,
+                'updated' => file_exists($bundleCss) ? date('Y-m-d H:i:s', filemtime($bundleCss)) : null,
+            ],
+        ]);
+    });
+
+    Route::post('/compile', function (Request $request) {
+        $result = \App\Advsoft\Core\Support\AssetCompiler::compileAll();
+        return response()->json([
+            'success' => true,
+            'message' => 'Assets successfully compiled for Production.',
+            'details' => $result,
+        ]);
+    });
+});

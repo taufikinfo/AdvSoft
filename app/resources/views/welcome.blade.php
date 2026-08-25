@@ -43,9 +43,11 @@
     </script>
     <script src="{{ asset('js/core/owl.iife.js') }}"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-    <script>window.XLSX = window.XLSX || null;</script>
-    @if(app()->environment('local'))
-        <!-- Development Mode: Direct Scripts (Uncompiled) -->
+    @php
+        $assetMode = config('advsoft.assets.mode', config('advsoft.environment', app()->isLocal() ? 'development' : 'production'));
+    @endphp
+    @if($assetMode === 'development' || (app()->isLocal() && $assetMode !== 'production'))
+        <!-- Development Mode: Direct Scripts (Source Asli / Uncompiled) -->
         @php
             $coreFiles = [
                 'js/core/owl-dialog-system.js',

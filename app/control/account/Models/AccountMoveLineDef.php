@@ -169,8 +169,15 @@ class AccountMoveLineDef extends ModelDefinition
             'default_order' => 'date desc, id desc',
             'limit'         => 100,
             'fields'        => [
-                'date', 'move_id', 'account_id', 'partner_id', 'name',
-                'debit', 'credit', 'balance', 'reconciled',
+                'date',
+                'move_id',
+                'account_id',
+                'partner_id',
+                'name',
+                'debit',
+                'credit',
+                'balance',
+                'reconciled',
             ],
             'column_config' => [
                 'debit'  => ['sum' => 'Total Debit', 'widget' => 'monetary'],

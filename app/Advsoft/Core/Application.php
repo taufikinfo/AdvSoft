@@ -90,14 +90,35 @@ class Application implements ContainerInterface
 
     public function environment(...$environments): string|bool
     {
-        $env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? 'production');
-        $envFile = $this->basePath('.env');
-        if (file_exists($envFile)) {
-            $parsed = @parse_ini_file($envFile);
-            if (is_array($parsed) && isset($parsed['APP_ENV'])) {
-                $env = $parsed['APP_ENV'];
+        $env = null;
+        
+        // 1. Check app/config/application.php
+        $configFile = $this->configPath('application.php');
+        if (file_exists($configFile)) {
+            $cfg = require $configFile;
+            $env = $cfg['advsoft']['environment'] 
+                ?? $cfg['advsoft']['assets']['mode'] 
+                ?? $cfg['general']['environment'] 
+                ?? null;
+        }
+
+        // 2. Check environment variables
+        if (!$env) {
+            $env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? null);
+        }
+        
+        // 3. Check .env file
+        if (!$env) {
+            $envFile = $this->basePath('.env');
+            if (file_exists($envFile)) {
+                $parsed = @parse_ini_file($envFile);
+                if (is_array($parsed) && isset($parsed['APP_ENV'])) {
+                    $env = $parsed['APP_ENV'];
+                }
             }
         }
+
+        $env = $env ?: 'development';
 
         if (count($environments) > 0) {
             $patterns = is_array($environments[0]) ? $environments[0] : $environments;
@@ -106,8 +127,8 @@ class Application implements ContainerInterface
         return $env;
     }
 
-    public function isLocal(): bool { return $this->environment('local', 'development'); }
-    public function isProduction(): bool { return $this->environment('production'); }
+    public function isLocal(): bool { return $this->environment('local', 'development', 'dev'); }
+    public function isProduction(): bool { return $this->environment('production', 'prod'); }
     public function runningInConsole(): bool { return php_sapi_name() === 'cli'; }
 
     public function bind(string $abstract, mixed $concrete = null, bool $shared = false): void

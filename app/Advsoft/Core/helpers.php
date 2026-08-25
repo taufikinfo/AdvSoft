@@ -73,6 +73,31 @@ if (!function_exists('config_path')) {
     }
 }
 
+if (!function_exists('config')) {
+    function config(?string $key = null, mixed $default = null): mixed
+    {
+        static $cached = null;
+        if ($cached === null) {
+            $configFile = config_path('application.php');
+            $cached = file_exists($configFile) ? (require $configFile) : [];
+        }
+
+        if ($key === null) {
+            return $cached;
+        }
+
+        $parts = explode('.', $key);
+        $current = $cached;
+        foreach ($parts as $part) {
+            if (!is_array($current) || !array_key_exists($part, $current)) {
+                return $default;
+            }
+            $current = $current[$part];
+        }
+        return $current;
+    }
+}
+
 if (!function_exists('resource_path')) {
     function resource_path(string $path = ''): string
     {
